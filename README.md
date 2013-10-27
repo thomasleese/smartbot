@@ -51,3 +51,10 @@ Some XKCD lookups.
 Perform Wolfram|Alpha calculations.
 
 	"wolfram": "api_key"
+
+### remind
+
+"remind me to <action> in <time>"
+"remind me to <action> at <time>"
+
+	"remind": null
