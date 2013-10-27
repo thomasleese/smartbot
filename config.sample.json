@@ -1,0 +1,13 @@
+{
+  "irc": {
+    "server": "my.irc.server.com",
+    "port": 6667,
+    "nick": "SmartBot",
+    "username": "SmartBot",
+    "realname": "The one and only bot"
+  },
+
+  "plugins": {
+    "autojoin": [ "#channel" ]
+  }
+}

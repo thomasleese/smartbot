@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+var fs = require("fs");
+var smartbot = require("../");
+
+var config = JSON.parse(fs.readFileSync("config.json"));
+var bot = new smartbot.Bot(config.irc.server, config.irc.port, config.irc.nick,
+                           config.irc.username, config.irc.realname);
+
+for (name in config.plugins) {
+  var plugin = smartbot.plugins[name];
+  if (!plugin) {
+    plugin = require(name);
+  }
+
+  if (plugin && plugin.length === 2) {
+    plugin(bot, config.plugins[name]);
+  } else {
+    console.log("No such plugin", name, "ignoring...")
+  }
+}

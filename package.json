@@ -1,0 +1,12 @@
+{
+  "name": "smartbot",
+  "description": "A supposedly smart IRC bot.",
+  "version": "0.0.1",
+
+  "main": "lib/index",
+
+  "dependencies": {
+    "phantom": "0.x",
+    "irc": "0.x"
+  }
+}
