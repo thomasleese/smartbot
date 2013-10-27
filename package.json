@@ -7,6 +7,8 @@
 
   "dependencies": {
     "irc": "0.x",
-    "zombie": "2.x"
+    "zombie": "2.x",
+    "request": "2.x",
+    "googleapis": "0.x"
   }
 }
