@@ -6,7 +6,7 @@
   "main": "lib/index",
 
   "dependencies": {
-    "phantom": "0.x",
-    "irc": "0.x"
+    "irc": "0.x",
+    "zombie": "2.x"
   }
 }
