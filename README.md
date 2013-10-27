@@ -27,3 +27,15 @@ Writes out the title of websites that anyone has said based on the URLs.
 Searches google.
 
 	"google": { "key": "google_api_key", "cx": "custom_search_cx" }
+
+### encoding
+
+Lots of encoding functions.
+
+	"encoding": null
+
+### hashing
+
+Lots of hashing functions.
+
+	"hashing": null
