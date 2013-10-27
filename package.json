@@ -9,6 +9,7 @@
     "irc": "0.x",
     "zombie": "2.x",
     "request": "2.x",
-    "googleapis": "0.x"
+    "googleapis": "0.x",
+    "wolfram": "0.x"
   }
 }

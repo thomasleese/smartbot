@@ -39,3 +39,15 @@ Lots of encoding functions.
 Lots of hashing functions.
 
 	"hashing": null
+
+### xkcd
+
+Some XKCD lookups.
+
+	"xkcd": null
+
+### wolfram
+
+Perform Wolfram|Alpha calculations.
+
+	"wolfram": "api_key"
