@@ -12,6 +12,7 @@
     "googleapis": "0.x",
     "wolfram-alpha": "0.x",
     "moment": "2.x",
-    "parsedatetime": "0.x"
+    "parsedatetime": "0.x",
+    "sandbox": "0.x"
   }
 }

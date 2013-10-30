@@ -109,4 +109,34 @@ Get the robot to throw coins for you!
 
 	"coin": null
 
+### sudo
+
+"Sudo make me a sandwich."
+
+	"sudo": null
+
+### glados
+
+She's listening...
+
+	"glados": null
+
+### yourface
+
+Responds to "Your face"... assumes a facebot is running that responds to "!face nick".
+
+	"yourface": null
+
+### excuses
+
+Programmers excuses...
+
+	"excuses": null
+
+### javascript
+
+Provides a sandboxed javascript environment.
+
+	"javascript": null
+
 [0]: https://github.com/martynsmith/node-irc
