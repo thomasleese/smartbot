@@ -139,4 +139,10 @@ Provides a sandboxed javascript environment.
 
 	"javascript": null
 
+### isup
+
+Checks if a website is up.
+
+	"isup": null
+
 [0]: https://github.com/martynsmith/node-irc
