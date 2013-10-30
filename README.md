@@ -103,4 +103,10 @@ General debugging commands.
 
 	"debug": null
 
+### coin
+
+Get the robot to throw coins for you!
+
+	"coin": null
+
 [0]: https://github.com/martynsmith/node-irc
