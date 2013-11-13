@@ -7,13 +7,12 @@
 
   "dependencies": {
     "irc": "0.x",
-    "zombie": "2.x",
+    "cheerio": "0.x",
     "request": "2.x",
     "googleapis": "0.x",
     "wolfram-alpha": "0.x",
     "moment": "2.x",
     "parsedatetime": "0.x",
-    "sandbox": "0.x",
-    "minimatch": "0.x"
+    "sandbox": "0.x"
   }
 }
