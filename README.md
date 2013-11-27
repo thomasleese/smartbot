@@ -145,4 +145,10 @@ Checks if a website is up.
 
 	"isup": null
 
+### lmgtfy
+
+"Let me Google that for you"
+
+	"lmgtfy": null
+
 [0]: https://github.com/martynsmith/node-irc
