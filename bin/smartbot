@@ -1,12 +1,30 @@
-#!/usr/bin/env node
+#!/usr/bin/env python
+import sys
+sys.path.append(".")
+import argparse
+import importlib.machinery
+import smartbot
+import yaml
 
-var fs = require("fs");
-var SmartBot = require("../");
+def read_storage(config):
+    del config["name"]
+    return smartbot.storage.YAML(**config)
 
-var config = JSON.parse(fs.readFileSync("config.json"));
-var bot = new SmartBot(config.irc.server, config.irc.port, config.irc.nick,
-                       config.irc.username, config.irc.realname);
+def read_backend(config):
+    del config["name"]
+    return smartbot.backend.IRC(**config)
 
-for (name in config.plugins) {
-  bot.addPlugin(name, config.plugins[name]);
-}
+def read_plugin(config):
+    name = config["name"]
+    del config["name"]
+    loader = importlib.machinery.SourceFileLoader("plugins." + name, "plugins/" + name + ".py")
+    return loader.load_module("plugins." + name).Plugin(**config)
+
+with open("config.yaml") as fd:
+    config = yaml.load(fd.read())
+
+bot = smartbot.Bot()
+bot.set_storage(read_storage(config["storage"]))
+bot.set_backend(read_backend(config["backend"]))
+bot.set_plugins([ read_plugin(x) for x in config["plugins"] ])
+bot.run()
