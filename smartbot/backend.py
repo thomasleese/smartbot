@@ -46,10 +46,22 @@ class IRC(_Backend):
             self.dispatch_event("ready")
         elif args[1] == "JOIN":
             nick = self.parse_usermask(args[0])
-            self.dispatch_event("join", nick, args[2], nick == self.nick)
+            self.dispatch_event("join", {
+                "user": nick, "channel": args[2], "is_me": self.nick == nick
+            })
         elif args[1] == "PRIVMSG":
-            nick = self.parse_usermask(args[0])
-            self.dispatch_event("message", nick, arg[2], args[3])
+            sender = self.parse_usermask(args[0])
+            target = args[2]
+            message = args[3]
+
+            reply_to = target
+            if target == self.nick:
+                reply_to = sender
+
+            self.dispatch_event("message", {
+                "sender": sender, "target": target,
+                "message": message, "reply_to": reply_to
+            })
         else:
             print(args)
 
@@ -81,7 +93,7 @@ class IRC(_Backend):
                     else:
                         line.append(p)
 
-                self.parse([ str(x, "utf-8") for x in line ])
+                self.parse([ str(x, "utf-8", "ignore") for x in line ])
 
             buf = array[-1]
 
