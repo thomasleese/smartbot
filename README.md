@@ -20,18 +20,10 @@ Before you run the bot you must create a configuration file similar to this.
         - name: autojoin
           channels: [ "#robots" ]
 
+## Running
+
+    $ ./bin/smartbot
+
 ## Plugins
 
-### autojoin
-
-Joins channels when the bot connects.
-
-    channels: [ "#achannel", "#anotherone" ]
-
-### nicebot
-
-Messages the password to the nick when you join the channel.
-
-    channel: "#achannel"
-    user: NiceBot
-    password: apassword
+To see the list of plugins, look in the `plugins` directory.
