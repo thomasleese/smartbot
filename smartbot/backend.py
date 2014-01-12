@@ -1,6 +1,6 @@
 import socket
 
-class Backend:
+class _Backend:
     def __init__(self):
         self.storage = None
         self.event_listeners = []
@@ -13,7 +13,7 @@ class Backend:
             if listener[0] == name:
                 listener[1](*event)
 
-class IRC(Backend):
+class IRC(_Backend):
     def __init__(self, hostname, port=6667, nick="SmartBot", username="SmartBot", realname="The One and Only SmartBot"):
         super().__init__()
         self.hostname = hostname

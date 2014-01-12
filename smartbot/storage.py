@@ -1,6 +1,6 @@
 import yaml
 
-class Storage:
+class _Storage:
     def __getitem__(self, key):
         pass
 
@@ -10,7 +10,7 @@ class Storage:
     def __delitem__(self, key):
         pass
 
-class DictionaryStorage(Storage):
+class _DictionaryStorage(_Storage):
     def __init__(self):
         self.data = {}
 
@@ -23,7 +23,10 @@ class DictionaryStorage(Storage):
     def __delitem__(self, key):
         del self.data[key]
 
-class YAML(DictionaryStorage):
+class Memory(_DictionaryStorage):
+    pass
+
+class YAML(_DictionaryStorage):
     def __init__(self, filename="storage.yaml"):
         super().__init__()
         self.filename = filename
