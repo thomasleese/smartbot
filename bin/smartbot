@@ -7,12 +7,24 @@ import smartbot
 import yaml
 
 def read_storage(config):
+    name = config["name"]
     del config["name"]
-    return smartbot.storage.YAML(**config)
+
+    if name == "yaml":
+        return smartbot.storage.YAML(**config)
+    else:
+        raise Exception("Storage {0} doesn't exist.".format(name))
 
 def read_backend(config):
+    name = config["name"]
     del config["name"]
-    return smartbot.backend.IRC(**config)
+
+    if name == "irc":
+        return smartbot.backend.IRC(**config)
+    elif name == "cmdline":
+        return smartbot.backend.CommandLine(**config)
+    else:
+        raise Exception("Backend {0} doesn't exist.".format(name))
 
 def read_plugin(config):
     name = config["name"]
@@ -23,7 +35,7 @@ def read_plugin(config):
 with open("config.yaml") as fd:
     config = yaml.load(fd.read())
 
-bot = smartbot.Bot()
+bot = smartbot.Bot(**config["bot"])
 bot.set_storage(read_storage(config["storage"]))
 bot.set_backend(read_backend(config["backend"]))
 bot.set_plugins([ read_plugin(x) for x in config["plugins"] ])

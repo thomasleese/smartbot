@@ -3,7 +3,8 @@ import functools
 import re
 
 class Bot:
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.storage = None
         self.backend = None
         self.plugins = []
@@ -14,7 +15,7 @@ class Bot:
 
     def set_backend(self, backend):
         self.backend = backend
-        self.backend.storage = self.storage
+        backend(self)
 
     def add_plugin(self, plugin):
         self.plugins.append(plugin)
@@ -37,10 +38,14 @@ class Bot:
             pass
 
     def on_join(self, callback):
-        try:
-            self.backend.add_event_listener("join", lambda msg: callback(self, msg))
-        except Exception as e:
-            pass
+        def on_join(msg):
+            msg["is_me"] = msg["user"] == self.name
+            try:
+                callback(self, msg)
+            except Exception as e:
+                pass
+
+        self.backend.add_event_listener("join", on_join)
 
     def on_hear(self, regex, callback):
         def on_message(msg):
@@ -55,7 +60,7 @@ class Bot:
         self.backend.add_event_listener("message", on_message)
 
     def on_respond(self, regex, callback):
-        new_regex = r"^(?:" + self.backend.nick + r"[:,]?|!)\s*(?:" + regex + ")"
+        new_regex = r"^(?:" + self.name + r"[:,]?|!)\s*(?:" + regex + ")"
         self.on_hear(new_regex, callback)
 
     def on_help(self, name, callback):

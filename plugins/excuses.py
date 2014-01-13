@@ -9,9 +9,9 @@ class Plugin:
     def on_respond(self, bot, msg, reply):
         page = requests.get("http://developerexcuses.com/")
         tree = lxml.html.fromstring(page.text)
-        thing = tree.cssselect(".wrapper a")[0].text_content()
-        if thing:
-            reply(thing)
+        excuse = tree.cssselect(".wrapper a")[0].text_content()
+        if excuse:
+            reply(excuse)
         else:
             reply("You have no excuse!")
 

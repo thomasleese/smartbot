@@ -5,6 +5,9 @@ class _Backend:
         self.storage = None
         self.event_listeners = []
 
+    def __call__(self, name):
+        pass
+
     def add_event_listener(self, name, callback):
         self.event_listeners.append(( name, callback ))
 
@@ -14,15 +17,21 @@ class _Backend:
                 listener[1](*event)
 
 class IRC(_Backend):
-    def __init__(self, hostname, port=6667, nick="SmartBot", username="SmartBot", realname="The One and Only SmartBot"):
+    def __init__(self, hostname, port=6667, username=None, realname=None):
         super().__init__()
         self.hostname = hostname
         self.port = port
-        self.nick = nick
         self.username = username
         self.realname = realname
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    def __call__(self, bot):
+        self.nick = bot.name
+        if not self.username:
+            self.username = bot.name
+        if not self.realname:
+            self.realname = bot.name
 
     def write(self, *args):
         def convert_part(x):
@@ -46,9 +55,7 @@ class IRC(_Backend):
             self.dispatch_event("ready")
         elif args[1] == "JOIN":
             nick = self.parse_usermask(args[0])
-            self.dispatch_event("join", {
-                "user": nick, "channel": args[2], "is_me": self.nick == nick
-            })
+            self.dispatch_event("join", { "user": nick, "channel": args[2] })
         elif args[1] == "PRIVMSG":
             sender = self.parse_usermask(args[0])
             target = args[2]
@@ -104,3 +111,25 @@ class IRC(_Backend):
 
     def send(self, target, message):
         self.write("PRIVMSG", target, message)
+
+class CommandLine(_Backend):
+    def __init__(self):
+        super().__init__()
+
+    def run(self):
+        self.dispatch_event("connect")
+
+        while True:
+            line = input("> ").strip()
+            self.dispatch_event("message", {
+                "sender": "stdin", "target": "stdout",
+                "message": line, "reply_to": "stdout"
+            })
+
+        self.dispatch_event("disconnect")
+
+    def join(self, channel):
+        print("Joining", channel)
+
+    def send(self, target, message):
+        print(target + ":", message)
