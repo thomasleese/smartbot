@@ -14,7 +14,7 @@ class Plugin:
         url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}".format(
             urllib.parse.quote(self.key),
             urllib.parse.quote(self.cx),
-            urllib.parse.quote(msg["match"].group(1))
+            urllib.parse.quote(msg["match"][0])
         )
         headers = { "User-Agent": "SmartBot" }
 

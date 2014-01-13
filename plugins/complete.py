@@ -9,7 +9,7 @@ class Plugin:
         bot.on_help("complete", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(msg["match"].group(1)))
+        url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(msg["match"][0]))
         headers = { "User-Agent": "SmartBot" }
 
         page = requests.get(url, headers=headers)

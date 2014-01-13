@@ -7,10 +7,10 @@ class Plugin:
         bot.on_help("decide", self.on_help)
 
     def on_respond_1(self, bot, msg, reply):
-        reply("I pick {0}.".format(random.choice(msg["match"].group(1).split("\" \""))))
+        reply("I pick {0}.".format(random.choice(msg["match"][0].split("\" \""))))
 
     def on_respond_2(self, bot, msg, reply):
-        reply("I pick {0}.".format(random.choice(msg["match"].group(1).split(" "))))
+        reply("I pick {0}.".format(random.choice(msg["match"][0].split(" "))))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: decide \"option\" …")

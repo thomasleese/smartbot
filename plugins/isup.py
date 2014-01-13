@@ -3,12 +3,12 @@ import urllib.parse
 
 class Plugin:
     def __call__(self, bot):
-        bot.on_respond(r"is (.*) (up|down)(\?)?", self.on_respond)
+        bot.on_respond(r"is (.*) (?:up|down)\??$", self.on_respond)
         bot.on_respond(r"isup (.*)$", self.on_respond)
         bot.on_help("isup", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "http://isitup.org/" + urllib.parse.quote(msg["match"].group(1)) + ".json"
+        url = "http://isitup.org/" + urllib.parse.quote(msg["match"][0]) + ".json"
         headers = { "User-Agent": "SmartBot" }
 
         res = requests.get(url, headers=headers).json()

@@ -6,8 +6,9 @@ class Plugin:
         bot.on_help("hashing", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        hash = hashlib.new(msg["match"].group(1))
-        hash.update(bytes(msg["match"].group(2), "utf-8"))
+        match = msg["match"][0]
+        hash = hashlib.new(match[0])
+        hash.update(bytes(match[1], "utf-8"))
         reply(hash.hexdigest())
 
     def on_help(self, bot, msg, reply):

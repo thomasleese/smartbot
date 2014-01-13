@@ -11,22 +11,22 @@ class Plugin:
         bot.on_help("encoding", self.on_help)
 
     def on_b64_encode(self, bot, msg, reply):
-        reply(str(base64.b64encode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b64encode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_b64_decode(self, bot, msg, reply):
-        reply(str(base64.b64decode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b64decode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_b32_encode(self, bot, msg, reply):
-        reply(str(base64.b32encode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b32encode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_b32_decode(self, bot, msg, reply):
-        reply(str(base64.b32decode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b32decode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_b16_encode(self, bot, msg, reply):
-        reply(str(base64.b16encode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b16encode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_b16_decode(self, bot, msg, reply):
-        reply(str(base64.b16decode(bytes(msg["match"].group(1), "utf-8")), "utf-8"))
+        reply(str(base64.b16decode(bytes(msg["match"][0], "utf-8")), "utf-8"))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: base64|b64|base32|b32|base16|b16 encode|decode <text>")

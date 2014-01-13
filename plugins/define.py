@@ -7,7 +7,7 @@ class Plugin:
         bot.on_help("define", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "http://api.duckduckgo.com/?format=json&q={0}".format(urllib.parse.quote(msg["match"].group(1)))
+        url = "http://api.duckduckgo.com/?format=json&q={0}".format(urllib.parse.quote(msg["match"][0]))
         headers = { "User-Agent": "SmartBot" }
 
         res = requests.get(url, headers=headers).json()

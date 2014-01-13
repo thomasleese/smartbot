@@ -6,7 +6,7 @@ class Plugin:
         bot.on_help("achievements", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "http://achievement-unlocked.heroku.com/xbox/{0}".format(urllib.parse.quote(msg["match"].group(1)))
+        url = "http://achievement-unlocked.heroku.com/xbox/{0}".format(urllib.parse.quote(msg["match"][0]))
         reply(url)
 
     def on_help(self, bot, reply):
