@@ -110,7 +110,8 @@ class IRC(_Backend):
         self.write("JOIN", channel)
 
     def send(self, target, message):
-        self.write("PRIVMSG", target, message)
+        for msg in message.splitlines():
+            self.write("PRIVMSG", target, msg)
 
 class CommandLine(_Backend):
     def __init__(self):

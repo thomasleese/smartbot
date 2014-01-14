@@ -1,6 +1,7 @@
 import collections
 import functools
 import re
+import traceback
 
 class Bot:
     def __init__(self, name):
@@ -43,7 +44,7 @@ class Bot:
             try:
                 callback(self, msg)
             except Exception as e:
-                pass
+                traceback.print_exc()
 
         self.backend.add_event_listener("join", on_join)
 
@@ -55,6 +56,7 @@ class Bot:
                 try:
                     callback(self, msg, reply)
                 except Exception as e:
+                    traceback.print_exc()
                     reply(e)
 
         self.backend.add_event_listener("message", on_message)

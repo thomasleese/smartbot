@@ -14,11 +14,18 @@ class _DictionaryStorage(_Storage):
     def __init__(self):
         self.data = {}
 
+    def __del__(self):
+        self.commit()
+
+    def commit(self):
+        pass
+
     def __getitem__(self, key):
         return self.data[key]
 
     def __setitem__(self, key, value):
         self.data[key] = value
+        self.commit()
 
     def __delitem__(self, key):
         del self.data[key]
@@ -37,6 +44,9 @@ class YAML(_DictionaryStorage):
         except FileNotFoundError:
             pass
 
-    def __del__(self):
+        if not self.data:
+            self.data = {}
+
+    def commit(self):
         with open(self.filename, "w") as fd:
             fd.write(yaml.dump(self.data))

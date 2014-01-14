@@ -11,7 +11,7 @@ class Plugin:
         bot.on_help("google", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}".format(
+        url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}&num=5".format(
             urllib.parse.quote(self.key),
             urllib.parse.quote(self.cx),
             urllib.parse.quote(msg["match"][0])
@@ -20,8 +20,8 @@ class Plugin:
 
         res = requests.get(url, headers=headers).json()
         if res["items"]:
-            for i, item in enumerate(res["items"][:5]):
-                reply("[{0}]: {1}".format(i, item["link"]))
+            for i, item in enumerate(res["items"]):
+                reply("[{0}]: {1} - {2}".format(i, item["title"], item["link"]))
         else:
             reply("No results!")
 
