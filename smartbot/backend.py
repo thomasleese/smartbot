@@ -1,4 +1,5 @@
 import socket
+import threading
 
 class _Backend:
     def __init__(self):
@@ -24,6 +25,7 @@ class IRC(_Backend):
         self.username = username
         self.realname = realname
 
+        self.lock = threading.Lock()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __call__(self, bot):
@@ -41,9 +43,10 @@ class IRC(_Backend):
             else:
                 return x
 
-        line = b" ".join([ convert_part(x) for x in args ])
-        line += b"\r\n"
-        self.socket.send(line)
+        with self.lock:
+            line = b" ".join([ convert_part(x) for x in args ])
+            line += b"\r\n"
+            self.socket.send(line)
 
     def parse_usermask(self, usermask):
         return usermask.split("!")[0]
