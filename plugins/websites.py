@@ -14,7 +14,7 @@ class Plugin:
                 if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
                     tree = lxml.html.fromstring(page.content)
                     title = tree.cssselect("title")[0].text_content()
-                    reply("[{0}]: {1}".format(i, title))
+                    reply("[{0}]: {1}".format(i, title.strip()))
             except requests.exceptions.Timeout:
                 reply("[{0}]: {1}".format(i, "Timeout!"))
             except IndexError: # no title element
