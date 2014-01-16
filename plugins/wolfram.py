@@ -62,7 +62,7 @@ class Plugin:
         )
         headers = { "User-Agent": "SmartBot" }
 
-        page = requests.get(url, headers=headers, timeout=5)
+        page = requests.get(url, headers=headers, timeout=15)
         if page.status_code == 200:
             tree = lxml.etree.fromstring(page.content)
             pods = []

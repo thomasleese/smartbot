@@ -25,7 +25,7 @@ class Plugin:
 
         respond("lol", "{0} laughs the most.")
         respond(":D", "{0} is the happiest.")
-        respond(":P", "{0} is the most sarcastic.")
+        respond(":P", "{0} sticks their tounge out the most.")
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: stats")

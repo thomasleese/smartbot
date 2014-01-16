@@ -10,7 +10,7 @@ class Plugin:
         headers = { "User-Agent": "SmartBot" }
         for i, url in enumerate(msg["match"]):
             try:
-                page = requests.get(url, headers=headers, timeout=3)
+                page = requests.get(url, headers=headers, timeout=5)
                 if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
                     tree = lxml.html.fromstring(page.content)
                     title = tree.cssselect("title")[0].text_content()
