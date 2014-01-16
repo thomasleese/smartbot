@@ -4,7 +4,7 @@ class Plugin:
     def __call__(self, bot):
         bot.on_hear(r".*", self.on_hear)
         bot.on_respond(r"(?:last )?seen (.*)$", self.on_respond)
-        bot.on_help("steam", self.on_help)
+        bot.on_help("seen", self.on_help)
 
     def on_hear(self, bot, msg, reply):
         bot.storage["seen." + msg["sender"]] = {

@@ -13,5 +13,5 @@ class Plugin:
         res = requests.get(url, headers=headers).json()
         reply("{0} - {1}".format(res["created_on"], res["body"]))
 
-    def on_help(self, bot, reply):
+    def on_help(self, bot, msg, reply):
         reply("Syntax: github st[atus]")

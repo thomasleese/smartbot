@@ -9,5 +9,5 @@ class Plugin:
         url = "http://achievement-unlocked.heroku.com/xbox/{0}".format(urllib.parse.quote(msg["match"][0]))
         reply(url)
 
-    def on_help(self, bot, reply):
-        reply("Syntax: define <topic>")
+    def on_help(self, bot, msg, reply):
+        reply("Syntax: achievement [got|get|unlocked] <action>")

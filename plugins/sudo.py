@@ -4,6 +4,7 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         if msg["match"][0]:
-            reply("Alright, I'll " + msg["match"][0] + ".")
+            s = msg["match"][0].lower().replace("me", "you")
+            reply("Alright, I'll {0}.".format(s))
         else:
             reply("Alright, I'll do whatever it is you want.")

@@ -16,5 +16,5 @@ class Plugin:
         time.sleep(2)
         reply(res["joke"]["answer"])
 
-    def on_help(self, bot, reply):
+    def on_help(self, bot, msg, reply):
         reply("Syntax: [give me a] joke")

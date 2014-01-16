@@ -14,7 +14,7 @@ class Plugin:
         if res.get("text"):
             reply(res["text"])
         else:
-            reply("No conversation starters for you. ☹")
+            reply("No conversation starters for you.")
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: chat|conversation")

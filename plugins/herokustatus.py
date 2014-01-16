@@ -13,5 +13,5 @@ class Plugin:
         res = requests.get(url, headers=headers).json()
         reply("Production: {0}\nDevelopment: {1}".format(res["status"]["Production"], res["status"]["Development"]))
 
-    def on_help(self, bot, reply):
+    def on_help(self, bot, msg, reply):
         reply("Syntax: heroku st[atus]")
