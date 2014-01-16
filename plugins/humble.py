@@ -5,11 +5,15 @@ from smartbot import utils
 
 class Plugin:
     def __call__(self, bot):
-        bot.on_respond(r"humble( weekly)?( sale)?", self.on_respond)
+        bot.on_respond(r"humble( weekly| bundle)?(?: sale)?", self.on_respond)
         bot.on_help("humble", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        page = requests.get("https://www.humblebundle.com/weekly")
+        url = "https://www.humblebundle.com/"
+        if msg["match"][0].strip() == "weekly":
+            url = "https://www.humblebundle.com/weekly"
+
+        page = requests.get(url)
         tree = lxml.html.fromstring(page.text)
         try:
             title = tree.cssselect("title")[0].text_content().strip()
@@ -27,4 +31,4 @@ class Plugin:
             reply("No weekly sale.")
 
     def on_help(self, bot, msg, reply):
-        reply("Syntax: humble [weekly] [deal]")
+        reply("Syntax: humble [bundle|weekly] [sale]")
