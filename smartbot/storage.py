@@ -20,6 +20,9 @@ class _DictionaryStorage(_Storage):
     def commit(self):
         pass
 
+    def get(self, key, default=None):
+        return self.data.get(key, default)
+
     def __getitem__(self, key):
         return self.data[key]
 
