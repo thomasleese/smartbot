@@ -3,7 +3,7 @@ import urllib.parse
 
 class Plugin:
     def __call__(self, bot):
-        bot.on_respond(r"cat(s)?(fact)?", self.on_respond)
+        bot.on_respond(r"cat", self.on_respond)
         bot.on_help("cats", self.on_help)
 
     def on_respond(self, bot, msg, reply):
@@ -17,4 +17,4 @@ class Plugin:
             reply("No cat facts today. ☹")
 
     def on_help(self, bot, msg, reply):
-        reply("Syntax: cat[fact]")
+        reply("Syntax: cat")

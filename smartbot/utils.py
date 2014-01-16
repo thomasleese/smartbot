@@ -1,5 +1,7 @@
-import re
 import datetime
+import lxml.html
+import re
+import requests
 
 TIMESPAN_REGEX = "^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
 
@@ -61,3 +63,16 @@ def parse_datetime(input, from_date=None):
                 return parse_absolutedate("at {0}".format(input), from_date)
             except ValueError:
                 return parse_timespan("in {0}".format(input), from_date)
+
+def get_website_title(url):
+    try:
+        headers = { "User-Agent": "SmartBot" }
+        page = requests.get(url, headers=headers, timeout=5)
+        if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
+            tree = lxml.html.fromstring(page.content)
+            title = tree.cssselect("title")[0].text_content()
+            return title.strip()
+    except requests.exceptions.Timeout:
+        return "Timeout!"
+    except IndexError: # no title element
+        return "No title."

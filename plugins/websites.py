@@ -1,5 +1,4 @@
-import lxml.html
-import requests
+from smartbot import utils
 
 class Plugin:
     def __call__(self, bot):
@@ -7,18 +6,8 @@ class Plugin:
         bot.on_help("websites", self.on_help)
 
     def on_hear(self, bot, msg, reply):
-        headers = { "User-Agent": "SmartBot" }
         for i, url in enumerate(msg["match"]):
-            try:
-                page = requests.get(url, headers=headers, timeout=5)
-                if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
-                    tree = lxml.html.fromstring(page.content)
-                    title = tree.cssselect("title")[0].text_content()
-                    reply("[{0}]: {1}".format(i, title.strip()))
-            except requests.exceptions.Timeout:
-                reply("[{0}]: {1}".format(i, "Timeout!"))
-            except IndexError: # no title element
-                reply("[{0}]: {1}".format(i, "No title."))
+            reply("[{0}]: {1}".format(i, utils.get_website_title(url)))
 
     def on_help(self, bot, msg, reply):
         reply("Echos the titles of websites for any HTTP(S) URL.")
