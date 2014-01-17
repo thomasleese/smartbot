@@ -7,7 +7,9 @@ class Plugin:
 
     def on_hear(self, bot, msg, reply):
         for i, url in enumerate(msg["match"]):
-            reply("[{0}]: {1}".format(i, utils.get_website_title(url)))
+            title = utils.get_website_title(url)
+            if title:
+                reply("[{0}]: {1}".format(i, title))
 
     def on_help(self, bot, msg, reply):
         reply("Echos the titles of websites for any HTTP(S) URL.")
