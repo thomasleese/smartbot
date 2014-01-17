@@ -71,7 +71,7 @@ def get_website_title(url):
         if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
             tree = lxml.html.fromstring(page.content)
             title = tree.cssselect("title")[0].text_content()
-            return title.strip()
+            return title.strip().replace("\n", "").replace("\r", "")
     except requests.exceptions.Timeout:
         return "Timeout!"
     except IndexError: # no title element
