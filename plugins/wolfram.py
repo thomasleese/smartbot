@@ -69,16 +69,19 @@ class Plugin:
             for pod in tree.xpath("//pod"):
                 pods.append(pod)
 
-            small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
-            if len(small_result) <= 100 and "\n" not in small_result:
-                reply(small_result)
+            if len(pods) >= 2:
+                small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
+                if len(small_result) <= 100 and "\n" not in small_result:
+                    reply(small_result)
+                else:
+                    for pod in pods[:2]:
+                        reply("# {0}".format(pod.get("title")))
+                        for subpod in pod.findall("subpod"):
+                            if subpod.get("title"):
+                                reply("## {0}".format(subpod.get("title")))
+                            reply(self.format_subpod(subpod))
             else:
-                for pod in pods[:2]:
-                    reply("# {0}".format(pod.get("title")))
-                    for subpod in pod.findall("subpod"):
-                        if subpod.get("title"):
-                            reply("## {0}".format(subpod.get("title")))
-                        reply(self.format_subpod(subpod))
+                reply("Nothing more to say.")
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: ?|q|question|wfa|calc|calculate <query>")
