@@ -9,9 +9,9 @@ class Plugin:
 
     def on_hear_anything(self, bot, msg, reply):
         stats = bot.storage.get("stats", {})
-        word_stats = stats.get(word, {})
-        word_stats[""] = word_stats.get("", 0) + 1
-        stats[word] = word_stats
+        word_stats = stats.get("", {})
+        word_stats[msg["sender"]] = word_stats.get(msg["sender"], 0) + 1
+        stats[""] = word_stats
         bot.storage["stats"] = stats
 
     def on_hear(self, bot, msg, reply):
