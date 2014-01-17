@@ -24,7 +24,7 @@ class Plugin:
         bot.on_help("wwls", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        reply(random.choice(responses))
+        reply("“{0}”".format(random.choice(responses)))
 
     def on_help(self, bot, msg, reply):
         reply("What would Linus say?")
