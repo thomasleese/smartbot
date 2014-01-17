@@ -18,10 +18,12 @@ class Plugin:
 
     def format_subpod(self, subpod):
         text = (subpod.find("plaintext").text or "").strip()
-        if len(text) <= 0 or len(text) >= 400:
+        if len(text) <= 0:
             return subpod.find("img").get("src")
 
         s = text
+        if len(s) >= 400:
+            s = text[:400] + "…"
 
         # first convert unicode characters
         s = re.sub(r"\:([A-Za-z0-9]+)", lambda m: chr(int(m.group(), 16)), s)
