@@ -12,6 +12,9 @@ class Plugin:
         page = requests.get(url)
         tree = lxml.html.fromstring(page.text)
         elements = tree.cssselect("#col_l .bl_la_main_guide .showhide p")
+        if not elements:
+            elements = tree.cssselect("#col_l .bl_la_main_guide .showhide div div")
+
         if elements:
             html = lxml.html.tostring(elements[0])
             lines = html.decode("utf-8").split("<br>")
