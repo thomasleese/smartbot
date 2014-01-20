@@ -29,7 +29,10 @@ class Plugin:
             lines = html.decode("utf-8").split("<br>")
             for line in lines[1:6]:
                 span = lxml.html.fragment_fromstring("<span>{0}</span>".format(line))
-                info.append(span.text_content().strip()[1:])
+                s = span.text_content().strip()
+                if s.startswith("-"):
+                    s = s[1:]
+                info.append(s)
             return info
         else:
             return None
