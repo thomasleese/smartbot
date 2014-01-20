@@ -2,6 +2,9 @@ import lxml.html
 import requests
 
 class Plugin:
+    def __init__(self):
+        self.saved_items = {}
+
     def __call__(self, bot):
         bot.on_respond(r"(?:xbox )?ach(?:ievements)? (.*)", self.on_respond)
         bot.on_help("xboxachievements", self.on_help)
@@ -11,8 +14,13 @@ class Plugin:
         page = requests.post(url, data={ "search": terms })
         tree = lxml.html.fromstring(page.text)
 
+        results = []
         elements = tree.cssselect(".bl_la_main .linkT")
-        return [ ( x.get("href")[6:-10], x.text_content() ) for x in elements[::2] ]
+        for i, element in enumerate(elements[::2]):
+            self.saved_items[i] = element.get("href")[6:-10]
+            results.append(element.text_content())
+
+        return results
 
     def guide(self, name):
         game_id = name.lower().replace(" ", "-")
@@ -39,6 +47,11 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         game = msg["match"][0]
+        try:
+            game = self.saved_items[int(msg["match"][0])]
+        except:
+            pass
+
         guide = self.guide(game)
         if guide:
             for g in guide:
@@ -46,8 +59,8 @@ class Plugin:
         else:
             results = self.search(game)
             if results:
-                for r in results:
-                    reply("[{0}]: {1}".format(*r))
+                for i, r in enumerate(results):
+                    reply("[{0}]: {1}".format(i, r))
             else:
                 reply("Can't find any games.")
 
