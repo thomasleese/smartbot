@@ -17,7 +17,8 @@ class Plugin:
         results = []
         elements = tree.cssselect(".bl_la_main .linkT")
         for i, element in enumerate(elements[::2]):
-            self.saved_items[i] = element.get("href")[6:-10]
+            game_id = element.get("href")[6:-10]
+            self.saved_items[i] = game_id
             results.append(element.text_content())
 
         return results
@@ -27,23 +28,26 @@ class Plugin:
         url = "http://www.xboxachievements.com/game/{0}/guide/".format(game_id)
         page = requests.get(url)
         tree = lxml.html.fromstring(page.text)
-        elements = tree.cssselect("#col_l .bl_la_main_guide .showhide p")
-        if not elements:
-            elements = tree.cssselect("#col_l .bl_la_main_guide .showhide div div")
 
-        if elements:
-            info = []
-            html = lxml.html.tostring(elements[0])
-            lines = html.decode("utf-8").split("<br>")
-            for line in lines[1:6]:
-                span = lxml.html.fragment_fromstring("<span>{0}</span>".format(line))
-                s = span.text_content().strip()
-                if s.startswith("-"):
-                    s = s[1:]
-                info.append(s)
-            return info
+        li_elements = tree.cssselect("#col_l .bl_la_main_guide .showhide ul li")
+        if li_elements:
+            return [ x.text_content().strip() for x in li_elements[:5] ]
         else:
-            return None
+            elements = tree.cssselect("#col_l .bl_la_main_guide .showhide p")
+            if not elements:
+                elements = tree.cssselect("#col_l .bl_la_main_guide .showhide div div")
+
+            if elements:
+                info = []
+                html = lxml.html.tostring(elements[0])
+                lines = html.decode("utf-8").split("<br>")
+                for line in lines[1:6]:
+                    span = lxml.html.fragment_fromstring("<span>{0}</span>".format(line))
+                    s = span.text_content().strip()
+                    if s.startswith("-"):
+                        s = s[1:]
+                    info.append(s)
+                return info
 
     def on_respond(self, bot, msg, reply):
         game = msg["match"][0]
