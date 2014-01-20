@@ -19,7 +19,10 @@ class Plugin:
         for suggestion in tree.xpath("//suggestion"):
             suggestions.append(suggestion.get("data"))
 
-        reply(", ".join(suggestions[:5]))
+        if suggestions:
+            reply(", ".join(suggestions[:5]))
+        else:
+            reply("No suggestions.")
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: complete <query>")
