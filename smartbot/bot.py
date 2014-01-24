@@ -50,7 +50,7 @@ class Bot:
 
     def on_hear(self, regex, callback):
         def on_message(msg):
-            msg["match"] = re.findall(regex, msg["message"])
+            msg["match"] = re.findall(regex, msg["message"], re.IGNORECASE)
             if msg["match"]:
                 reply = functools.partial(self.send, msg["reply_to"])
                 try:
