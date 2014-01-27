@@ -16,6 +16,15 @@ class Plugin:
         subpod = pod.find("subpod")
         return self.format_subpod(subpod)
 
+    def convert_unicode_chars(self, text):
+        def filter(match):
+            try:
+                return chr(int(m.group(), 16))
+            except ValueError:
+                return m.group()
+
+        return re.sub(r"\:([A-Za-z0-9]+)", filter, text)
+
     def format_subpod(self, subpod):
         text = (subpod.find("plaintext").text or "").strip()
         if len(text) <= 0:
@@ -26,19 +35,21 @@ class Plugin:
             s = text[:400] + "…"
 
         # first convert unicode characters
-        s = re.sub(r"\:([A-Za-z0-9]+)", lambda m: chr(int(m.group(), 16)), s)
+        s = self.convert_unicode_chars(s)
 
         # then turn it into a table... if it is one
         if "|" in s:
             rows = s.splitlines()
-            max_column_widths = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+            max_column_widths = [ 0 ] * 128
 
             def format_row(row):
                 def format_col(arg):
                     i = arg[0]
                     col = arg[1].strip()
+
                     if len(col) > max_column_widths[i]:
                         max_column_widths[i] = len(col)
+
                     return col
 
                 return list(map(format_col, enumerate(row.split("|"))))
