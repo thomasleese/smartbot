@@ -21,7 +21,7 @@ class Plugin:
             try:
                 return chr(int(match.group(), 16))
             except ValueError:
-                return m.group()
+                return match.group()
 
         return re.sub(r"\:([A-Za-z0-9]+)", filter, text)
 
