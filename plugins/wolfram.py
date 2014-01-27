@@ -19,7 +19,7 @@ class Plugin:
     def convert_unicode_chars(self, text):
         def filter(match):
             try:
-                return chr(int(m.group(), 16))
+                return chr(int(match.group(), 16))
             except ValueError:
                 return m.group()
 
