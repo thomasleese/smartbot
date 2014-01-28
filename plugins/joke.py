@@ -4,7 +4,7 @@ import urllib.parse
 
 class Plugin:
     def __call__(self, bot):
-        bot.on_respond(r"(?:give me a |gimme a |gimme )joke$", self.on_respond)
+        bot.on_respond(r"(?:give me a |gimme a |gimme )?joke$", self.on_respond)
         bot.on_help("joke", self.on_help)
 
     def on_respond(self, bot, msg, reply):
