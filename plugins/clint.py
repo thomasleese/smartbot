@@ -32,12 +32,13 @@ quotes = [
     "'cause I ain't got nothing better to do, that's why.",
     "This isn't my town.",
     "You don't remember me, do you?",
+    "Who are you?",
 ]
 
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(?:give me |gimme )?clint$", self.on_respond)
-        bot.on_help("joke", self.on_help)
+        bot.on_help("clint", self.on_help)
 
     def on_respond(self, bot, msg, reply):
         reply(random.choice(quotes))
