@@ -29,7 +29,7 @@ good_jokes = [
     "I went to the zoo the other day, there was only one dog in it, it was a shitzu.",
     "I'm on a whiskey diet. I've lost three days already. ",
     "My mother-in-law fell down a wishing well, I was amazed, I never knew they worked. ",
-    "I saw this bloke chatting up a cheetah; I thought, \"He's trying to pull a fast one\".",
+    "I saw this bloke chatting up a cheetah; I thought, “He's trying to pull a fast one”.",
     "Slept like a log last night........ Woke up in the fireplace. ",
     "I tried water polo but my horse drowned.      ",
     "Keep Britain Tidy – chop off Norfolk and Cornwall!",
