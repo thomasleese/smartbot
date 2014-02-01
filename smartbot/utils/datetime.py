@@ -1,12 +1,12 @@
 import datetime
-import lxml.html
 import re
-import requests
 
-TIMESPAN_REGEX = "^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
+TIMESPAN_REGEX = r"^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
+LITERAL_REGEX = r"^at (?:(\d+)\:)?(?:(\d+)\:)?(?:(\d+)\:)?(\d+)?$"
 
-def parse_timespan(input, from_date=None):
-    match = re.match(TIMESPAN_REGEX, input.strip(), re.IGNORECASE)
+
+def _parse_timespan(string, from_date=None):
+    match = re.match(TIMESPAN_REGEX, string.strip(), re.IGNORECASE)
     if match:
         if match.group(1) != "in" and match.group(8) != "ago":
             return None
@@ -28,10 +28,9 @@ def parse_timespan(input, from_date=None):
 
     raise ValueError("Timespan does not match format.")
 
-LITERAL_REGEX = "^at (?:(\d+)\:)?(?:(\d+)\:)?(?:(\d+)\:)?(\d+)?$"
 
-def parse_absolutedate(input, from_date=None):
-    match = re.match(LITERAL_REGEX, input.strip(), re.IGNORECASE)
+def _parse_literal(string, from_date=None):
+    match = re.match(LITERAL_REGEX, string.strip(), re.IGNORECASE)
     if match:
         result = filter(None, match.group(1, 2, 3, 4))
         result = map(lambda x: int(x or 0), result)
@@ -52,27 +51,15 @@ def parse_absolutedate(input, from_date=None):
 
     raise ValueError("Absolute date does not match format.")
 
-def parse_datetime(input, from_date=None):
+
+def parse(string, from_date=None):
     try:
-        return parse_timespan(input, from_date)
+        return _parse_timespan(string, from_date)
     except ValueError:
         try:
-            return parse_absolutedate(input, from_date)
+            return _parse_literal(string, from_date)
         except ValueError:
             try:
-                return parse_absolutedate("at {0}".format(input), from_date)
+                return _parse_literal("at {0}".format(string), from_date)
             except ValueError:
-                return parse_timespan("in {0}".format(input), from_date)
-
-def get_website_title(url):
-    try:
-        headers = { "User-Agent": "SmartBot" }
-        page = requests.get(url, headers=headers, timeout=5)
-        if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
-            tree = lxml.html.fromstring(page.content)
-            title = tree.cssselect("title")[0].text_content()
-            return title.strip().replace("\n", "").replace("\r", "")
-    except requests.exceptions.Timeout:
-        return "Timeout!"
-    except IndexError: # no title element
-        return "No title."
+                return _parse_timespan("in {0}".format(string), from_date)

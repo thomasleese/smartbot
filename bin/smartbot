@@ -6,6 +6,7 @@ import importlib.machinery
 import smartbot
 import yaml
 
+
 def read_storage(config):
     name = config["name"]
     del config["name"]
@@ -14,6 +15,7 @@ def read_storage(config):
         return smartbot.storage.YAML(**config)
     else:
         raise Exception("Storage {0} doesn't exist.".format(name))
+
 
 def read_backend(config):
     name = config["name"]
@@ -26,11 +28,13 @@ def read_backend(config):
     else:
         raise Exception("Backend {0} doesn't exist.".format(name))
 
+
 def read_plugin(config):
     name = config["name"]
     del config["name"]
     loader = importlib.machinery.SourceFileLoader("plugins." + name, "plugins/" + name + ".py")
-    return loader.load_module("plugins." + name).Plugin(**config)
+    return name, loader.load_module("plugins." + name).Plugin(**config)
+
 
 with open("config.yaml") as fd:
     config = yaml.load(fd.read())
