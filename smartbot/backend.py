@@ -79,6 +79,11 @@ class IRC(_Backend):
 
     def run(self, name):
         self.nick = name
+        if not self.username:
+            self.username = self.nick
+        if not self.realname:
+            self.realname = self.nick
+
         self.socket.connect((self.hostname, self.port))
 
         self.dispatch_event("connect")
