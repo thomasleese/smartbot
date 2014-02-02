@@ -117,8 +117,8 @@ class IRC(_Backend):
 
     def send(self, target, message):
         for msg in message.splitlines():
-            time.sleep(1)
             self.write("PRIVMSG", target, msg)
+            time.sleep(1)
 
 
 class CommandLine(_Backend):

@@ -1,6 +1,6 @@
 class Plugin:
     def on_command(self, bot, stdin, stdout, args):
-        stdout.write(" ".join(args) + "\n")
+        print(*args, file=stdout)
 
-    def on_help(self, bot, msg):
-        bot.send(msg["reply_to"], "Usage: echo <string>")
+    def on_help(self, bot):
+        return "Usage: echo <string>"

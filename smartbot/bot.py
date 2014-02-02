@@ -72,7 +72,7 @@ class Bot:
                     self.send(msg["reply_to"], e)
                     break
             else:
-                self.send(msg["reply_to"], pipe_buffer)
+                self.send(msg["reply_to"], pipe_buffer.strip())
 
     # actions
     def join(self, channel):
