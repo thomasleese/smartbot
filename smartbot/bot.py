@@ -34,17 +34,19 @@ class Bot:
     # event handlers
     def on_ready(self):
         for name, plugin in self.plugins.items():
-            try:
-                plugin.on_ready(self)
-            except:
-                pass
+            if hasattr(plugin, "on_ready"):
+                try:
+                    plugin.on_ready(self)
+                except:
+                    traceback.print_exc()
 
     def on_join(self, msg):
         for name, plugin in self.plugins.items():
-            try:
-                plugin.on_join(self, msg)
-            except:
-                traceback.print_exc()
+            if hasattr(plugin, "on_join"):
+                try:
+                    plugin.on_join(self, msg)
+                except:
+                    traceback.print_exc()
 
     def on_message(self, msg):
         for name, plugin in self.plugins.items():
