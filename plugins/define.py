@@ -1,16 +1,17 @@
 import urllib.parse
+import sys
 
 import requests
 
 
 class Plugin:
-    def on_command(self, bot, stdin, stdout, args):
-        topic = " ".join(args)
+    def on_command(self, bot, msg):
+        topic = " ".join(sys.argv[1:])
         if not topic:
-            topic = stdin.read().strip()
+            topic = sys.stdin.read().strip()
 
         if not topic:
-            print(self.on_help(bot), file=stdout)
+            print(self.on_help(bot))
             return
 
         url = "http://api.duckduckgo.com/?format=json&q={0}".format(urllib.parse.quote(topic))
@@ -18,20 +19,20 @@ class Plugin:
 
         res = requests.get(url, headers=headers).json()
         if res.get("AbstractText"):
-            print(res["AbstractText"], file=stdout)
+            print(res["AbstractText"])
             if res.get("AbstractURL"):
-                print(res["AbstractURL"], file=stdout)
+                print(res["AbstractURL"])
         elif res.get("RelatedTopics"):
             topic = res["RelatedTopics"][0]
-            print(topic["Text"], file=stdout)
+            print(topic["Text"])
             if topic.get("FirstURL"):
-                print(topic["FirstURL"], file=stdout)
+                print(topic["FirstURL"])
         elif res.get("Definition"):
-            print(res["Definition"], file=stdout)
+            print(res["Definition"])
             if res.get("DefinitionURL"):
-                print(res["DefinitionURL"], file=stdout)
+                print(res["DefinitionURL"])
         else:
-            print("Don't know what you're talking about.", file=stdout)
+            print("Don't know what you're talking about.")
 
     def on_help(self, bot):
         return "Usage: define <topic>"

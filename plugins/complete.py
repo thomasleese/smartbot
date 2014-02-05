@@ -1,16 +1,17 @@
 import requests
 import lxml.etree
 import urllib.parse
+import sys
 
 
 class Plugin:
-    def on_command(self, bot, stdin, stdout, args):
-        query = " ".join(args)
+    def on_command(self, bot, msg):
+        query = " ".join(sys.argv[1:])
         if not query:
-            query = stdin.read().strip()
+            query = sys.stdin.read().strip()
 
         if not query:
-            print(self.on_help(bot), file=stdout)
+            print(self.on_help(bot))
             return
 
         url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(query))
@@ -24,9 +25,9 @@ class Plugin:
             suggestions.append(suggestion.get("data"))
 
         if suggestions:
-            print(", ".join(suggestions[:5]), file=stdout)
+            print(", ".join(suggestions[:5]))
         else:
-            print("No suggestions.", file=stdout)
+            print("No suggestions.")
 
     def on_help(self, bot):
         return "Usage: complete <query>"
