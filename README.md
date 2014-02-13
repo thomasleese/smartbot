@@ -5,7 +5,7 @@ _A supposedly smart IRC bot._
 ## Configuration
 
 The configuration file is a very simple and self-explanatory YAML based file.
-Before you run the bot you must create a configuration file similar to this.
+Before you run the bot you must create a configuration file similar to this with the filename `config.yaml`.
 
     bot:
         name: SmartBot
