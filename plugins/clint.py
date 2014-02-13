@@ -5,7 +5,7 @@ import urllib.parse
 
 quotes = [
     "I don't think it's nice you laughing.",
-    "See my mule don't like people laughing, get's the crazy idea you're laughing at him.",
+    "See my mule don't like people laughing, gets the crazy idea you're laughing at him.",
     "Get 3 coffins ready.",
     "When you hang a man you better look at him.",
     "Get off my lawn.",
