@@ -4,7 +4,7 @@ class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"decide \"(.*)\"$", self.on_respond_1)
         bot.on_respond(r"decide '(.*)'$", self.on_respond_2)
-        bot.on_respond(r"decide ([^\"]+)$", self.on_respond_3)
+        bot.on_respond(r"decide ([^\"']+)$", self.on_respond_3)
         bot.on_help("decide", self.on_help)
 
     def on_respond_1(self, bot, msg, reply):
