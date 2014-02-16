@@ -1,9 +1,6 @@
 import random
-import requests
-import time
-import urllib.parse
 
-quotes = [
+QUOTES = [
     "I don't think it's nice you laughing.",
     "See my mule don't like people laughing, gets the crazy idea you're laughing at him.",
     "Get 3 coffins ready.",
@@ -35,13 +32,14 @@ quotes = [
     "Who are you?",
 ]
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(?:give me |gimme )?clint$", self.on_respond)
         bot.on_help("clint", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        reply(random.choice(quotes))
+        reply(random.choice(QUOTES))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: [give me] clint")

@@ -1,4 +1,4 @@
-characters = {
+CHARACTERS = {
     "a": "ɐ",
     "A": "Ɐ",
     "b": "q",
@@ -51,9 +51,10 @@ characters = {
 }
 
 # for string.translate
-real_characters = {}
-for key, value in characters.items():
-    real_characters[ord(key)] = ord(value)
+REAL_CHARACTERS = {}
+for key, value in CHARACTERS.items():
+    REAL_CHARACTERS[ord(key)] = ord(value)
+
 
 class Plugin:
     def __call__(self, bot):
@@ -61,7 +62,7 @@ class Plugin:
         bot.on_help("flip", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        reply(msg["match"][0][::-1].translate(real_characters))
+        reply(msg["match"][0][::-1].translate(REAL_CHARACTERS))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: flip <text>")

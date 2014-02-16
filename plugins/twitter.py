@@ -1,5 +1,6 @@
 import twython
 
+
 class Plugin:
     def __init__(self, consumer_key, consumer_secret, access_token, access_secret):
         self.twitter = twython.Twython(consumer_key, consumer_secret, access_token, access_secret)

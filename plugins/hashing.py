@@ -1,5 +1,6 @@
 import hashlib
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(md5|sha|sha1|sha256|sha512) (.*)$", self.on_respond)
@@ -7,9 +8,9 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         match = msg["match"][0]
-        hash = hashlib.new(match[0])
-        hash.update(bytes(match[1], "utf-8"))
-        reply(hash.hexdigest())
+        h = hashlib.new(match[0])
+        h.update(bytes(match[1], "utf-8"))
+        reply(h.hexdigest())
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: md5|sha|sha1|sha256|sha512 <text>")

@@ -1,6 +1,6 @@
 import random
 
-responses = [
+RESPONSES = [
     "Some people have told me they don't think a fat penguin really embodies the grace of Linux, which just tells me they have never seen an angry penguin charging at them in excess of 100mph.",
     "C++ is a horrible language.",
     "It's clear that I'm not only the smartest person around, I'm also incredibly good-looking, and that my infallible charm is also second only to my becoming modesty.",
@@ -18,13 +18,14 @@ responses = [
     "In order to avoid a lot of blind users, please apply this patch."
 ]
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_hear(r"what would linus say", self.on_respond)
         bot.on_help("wwls", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        reply("“{0}”".format(random.choice(responses)))
+        reply("“{0}”".format(random.choice(RESPONSES)))
 
     def on_help(self, bot, msg, reply):
         reply("What would Linus say?")

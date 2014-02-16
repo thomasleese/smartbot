@@ -1,6 +1,6 @@
 import random
 
-responses = [
+RESPONSES = [
     "It is certain",
     "It is decidedly so",
     "Without a doubt",
@@ -23,13 +23,14 @@ responses = [
     "Very doubtful",
 ]
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(magic )?(eightball|8ball)(.*)", self.on_respond)
         bot.on_help("eightball", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        reply(random.choice(responses))
+        reply(random.choice(RESPONSES))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: [magic] eightball|8ball [<request>]")

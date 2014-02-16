@@ -1,5 +1,6 @@
 import base64
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(?:base64|b64) encode (.*)$", self.on_b64_encode)

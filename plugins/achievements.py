@@ -1,5 +1,6 @@
 import urllib.parse
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"achievement (?:got|get|unlock(?:ed)?) (.+)$", self.on_respond)

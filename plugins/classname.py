@@ -1,6 +1,7 @@
 import lxml.html
 import requests
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"class(( )?name)?", self.on_respond)
@@ -16,4 +17,4 @@ class Plugin:
             reply("No ClassName for you!")
 
     def on_help(self, bot, msg, reply):
-        reply("Syntax: class[ ][name]")
+        reply("Syntax: class [name]")

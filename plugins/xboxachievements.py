@@ -1,6 +1,7 @@
 import lxml.html
 import requests
 
+
 class Plugin:
     def __init__(self):
         self.saved_items = {}
@@ -11,7 +12,7 @@ class Plugin:
 
     def search(self, terms):
         url = "http://www.xboxachievements.com/search.php"
-        page = requests.post(url, data={ "search": terms })
+        page = requests.post(url, data={"search": terms})
         tree = lxml.html.fromstring(page.text)
 
         results = []
@@ -31,7 +32,7 @@ class Plugin:
 
         li_elements = tree.cssselect("#col_l .bl_la_main_guide .showhide ul li")
         if li_elements:
-            return [ x.text_content().strip() for x in li_elements[:5] ]
+            return [x.text_content().strip() for x in li_elements[:5]]
         else:
             elements = tree.cssselect("#col_l .bl_la_main_guide .showhide p")
             if not elements:

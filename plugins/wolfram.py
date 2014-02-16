@@ -3,6 +3,7 @@ import re
 import requests
 import urllib.parse
 
+
 class Plugin:
     def __init__(self, appid):
         self.appid = appid
@@ -40,7 +41,7 @@ class Plugin:
         # then turn it into a table... if it is one
         if "|" in s:
             rows = s.splitlines()
-            max_column_widths = [ 0 ] * 128
+            max_column_widths = [0] * 128
 
             def format_row(row):
                 def format_col(arg):
@@ -73,7 +74,7 @@ class Plugin:
             urllib.parse.quote(msg["match"][0]),
             urllib.parse.quote(self.appid)
         )
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         page = requests.get(url, headers=headers, timeout=15)
         if page.status_code == 200:

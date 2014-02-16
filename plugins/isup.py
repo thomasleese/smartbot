@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"is (.*) (?:up|down)\??$", self.on_respond)
@@ -8,8 +9,8 @@ class Plugin:
         bot.on_help("isup", self.on_help)
 
     def on_respond(self, bot, msg, reply):
-        url = "http://isitup.org/" + urllib.parse.quote(msg["match"][0]) + ".json"
-        headers = { "User-Agent": "SmartBot" }
+        url = "http://isitup.org/{0}.json".format(urllib.parse.quote(msg["match"][0]))
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
         if res["status_code"] == 1:

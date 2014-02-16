@@ -1,9 +1,10 @@
 import random
-import requests
 import time
-import urllib.parse
 
-good_jokes = [
+import requests
+
+
+GOOD_JOKES = [
     "I want to write a mystery novel… or do I?",
     "I saw a documentary on how ships are kept together;  it was riveting.",
     "There are two types of people I hate… racists and Norwegians.",
@@ -49,6 +50,7 @@ good_jokes = [
     "I sleep eight hours a day and at least ten at night.",
 ]
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(?:give me a |gimme a |gimme )?joke$", self.on_respond_good)
@@ -56,14 +58,14 @@ class Plugin:
         bot.on_help("joke", self.on_help)
 
     def get_good_joke(self):
-        return [ random.choice(good_jokes) ]
+        return [random.choice(GOOD_JOKES)]
 
     def get_bad_joke(self):
         url = "http://jokels.com/random_joke"
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
-        return [ res["joke"]["question"], res["joke"]["answer"] ]
+        return [res["joke"]["question"], res["joke"]["answer"]]
 
     def on_respond_good(self, bot, msg, reply):
         for line in self.get_good_joke():

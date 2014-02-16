@@ -1,5 +1,6 @@
 from smartbot import utils
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_hear(r"(https?:\/\/[^\s]+)", self.on_hear)

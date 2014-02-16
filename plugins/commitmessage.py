@@ -1,5 +1,6 @@
 import requests
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"commit (message|msg)", self.on_respond)

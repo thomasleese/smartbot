@@ -1,5 +1,5 @@
-import urllib.parse
 import requests
+
 
 class Plugin:
     def __call__(self, bot):
@@ -8,10 +8,11 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         url = "https://status.heroku.com/api/v3/current-status"
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
-        reply("Production: {0}\nDevelopment: {1}".format(res["status"]["Production"], res["status"]["Development"]))
+        reply("Production: {0}\nDevelopment: {1}".format(res["status"]["Production"],
+                                                         res["status"]["Development"]))
 
     def on_help(self, bot, msg, reply):
         reply("Syntax: heroku st[atus]")

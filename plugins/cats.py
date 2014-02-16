@@ -1,5 +1,5 @@
 import requests
-import urllib.parse
+i
 
 class Plugin:
     def __call__(self, bot):
@@ -8,7 +8,7 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         url = "http://catfacts-api.appspot.com/api/facts?number=1"
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
         if res.get("success"):

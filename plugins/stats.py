@@ -1,5 +1,6 @@
 import operator
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_hear(r".*", self.on_hear_anything)
@@ -35,7 +36,7 @@ class Plugin:
         respond("", "{0} is most talkative.")
         respond("lol", "{0} laughs the most.")
         respond(":D", "{0} is the happiest.")
-        respond(":P", "{0} sticks their tounge out the most.")
+        respond(":P", "{0} sticks their tongue out the most.")
 
     def on_help(self, bot, msg, reply):
         reply("Display statistics.")

@@ -1,6 +1,7 @@
 import requests
 import urllib.parse
 
+
 class Plugin:
     def __init__(self, key, cx):
         self.key = key
@@ -16,7 +17,7 @@ class Plugin:
             urllib.parse.quote(self.cx),
             urllib.parse.quote(msg["match"][0])
         )
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
         if res["items"]:

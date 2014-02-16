@@ -4,6 +4,7 @@ import threading
 
 from smartbot import utils
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"remind me (to|about|that) (.*) (in|at) (.*)$", self.on_respond)
@@ -20,7 +21,7 @@ class Plugin:
             reply("Sure thing {0}, I'll remind you at {1}.".format(msg["sender"], date))
             message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match[0], match[1])
             duration = max(0, (date - datetime.datetime.now()).total_seconds())
-            t = threading.Thread(target=self.on_timeout, args=( message, duration, reply ))
+            t = threading.Thread(target=self.on_timeout, args=(message, duration, reply))
             t.start()
         except ValueError:
             reply("I don't understand that date.")

@@ -3,6 +3,7 @@ import requests
 import lxml.etree
 import urllib.parse
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"complete (.+)$", self.on_respond)
@@ -10,7 +11,7 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(msg["match"][0]))
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         page = requests.get(url, headers=headers)
         tree = lxml.etree.fromstring(page.text)

@@ -1,6 +1,6 @@
 import random
 
-responses = [
+RESPONSES = [
     "I caught an angelfish! It looks divine!",
     "I caught an arapaima! This thing is huge!",
     "I caught an arowana! It's the golden dragon fish! I wonder what it's worth...",
@@ -43,9 +43,10 @@ responses = [
     "I caught a sweetfish! And let me tell you, that is one SWEET fish!"
 ]
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_hear(r"fish", self.on_respond)
 
     def on_respond(self, bot, msg, reply):
-        reply(random.choice(responses))
+        reply(random.choice(RESPONSES))

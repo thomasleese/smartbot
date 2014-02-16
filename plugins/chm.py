@@ -1,6 +1,7 @@
 import lxml.html
 import requests
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"today in computer history|tdih|chm", self.on_respond)

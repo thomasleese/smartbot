@@ -1,7 +1,6 @@
 import lxml.html
 import requests
 
-from smartbot import utils
 
 class Plugin:
     def __call__(self, bot):

@@ -1,6 +1,7 @@
 import lxml.html
 import requests
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(developer('s|s)? |programmer('s|s)? )?excuse( me)?", self.on_respond)

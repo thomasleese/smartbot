@@ -1,5 +1,5 @@
 import requests
-import urllib.parse
+
 
 class Plugin:
     def __call__(self, bot):
@@ -8,7 +8,7 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         url = "http://chatoms.com/chatom.json?Normal=1&Fun=2&Philosophy=3&Out+There=4"
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
         if res.get("text"):

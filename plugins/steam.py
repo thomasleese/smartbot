@@ -3,6 +3,7 @@ import requests
 
 from smartbot import utils
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"(steam|daily) deal", self.on_respond)
@@ -15,7 +16,10 @@ class Plugin:
             url = tree.cssselect(".dailydeal a")[0].get("href")
             original_price = tree.cssselect(".dailydeal_content .discount_original_price")[0].text
             final_price = tree.cssselect(".dailydeal_content .discount_final_price")[0].text
-            reply("{0} - {1} - from {2} to {3}".format(url, utils.get_website_title(url), original_price, final_price))
+            reply("{0} - {1} - from {2} to {3}".format(url,
+                                                       utils.get_website_title(url),
+                                                       original_price,
+                                                       final_price))
         else:
             reply("No daily deal.")
 

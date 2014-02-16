@@ -1,5 +1,6 @@
 import urllib.parse
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"lmgtfy (.*)$", self.on_respond)

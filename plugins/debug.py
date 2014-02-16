@@ -1,5 +1,6 @@
 import time
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"ping$", lambda bot, msg, reply: reply("PONG"))

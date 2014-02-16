@@ -1,5 +1,5 @@
-import urllib.parse
 import requests
+
 
 class Plugin:
     def __call__(self, bot):
@@ -8,7 +8,7 @@ class Plugin:
 
     def on_respond(self, bot, msg, reply):
         url = "https://status.github.com/api/last-message.json"
-        headers = { "User-Agent": "SmartBot" }
+        headers = {"User-Agent": "SmartBot"}
 
         res = requests.get(url, headers=headers).json()
         reply("{0} - {1}".format(res["created_on"], res["body"]))

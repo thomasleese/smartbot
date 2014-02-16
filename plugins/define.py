@@ -2,6 +2,7 @@ import lxml
 import requests
 import urllib.parse
 
+
 class Plugin:
     def __call__(self, bot):
         bot.on_respond(r"define (.+)$", self.on_respond)
@@ -18,7 +19,7 @@ class Plugin:
                 reply("No definition today.")
         else:
             url = "http://api.duckduckgo.com/?format=json&q={0}".format(urllib.parse.quote(msg["match"][0]))
-            headers = { "User-Agent": "SmartBot" }
+            headers = {"User-Agent": "SmartBot"}
 
             res = requests.get(url, headers=headers).json()
             if res.get("AbstractText"):
