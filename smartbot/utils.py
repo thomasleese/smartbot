@@ -1,9 +1,11 @@
 import datetime
+import io
 import lxml.html
 import re
 import requests
 
-TIMESPAN_REGEX = "^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
+TIMESPAN_REGEX = r"^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
+
 
 def parse_timespan(input, from_date=None):
     match = re.match(TIMESPAN_REGEX, input.strip(), re.IGNORECASE)
@@ -28,7 +30,9 @@ def parse_timespan(input, from_date=None):
 
     raise ValueError("Timespan does not match format.")
 
+
 LITERAL_REGEX = "^at (?:(\d+)\:)?(?:(\d+)\:)?(?:(\d+)\:)?(\d+)?$"
+
 
 def parse_absolutedate(input, from_date=None):
     match = re.match(LITERAL_REGEX, input.strip(), re.IGNORECASE)
@@ -52,6 +56,7 @@ def parse_absolutedate(input, from_date=None):
 
     raise ValueError("Absolute date does not match format.")
 
+
 def parse_datetime(input, from_date=None):
     try:
         return parse_timespan(input, from_date)
@@ -64,15 +69,19 @@ def parse_datetime(input, from_date=None):
             except ValueError:
                 return parse_timespan("in {0}".format(input), from_date)
 
+
 def get_website_title(url):
     try:
-        headers = { "User-Agent": "SmartBot" }
-        page = requests.get(url, headers=headers, timeout=5)
+        headers = {"User-Agent": "SmartBot"}
+        page = requests.get(url, headers=headers, timeout=5, stream=True)
         if page.status_code == 200 and page.headers.get("Content-Type", "").startswith("text/html"):
-            tree = lxml.html.fromstring(page.text)
+            try:
+                tree = lxml.html.fromstring(page.text)
+            except ValueError:  # lxml seems to have issues with unicode
+                tree = lxml.html.fromstring(page.content)
             title = tree.cssselect("title")[0].text_content()
             return title.strip().replace("\n", "").replace("\r", "")
     except requests.exceptions.Timeout:
         return "Timeout!"
-    except IndexError: # no title element
+    except IndexError:  # no title element
         return "No title."

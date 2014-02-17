@@ -1,5 +1,5 @@
 import requests
-i
+
 
 class Plugin:
     def __call__(self, bot):
