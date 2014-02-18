@@ -25,6 +25,7 @@ class IRC(_Backend):
         self.port = port
         self.username = username
         self.realname = realname
+        self.channels = []
 
         self.lock = threading.Lock()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -59,7 +60,12 @@ class IRC(_Backend):
             self.dispatch_event("ready")
         elif args[1] == "JOIN":
             nick = self.parse_usermask(args[0])
+            self.channels.append(args[2])
             self.dispatch_event("join", { "user": nick, "channel": args[2] })
+        elif args[1] == "KICK":
+            nick = self.parse_usermask(args[3])
+            if nick == self.nick:
+                self.join(args[2])
         elif args[1] == "PRIVMSG":
             sender = self.parse_usermask(args[0])
             target = args[2]
