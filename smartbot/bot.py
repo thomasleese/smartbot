@@ -60,10 +60,28 @@ class Bot:
 
         m = msg["message"]
         if m.startswith(self.name):
-            args = shlex.split(m[len(self.name)+1:].strip())
+            m = m[len(self.name)+1:].strip()
+
+            msg["message"] = m
+            for name, plugin in self.plugins.items():
+                if hasattr(plugin, "on_respond"):
+                    try:
+                        plugin.on_respond(self, msg)
+                    except Exception as e:
+                        traceback.print_exc()
+                        self.send(msg["reply_to"], e)
+
+            args = shlex.split(m)
             commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
             pipe_buffer = ""
             for command in commands:
+                if command[0] not in self.plugins:
+                    break
+
+                plugin = self.plugins[command[0]]
+                if not hasattr(plugin, "on_command"):
+                    break
+
                 old_stdin = sys.stdin
                 old_stdout = sys.stdout
                 old_stderr = sys.stderr
@@ -73,7 +91,6 @@ class Bot:
                     sys.stdin = io.StringIO(pipe_buffer)
                     sys.stdout = io.StringIO()
                     sys.stderr = io.StringIO()
-                    plugin = self.plugins[command[0]]
                     sys.argv = command
                     plugin.on_command(self, msg)
                     pipe_buffer = sys.stdout.getvalue()
