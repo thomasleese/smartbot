@@ -53,6 +53,7 @@ docs/_build/
 
 # SmartBot
 config.yaml
+storage.yaml
 
 # Intellij
 .idea/
