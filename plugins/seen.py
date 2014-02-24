@@ -3,7 +3,7 @@ import sys
 
 
 class Plugin:
-    def on_message(self, bot, msg):
+    def on_message(self, bot, msg, reply):
         bot.storage["seen." + msg["sender"]] = {
             "action": "spoke",
             "datetime": datetime.datetime.now()

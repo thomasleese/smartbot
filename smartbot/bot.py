@@ -59,7 +59,7 @@ class Bot:
                     plugin.on_message(self, msg, reply)
                 except Exception as e:
                     traceback.print_exc()
-                    self.send(msg["reply_to"], e)
+                    reply(name + ": " + str(e))
 
         m = msg["message"]
         if m.startswith(self.name):
@@ -72,7 +72,7 @@ class Bot:
                         plugin.on_respond(self, msg, reply)
                     except Exception as e:
                         traceback.print_exc()
-                        self.send(msg["reply_to"], e)
+                        reply(name + ": " + str(e))
 
             args = shlex.split(m)
             commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
