@@ -11,5 +11,5 @@ class Plugin:
             if title:
                 bot.send(msg["reply_to"], "[{0}]: {1}".format(i, title))
 
-    def on_help(self, bot, msg, reply):
+    def on_help(self):
         return "Echos the titles of websites for any HTTP(S) URL."

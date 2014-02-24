@@ -1,6 +1,7 @@
 import base64
 import sys
 
+
 class Plugin:
     def get_hash_func(self, algorithm, action):
         if algorithm == "base64" or algorithm == "b64":
@@ -34,7 +35,7 @@ class Plugin:
             else:
                 print("No hash algorithm:", algorithm)
         else:
-            print(self.on_help(bot))
+            print(self.on_help())
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: crypto <algorithm> encode|decode <contents>"

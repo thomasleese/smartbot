@@ -12,7 +12,7 @@ class Plugin:
         if plugin_name:
             try:
                 plugin = bot.plugins[plugin_name]
-                print(plugin.on_help(bot))
+                print(plugin.on_help())
             except KeyError:
                 print("No such plugin:", plugin_name)
             except Exception as e:
@@ -21,5 +21,5 @@ class Plugin:
             plugin_names = ", ".join([name for name, _ in bot.plugins.items()])
             print("Help about:", plugin_names)
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: man [<plugin>]"

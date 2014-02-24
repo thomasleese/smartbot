@@ -24,5 +24,5 @@ class Plugin:
         except ValueError:
             bot.send(msg["reply_to"], "I don't understand that date.")
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: remind me to|about|that <something> in|at <time>"

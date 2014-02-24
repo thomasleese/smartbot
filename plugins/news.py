@@ -28,5 +28,5 @@ class Plugin:
         else:
             print("No news stories.")
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Syntax: news [<topic>]"

@@ -8,5 +8,5 @@ class Plugin:
         if self.channel == msg["channel"] and msg["is_me"]:
             bot.send(self.target, self.password)
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Authenticate with NiceBot."

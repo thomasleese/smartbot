@@ -18,7 +18,7 @@ class Plugin:
             for i, tweet in enumerate(tweets[:3]):
                 print("[{0}]: {1}".format(i, tweet["text"]))
         else:
-            print(self.on_help(bot))
+            print(self.on_help())
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: twitter <person>"

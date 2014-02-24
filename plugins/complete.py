@@ -10,24 +10,23 @@ class Plugin:
         if not query:
             query = sys.stdin.read().strip()
 
-        if not query:
-            print(self.on_help(bot))
-            return
+        if query:
+            url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(query))
+            headers = {"User-Agent": "SmartBot"}
 
-        url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(query))
-        headers = {"User-Agent": "SmartBot"}
+            page = requests.get(url, headers=headers)
+            tree = lxml.etree.fromstring(page.text)
 
-        page = requests.get(url, headers=headers)
-        tree = lxml.etree.fromstring(page.text)
+            suggestions = []
+            for suggestion in tree.xpath("//suggestion"):
+                suggestions.append(suggestion.get("data"))
 
-        suggestions = []
-        for suggestion in tree.xpath("//suggestion"):
-            suggestions.append(suggestion.get("data"))
-
-        if suggestions:
-            print(", ".join(suggestions[:5]))
+            if suggestions:
+                print(", ".join(suggestions[:5]))
+            else:
+                print("No suggestions.")
         else:
-            print("No suggestions.")
+            print(self.on_help())
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: complete <query>"

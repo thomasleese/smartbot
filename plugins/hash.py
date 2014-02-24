@@ -14,7 +14,7 @@ class Plugin:
             h.update(bytes(contents, "utf-8"))
             print(h.hexdigest())
         else:
-            print(self.on_help(bot))
+            print(self.on_help())
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: hash <algorithm> <contents>"

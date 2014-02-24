@@ -6,5 +6,5 @@ class Plugin:
         for channel in self.channels:
             bot.join(channel)
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Automatically joins channels when the bot connects."

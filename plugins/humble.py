@@ -26,5 +26,5 @@ class Plugin:
         except IndexError:
             print("No weekly sale.")
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: humble [weekly]"

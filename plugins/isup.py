@@ -20,5 +20,5 @@ class Plugin:
         else:
             print("{0} looks down for me.".format(res["domain"]))
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: isup <domain>"

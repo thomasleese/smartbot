@@ -117,7 +117,7 @@ class Plugin:
                 else:
                     print("Nothing more to say.")
         else:
-            print(self.on_help(bot))
+            print(self.on_help())
 
-    def on_help(self, bot):
-        return "Syntax: ?|q|question|wfa|calc|calculate <query>"
+    def on_help(self):
+        return "Usage: wolfram <query>"

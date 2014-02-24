@@ -15,7 +15,7 @@ class Plugin:
             page = requests.get(url, headers=headers)
             print(page.text)
         else:
-            print(self.on_help(bot))
+            print(self.on_help())
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: http get <url>"

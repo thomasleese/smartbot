@@ -9,5 +9,5 @@ class Plugin:
             args = shlex.split(sys.stdin.read().strip())
         print(random.choice(args))
 
-    def on_help(self, bot):
-        return "Usage: decide <a> <b> ..."
+    def on_help(self):
+        return "Usage: decide <a> <b> …"

@@ -13,5 +13,5 @@ class Plugin:
         else:
             print("Expected input on stdin.")
 
-    def on_help(self, bot):
+    def on_help(self):
         return "Usage: sprunge"
