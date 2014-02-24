@@ -61,9 +61,12 @@ class Bot:
                     traceback.print_exc()
                     reply(name + ": " + str(e))
 
-        m = msg["message"]
-        if m.startswith(self.name):
-            m = m[len(self.name)+1:].strip()
+        m = msg["message"].strip()
+        if m.startswith(self.name) or m.startswith("!"):
+            if m.startswith("!"):
+                m = m[1:].strip()
+            else:
+                m = m[len(self.name)+1:].strip()
 
             msg["message"] = m
             for name, plugin in self.plugins.items():
