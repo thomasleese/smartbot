@@ -1,14 +1,12 @@
 import lxml.html
 import requests
+import sys
+
 
 
 class Plugin:
     def __init__(self):
         self.saved_items = {}
-
-    def __call__(self, bot):
-        bot.on_respond(r"(?:xbox )?ach(?:ievements)? (.*)", self.on_respond)
-        bot.on_help("xboxachievements", self.on_help)
 
     def search(self, terms):
         url = "http://www.xboxachievements.com/search.php"
@@ -50,25 +48,32 @@ class Plugin:
                     info.append(s)
                 return info
 
-    def on_respond(self, bot, msg, reply):
-        game = msg["match"][0]
-        try:
-            game = self.saved_items[int(msg["match"][0])]
-        except:
-            pass
+    def on_command(self, bot, msg):
+        game = " ".join(sys.argv[1:])
+        if not game:
+            game = sys.stdin.read().strip()
 
-        guide = self.guide(game)
-        if guide:
-            for g in guide:
-                reply(g)
-        else:
-            results = self.search(game)
-            if results:
-                for i, r in enumerate(results):
-                    reply("[{0}]: {1}".format(i, r))
+        if game:
+            try:
+                game = self.saved_items[int(game)]
+            except IndexError:
+                pass
+            except ValueError:
+                pass
+
+            guide = self.guide(game)
+            if guide:
+                for g in guide:
+                    print(g)
             else:
-                reply("Can't find any games.")
+                results = self.search(game)
+                if results:
+                    for i, r in enumerate(results):
+                        print("[{0}]: {1}".format(i, r))
+                else:
+                    print("Can't find any games.")
+        else:
+            print(self.on_help())
 
-    def on_help(self, bot, msg, reply):
-        reply("Display information from http://www.xboxachievements.com/.")
-        reply("Syntax: [xbox] ach[ievements] <game>")
+    def on_help(self):
+        return "Usage: ach <game>"

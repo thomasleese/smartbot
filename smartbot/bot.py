@@ -1,73 +1,117 @@
-import collections
+import io
+import itertools
 import functools
-import re
+import shlex
+import sys
 import traceback
+
 
 class Bot:
     def __init__(self, name):
         self.name = name
         self.storage = None
         self.backend = None
-        self.plugins = []
-        self.help_topics = []
+        self.plugins = {}
 
     def set_storage(self, storage):
         self.storage = storage
 
     def set_backend(self, backend):
         self.backend = backend
-        backend(self)
+        self.backend.add_event_listener("ready", self.on_ready)
+        self.backend.add_event_listener("join", self.on_join)
+        self.backend.add_event_listener("message", self.on_message)
 
-    def add_plugin(self, plugin):
-        self.plugins.append(plugin)
-        plugin(self)
+    def add_plugin(self, name, plugin):
+        self.plugins[name] = plugin
 
     def set_plugins(self, plugins):
         self.plugins.clear()
         for plugin in plugins:
-            self.add_plugin(plugin)
+            self.add_plugin(*plugin)
 
     def run(self):
-        self.on_respond(r"help$", lambda bot, msg, reply: reply("Help about: {0}".format(", ".join(self.help_topics))))
-        self.backend.run()
+        self.backend.run(self.name)
 
     # event handlers
-    def on_ready(self, callback):
-        try:
-            self.backend.add_event_listener("ready", lambda: callback(self))
-        except Exception as e:
-            pass
-
-    def on_join(self, callback):
-        def on_join(msg):
-            msg["is_me"] = msg["user"] == self.name
-            try:
-                callback(self, msg)
-            except Exception as e:
-                traceback.print_exc()
-
-        self.backend.add_event_listener("join", on_join)
-
-    def on_hear(self, regex, callback):
-        def on_message(msg):
-            msg["match"] = re.findall(regex, msg["message"], re.IGNORECASE)
-            if msg["match"]:
-                reply = functools.partial(self.send, msg["reply_to"])
+    def on_ready(self):
+        for name, plugin in self.plugins.items():
+            if hasattr(plugin, "on_ready"):
                 try:
-                    callback(self, msg, reply)
+                    plugin.on_ready(self)
+                except:
+                    traceback.print_exc()
+
+    def on_join(self, msg):
+        for name, plugin in self.plugins.items():
+            if hasattr(plugin, "on_join"):
+                try:
+                    plugin.on_join(self, msg)
+                except:
+                    traceback.print_exc()
+
+    def on_message(self, msg):
+        reply = functools.partial(self.send, msg["reply_to"])
+
+        for name, plugin in self.plugins.items():
+            if hasattr(plugin, "on_message"):
+                try:
+                    plugin.on_message(self, msg, reply)
                 except Exception as e:
                     traceback.print_exc()
-                    reply(e)
+                    reply(name + ": " + str(e))
 
-        self.backend.add_event_listener("message", on_message)
+        m = msg["message"].strip()
+        if m.startswith(self.name) or m.startswith("!"):
+            if m.startswith("!"):
+                m = m[1:].strip()
+            else:
+                m = m[len(self.name)+1:].strip()
 
-    def on_respond(self, regex, callback):
-        new_regex = r"^(?:" + self.name + r"[:,]?|!)\s*(?:" + regex + ")"
-        self.on_hear(new_regex, callback)
+            msg["message"] = m
+            for name, plugin in self.plugins.items():
+                if hasattr(plugin, "on_respond"):
+                    try:
+                        plugin.on_respond(self, msg, reply)
+                    except Exception as e:
+                        traceback.print_exc()
+                        reply(name + ": " + str(e))
 
-    def on_help(self, name, callback):
-        self.help_topics.append(name)
-        self.on_respond("help " + name + "$", callback)
+            args = shlex.split(m)
+            commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
+            pipe_buffer = ""
+            for command in commands:
+                if command[0] not in self.plugins:
+                    break
+
+                plugin = self.plugins[command[0]]
+                if not hasattr(plugin, "on_command"):
+                    break
+
+                old_stdin = sys.stdin
+                old_stdout = sys.stdout
+                old_stderr = sys.stderr
+                old_argv = sys.argv
+
+                try:
+                    sys.stdin = io.StringIO(pipe_buffer)
+                    sys.stdout = io.StringIO()
+                    sys.stderr = io.StringIO()
+                    sys.argv = command
+                    plugin.on_command(self, msg)
+                    pipe_buffer = sys.stdout.getvalue()
+                    self.send(msg["reply_to"], sys.stderr.getvalue())
+                except Exception as e:
+                    traceback.print_exc()
+                    self.send(msg["reply_to"], str(e))
+                    break
+                finally:
+                    sys.stdin = old_stdin
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    sys.argv = old_argv
+            else:
+                self.send(msg["reply_to"], pipe_buffer.strip())
 
     # actions
     def join(self, channel):

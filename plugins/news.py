@@ -1,14 +1,15 @@
 import requests
 import urllib.parse
+import sys
+
 
 
 class Plugin:
-    def __call__(self, bot):
-        bot.on_respond(r"news(?: about (.*))?$", self.on_respond)
-        bot.on_help("news", self.on_help)
+    def on_command(self, bot, msg):
+        topic = " ".join(sys.argv[1:])
+        if not topic:
+            topic = sys.stdin.read().strip()
 
-    def on_respond(self, bot, msg, reply):
-        topic = msg["match"][0]
         if topic:
             url = "https://ajax.googleapis.com/ajax/services/search/news?v=1.0&rsz=5&q={0}".format(
                 urllib.parse.quote(topic)
@@ -24,9 +25,9 @@ class Plugin:
             for i, story in enumerate(stories):
                 title = story["titleNoFormatting"].replace("&#39;", "'").replace("`", "'").replace("&quot;", "\"")
                 link = story["unescapedUrl"]
-                reply("[{0}]: {1} - {2}".format(i, title, link))
+                print("[{0}]: {1} - {2}".format(i, title, link))
         else:
-            reply("No news stories.")
+            print("No news stories.")
 
-    def on_help(self, bot, msg, reply):
-        reply("Syntax: news [about <topic>]")
+    def on_help(self):
+        return "Syntax: news [<topic>]"

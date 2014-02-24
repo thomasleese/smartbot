@@ -1,15 +1,13 @@
 import random
 import shlex
-
+import sys
 
 class Plugin:
-    def __call__(self, bot):
-        bot.on_respond(r"decide (.*)$", self.on_respond)
-        bot.on_help("decide", self.on_help)
+    def on_command(self, bot, msg):
+        args = sys.argv[1:]
+        if not args:
+            args = shlex.split(sys.stdin.read().strip())
+        print(random.choice(args))
 
-    def on_respond(self, bot, msg, reply):
-        choices = shlex.split(msg["match"][0])
-        reply("I pick {0}.".format(random.choice(choices)))
-
-    def on_help(self, bot, msg, reply):
-        reply("Syntax: decide 'option' …")
+    def on_help(self):
+        return "Usage: decide <a> <b> …"

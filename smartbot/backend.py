@@ -2,40 +2,33 @@ import socket
 import threading
 import time
 
+
 class _Backend:
     def __init__(self):
         self.storage = None
         self.event_listeners = []
 
-    def __call__(self, name):
-        pass
-
     def add_event_listener(self, name, callback):
-        self.event_listeners.append(( name, callback ))
+        self.event_listeners.append((name, callback))
 
     def dispatch_event(self, name, *event):
         for listener in self.event_listeners:
             if listener[0] == name:
                 listener[1](*event)
 
+
 class IRC(_Backend):
     def __init__(self, hostname, port=6667, username=None, realname=None):
         super().__init__()
         self.hostname = hostname
         self.port = port
+        self.nick = None
         self.username = username
         self.realname = realname
         self.channels = []
 
         self.lock = threading.Lock()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    def __call__(self, bot):
-        self.nick = bot.name
-        if not self.username:
-            self.username = bot.name
-        if not self.realname:
-            self.realname = bot.name
 
     def write(self, *args):
         def convert_part(x):
@@ -46,7 +39,7 @@ class IRC(_Backend):
                 return x
 
         with self.lock:
-            line = b" ".join([ convert_part(x) for x in args ])
+            line = b" ".join([convert_part(x) for x in args])
             line += b"\r\n"
             self.socket.send(line)
 
@@ -61,7 +54,9 @@ class IRC(_Backend):
         elif args[1] == "JOIN":
             nick = self.parse_usermask(args[0])
             self.channels.append(args[2])
-            self.dispatch_event("join", { "user": nick, "channel": args[2] })
+            self.dispatch_event("join", {
+                "user": nick, "channel": args[2], "is_me": nick == self.nick
+            })
         elif args[1] == "KICK":
             nick = self.parse_usermask(args[3])
             if nick == self.nick:
@@ -82,8 +77,14 @@ class IRC(_Backend):
         else:
             print(args)
 
-    def run(self):
-        self.socket.connect(( self.hostname, self.port ))
+    def run(self, name):
+        self.nick = name
+        if not self.username:
+            self.username = self.nick
+        if not self.realname:
+            self.realname = self.nick
+
+        self.socket.connect((self.hostname, self.port))
 
         self.dispatch_event("connect")
 
@@ -110,7 +111,7 @@ class IRC(_Backend):
                     else:
                         line.append(p)
 
-                self.parse([ str(x, "utf-8", "ignore") for x in line ])
+                self.parse([str(x, "utf-8", "ignore") for x in line])
 
             buf = array[-1]
 
@@ -121,21 +122,23 @@ class IRC(_Backend):
 
     def send(self, target, message):
         for msg in message.splitlines():
-            time.sleep(1)
             self.write("PRIVMSG", target, msg)
+            time.sleep(1)
+
 
 class CommandLine(_Backend):
     def __init__(self):
         super().__init__()
 
-    def run(self):
+    def run(self, name):
         self.dispatch_event("connect")
+        self.dispatch_event("ready")
 
         while True:
             line = input("> ").strip()
             self.dispatch_event("message", {
                 "sender": "stdin", "target": "stdout",
-                "message": line, "reply_to": "stdout"
+                "message": line, "reply_to": "stdin"
             })
 
         self.dispatch_event("disconnect")

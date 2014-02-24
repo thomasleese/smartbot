@@ -1,17 +1,15 @@
 import lxml.etree
+import io
 import re
 import requests
 import urllib.parse
+import sys
+
 
 
 class Plugin:
     def __init__(self, appid):
         self.appid = appid
-
-    def __call__(self, bot):
-        bot.on_respond(r"(?:\?|q|question|wfa|calc|calculate) (.*)$", self.on_respond)
-        bot.on_hear(r"^\? (.*)$", self.on_respond)
-        bot.on_help("wolfram", self.on_help)
 
     def format_pod(self, pod):
         subpod = pod.find("subpod")
@@ -69,33 +67,58 @@ class Plugin:
         else:
             return s.strip()
 
-    def on_respond(self, bot, msg, reply):
-        url = "http://api.wolframalpha.com/v2/query?input={0}&appid={1}".format(
-            urllib.parse.quote(msg["match"][0]),
-            urllib.parse.quote(self.appid)
-        )
-        headers = {"User-Agent": "SmartBot"}
+    def on_message(self, bot, msg, reply):
+        if msg["message"].startswith("? "):
+            query = msg["message"][2:]
+            old_stdout = sys.stdout
+            old_stdin = sys.stdin
 
-        page = requests.get(url, headers=headers, timeout=15)
-        if page.status_code == 200:
-            tree = lxml.etree.fromstring(page.content)
-            pods = []
-            for pod in tree.xpath("//pod"):
-                pods.append(pod)
+            try:
+                sys.stdout = io.StringIO()
+                sys.stdin = io.StringIO(query)
+                self.on_command(bot, None)  # msg is unused
+                output = sys.stdout.getvalue().strip()
+                sys.stdout = old_stdout
+                sys.stdin = old_stdin
+                reply(output)
+            finally:
+                sys.stdout = old_stdout
+                sys.stdin = old_stdin
 
-            if len(pods) >= 2:
-                small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
-                if len(small_result) <= 100 and "\n" not in small_result:
-                    reply(small_result)
+    def on_command(self, bot, msg):
+        query = " ".join(sys.argv[1:])
+        if not query:
+            query = sys.stdin.read().strip()
+
+        if query:
+            url = "http://api.wolframalpha.com/v2/query?input={0}&appid={1}".format(
+                urllib.parse.quote(query),
+                urllib.parse.quote(self.appid)
+            )
+            headers = {"User-Agent": "SmartBot"}
+
+            page = requests.get(url, headers=headers, timeout=15)
+            if page.status_code == 200:
+                tree = lxml.etree.fromstring(page.content)
+                pods = []
+                for pod in tree.xpath("//pod"):
+                    pods.append(pod)
+
+                if len(pods) >= 2:
+                    small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
+                    if len(small_result) <= 100 and "\n" not in small_result:
+                        print(small_result)
+                    else:
+                        for pod in pods[:2]:
+                            print("# {0}".format(pod.get("title")))
+                            for subpod in pod.findall("subpod"):
+                                if subpod.get("title"):
+                                    print("## {0}".format(subpod.get("title")))
+                                print(self.format_subpod(subpod))
                 else:
-                    for pod in pods[:2]:
-                        reply("# {0}".format(pod.get("title")))
-                        for subpod in pod.findall("subpod"):
-                            if subpod.get("title"):
-                                reply("## {0}".format(subpod.get("title")))
-                            reply(self.format_subpod(subpod))
-            else:
-                reply("Nothing more to say.")
+                    print("Nothing more to say.")
+        else:
+            print(self.on_help())
 
-    def on_help(self, bot, msg, reply):
-        reply("Syntax: ?|q|question|wfa|calc|calculate <query>")
+    def on_help(self):
+        return "Usage: wolfram <query>"

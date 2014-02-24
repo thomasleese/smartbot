@@ -1,15 +1,12 @@
 import lxml.html
 import requests
+import sys
 
 
 class Plugin:
-    def __call__(self, bot):
-        bot.on_respond(r"humble( weekly| bundle)?(?: sale)?", self.on_respond)
-        bot.on_help("humble", self.on_help)
-
-    def on_respond(self, bot, msg, reply):
+    def on_command(self, bot, msg):
         url = "https://www.humblebundle.com/"
-        if msg["match"][0].strip() == "weekly":
+        if "weekly" in sys.argv or "weekly" in sys.stdin.read().strip():
             url = "https://www.humblebundle.com/weekly"
 
         page = requests.get(url)
@@ -25,9 +22,9 @@ class Plugin:
             c5 = clock.cssselect(".c5 .heading-num")[0].text_content()
             c6 = clock.cssselect(".c6 .heading-num")[0].text_content()
             c7 = clock.cssselect(".c7 .heading-num")[0].text_content()
-            reply("{0} - {1}{2}:{3}{4}:{5}{6}:{7}{8} left".format(title, c0, c1, c2, c3, c4, c5, c6, c7))
+            print("{0} - {1}{2}:{3}{4}:{5}{6}:{7}{8} left".format(title, c0, c1, c2, c3, c4, c5, c6, c7))
         except IndexError:
-            reply("No weekly sale.")
+            print("No weekly sale.")
 
-    def on_help(self, bot, msg, reply):
-        reply("Syntax: humble [bundle|weekly] [sale]")
+    def on_help(self):
+        return "Usage: humble [weekly]"
