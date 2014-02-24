@@ -1,5 +1,6 @@
 import io
 import itertools
+import functools
 import shlex
 import sys
 import traceback
@@ -50,10 +51,12 @@ class Bot:
                     traceback.print_exc()
 
     def on_message(self, msg):
+        reply = functools.partial(self.send, msg["reply_to"])
+
         for name, plugin in self.plugins.items():
             if hasattr(plugin, "on_message"):
                 try:
-                    plugin.on_message(self, msg)
+                    plugin.on_message(self, msg, reply)
                 except Exception as e:
                     traceback.print_exc()
                     self.send(msg["reply_to"], e)
@@ -66,7 +69,7 @@ class Bot:
             for name, plugin in self.plugins.items():
                 if hasattr(plugin, "on_respond"):
                     try:
-                        plugin.on_respond(self, msg)
+                        plugin.on_respond(self, msg, reply)
                     except Exception as e:
                         traceback.print_exc()
                         self.send(msg["reply_to"], e)

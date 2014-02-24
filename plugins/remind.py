@@ -11,18 +11,18 @@ class Plugin:
         time.sleep(duration)
         bot.send(msg["reply_to"], message)
 
-    def on_respond(self, bot, msg):
+    def on_respond(self, bot, msg, reply):
         try:
             match = re.match(r"remind me (to|about|that) (.*) (in|at) (.*)$", msg["message"], re.IGNORECASE)
             if match:
                 date = utils.datetime.parse("{0} {1}".format(match.group(3), match.group(4)))
-                bot.send(msg["reply_to"], "Sure thing {0}, I'll remind you at {1}.".format(msg["sender"], date))
+                reply("Sure thing {0}, I'll remind you at {1}.".format(msg["sender"], date))
                 message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match.group(1), match.group(2))
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
                 t = threading.Thread(target=self.on_timeout, args=(message, duration, bot, msg))
                 t.start()
         except ValueError:
-            bot.send(msg["reply_to"], "I don't understand that date.")
+            reply("I don't understand that date.")
 
     def on_help(self):
         return "Usage: remind me to|about|that <something> in|at <time>"

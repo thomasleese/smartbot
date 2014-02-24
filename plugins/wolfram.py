@@ -66,7 +66,7 @@ class Plugin:
         else:
             return s.strip()
 
-    def on_message(self, bot, msg):
+    def on_message(self, bot, msg, reply):
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
             old_stdout = sys.stdout
@@ -79,7 +79,7 @@ class Plugin:
                 output = sys.stdout.getvalue().strip()
                 sys.stdout = old_stdout
                 sys.stdin = old_stdin
-                bot.send(msg["reply_to"], output)
+                reply(output)
             finally:
                 sys.stdout = old_stdout
                 sys.stdin = old_stdin
