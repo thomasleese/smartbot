@@ -18,7 +18,7 @@ class Plugin:
             except Exception as e:
                 print(e)
         else:
-            plugin_names = ", ".join([name for name, _ in bot.plugins.items()])
+            plugin_names = ", ".join(sorted(bot.plugins.keys()))
             print("Help about:", plugin_names)
 
     def on_help(self):
