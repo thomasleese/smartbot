@@ -77,41 +77,44 @@ class Bot:
                         traceback.print_exc()
                         reply(name + ": " + str(e))
 
-            args = shlex.split(m)
-            commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
-            pipe_buffer = ""
-            for command in commands:
-                if command[0] not in self.plugins:
-                    break
+            try:
+                args = shlex.split(m)
+                commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
+                pipe_buffer = ""
+                for command in commands:
+                    if command[0] not in self.plugins:
+                        break
 
-                plugin = self.plugins[command[0]]
-                if not hasattr(plugin, "on_command"):
-                    break
+                    plugin = self.plugins[command[0]]
+                    if not hasattr(plugin, "on_command"):
+                        break
 
-                old_stdin = sys.stdin
-                old_stdout = sys.stdout
-                old_stderr = sys.stderr
-                old_argv = sys.argv
+                    old_stdin = sys.stdin
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    old_argv = sys.argv
 
-                try:
-                    sys.stdin = io.StringIO(pipe_buffer)
-                    sys.stdout = io.StringIO()
-                    sys.stderr = io.StringIO()
-                    sys.argv = command
-                    plugin.on_command(self, msg)
-                    pipe_buffer = sys.stdout.getvalue()
-                    self.send(msg["reply_to"], sys.stderr.getvalue())
-                except Exception as e:
-                    traceback.print_exc()
-                    self.send(msg["reply_to"], str(e))
-                    break
-                finally:
-                    sys.stdin = old_stdin
-                    sys.stdout = old_stdout
-                    sys.stderr = old_stderr
-                    sys.argv = old_argv
-            else:
-                self.send(msg["reply_to"], pipe_buffer.strip())
+                    try:
+                        sys.stdin = io.StringIO(pipe_buffer)
+                        sys.stdout = io.StringIO()
+                        sys.stderr = io.StringIO()
+                        sys.argv = command
+                        plugin.on_command(self, msg)
+                        pipe_buffer = sys.stdout.getvalue()
+                        self.send(msg["reply_to"], sys.stderr.getvalue())
+                    except Exception as e:
+                        traceback.print_exc()
+                        self.send(msg["reply_to"], str(e))
+                        break
+                    finally:
+                        sys.stdin = old_stdin
+                        sys.stdout = old_stdout
+                        sys.stderr = old_stderr
+                        sys.argv = old_argv
+                else:
+                    self.send(msg["reply_to"], pipe_buffer.strip())
+            except ValueError:
+                pass # not a command
 
     # actions
     def join(self, channel):
