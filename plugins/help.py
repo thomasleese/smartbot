@@ -22,4 +22,4 @@ class Plugin:
             print("Help about:", plugin_names)
 
     def on_help(self):
-        return "Usage: man [<plugin>]"
+        return "Usage: help [<plugin>]"
