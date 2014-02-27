@@ -79,6 +79,9 @@ class Bot:
 
             try:
                 args = shlex.split(m)
+            except ValueError:
+                pass # clearly not a command
+            else:
                 commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
                 pipe_buffer = ""
                 for command in commands:
@@ -113,8 +116,6 @@ class Bot:
                         sys.argv = old_argv
                 else:
                     self.send(msg["reply_to"], pipe_buffer.strip())
-            except ValueError:
-                pass # not a command
 
     # actions
     def join(self, channel):
