@@ -6,19 +6,19 @@ import unittest
 class Plugin:
     def get_hash_func(self, algorithm, action):
         if algorithm == "base64" or algorithm == "b64":
-            if action == "encode":
+            if "encode".startswith(action):
                 return base64.b64encode
-            elif action == "decode":
+            elif "decode".startswith(action):
                 return base64.b64decode
         elif algorithm == "base32" or algorithm == "b32":
-            if action == "encode":
+            if "encode".startswith(action):
                 return base64.b32encode
-            elif action == "decode":
+            elif "decode".startswith(action):
                 return base64.b32decode
         elif algorithm == "base16" or algorithm == "b16":
-            if action == "encode":
+            if "encode".startswith(action):
                 return base64.b16encode
-            elif action == "decode":
+            elif "decode".startswith(action):
                 return base64.b16decode
 
     def on_command(self, bot, msg, stdin, stdout, reply):
@@ -75,3 +75,15 @@ class Test(unittest.TestCase):
         stdout2 = io.StringIO()
         self.plugin.on_command(None, {"args": [None, "b16", "decode"]}, stdout, stdout2, None)
         self.assertEqual("hello", stdout2.getvalue().strip())
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
+
+    def test_no_args(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
+        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
+
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, None]}, stdout, stdout, None)
+        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
