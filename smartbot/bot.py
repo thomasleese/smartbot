@@ -92,28 +92,17 @@ class Bot:
                     if not hasattr(plugin, "on_command"):
                         break
 
-                    old_stdin = sys.stdin
-                    old_stdout = sys.stdout
-                    old_stderr = sys.stderr
-                    old_argv = sys.argv
-
                     try:
-                        sys.stdin = io.StringIO(pipe_buffer)
-                        sys.stdout = io.StringIO()
-                        sys.stderr = io.StringIO()
-                        sys.argv = command
-                        plugin.on_command(self, msg)
-                        pipe_buffer = sys.stdout.getvalue()
-                        self.send(msg["reply_to"], sys.stderr.getvalue())
+                        stdin = io.StringIO(pipe_buffer)
+                        stdout = io.StringIO()
+                        msg["args"] = command
+                        msg["message"] = " ".join(command)
+                        plugin.on_command(self, msg, stdin, stdout, reply)
+                        pipe_buffer = stdout.getvalue()
                     except Exception as e:
                         traceback.print_exc()
                         self.send(msg["reply_to"], str(e))
                         break
-                    finally:
-                        sys.stdin = old_stdin
-                        sys.stdout = old_stdout
-                        sys.stderr = old_stderr
-                        sys.argv = old_argv
                 else:
                     self.send(msg["reply_to"], pipe_buffer.strip())
 
