@@ -1,15 +1,15 @@
+import io
 import requests
 import lxml.etree
+import unittest
 import urllib.parse
-import sys
-
 
 
 class Plugin:
-    def on_command(self, bot, msg):
-        query = " ".join(sys.argv[1:])
+    def on_command(self, bot, msg, stdin, stdout, reply):
+        query = " ".join(msg["args"][1:])
         if not query:
-            query = sys.stdin.read().strip()
+            query = stdin.read().strip()
 
         if query:
             url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(query))
@@ -23,11 +23,34 @@ class Plugin:
                 suggestions.append(suggestion.get("data"))
 
             if suggestions:
-                print(", ".join(suggestions[:5]))
+                print(", ".join(suggestions[:5]), file=stdout)
             else:
-                print("No suggestions.")
+                print("No suggestions.", file=stdout)
         else:
-            print(self.on_help())
+            print(self.on_help(), file=stdout)
 
     def on_help(self):
         return "Usage: complete <query>"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin()
+
+    def test_suggestions(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "hello"]}, None, stdout, None)
+        self.assertTrue(stdout.getvalue().strip())
+
+    def test_no_suggestions(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "fsjklfsjlkfsjklfsdajlkfdsjklfjlkfajlkfajklfa"]}, None, stdout, None)
+        self.assertEqual("No suggestions.", stdout.getvalue().strip())
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
+
+    def test_no_args(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
+        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
