@@ -1,12 +1,13 @@
+import io
 import lxml.html
 import requests
-import sys
+import unittest
 
 
 class Plugin:
-    def on_command(self, bot, msg):
+    def on_command(self, bot, msg, stdin, stdout, reply):
         url = "https://www.humblebundle.com/"
-        if "weekly" in sys.argv or "weekly" in sys.stdin.read().strip():
+        if "weekly" in msg["args"] or "weekly" in stdin.read().strip():
             url = "https://www.humblebundle.com/weekly"
 
         page = requests.get(url)
@@ -22,9 +23,29 @@ class Plugin:
             c5 = clock.cssselect(".c5 .heading-num")[0].text_content()
             c6 = clock.cssselect(".c6 .heading-num")[0].text_content()
             c7 = clock.cssselect(".c7 .heading-num")[0].text_content()
-            print("{0} - {1}{2}:{3}{4}:{5}{6}:{7}{8} left".format(title, c0, c1, c2, c3, c4, c5, c6, c7))
+            print("{0} - {1}{2}:{3}{4}:{5}{6}:{7}{8} left".format(
+                title, c0, c1, c2, c3, c4, c5, c6, c7
+            ), file=stdout)
         except IndexError:
-            print("No weekly sale.")
+            print("No sale.", file=stdout)
 
     def on_help(self):
         return "Usage: humble [weekly]"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin()
+
+    def test_bundle(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
+        self.assertNotEqual("No sale.", stdout.getvalue().strip())
+
+    def test_weekly(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "weekly"]}, stdout, stdout, None)
+        self.assertNotEqual("No sale.", stdout.getvalue().strip())
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
