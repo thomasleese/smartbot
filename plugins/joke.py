@@ -1,6 +1,9 @@
+import io
 import random
 import requests
 import time
+import unittest
+
 
 good_jokes = [
     "I want to write a mystery novel… or do I?",
@@ -78,3 +81,17 @@ class Plugin:
 
     def on_help(self):
         return "Usage: joke"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin()
+
+    def test_good_joke(self):
+        self.plugin.on_respond(None, {"message": "joke"}, lambda x: self.assertIn(x, good_jokes))
+
+    def test_bad_joke(self):
+        self.plugin.on_respond(None, {"message": "'joke'"}, lambda x: self.assertNotIn(x, good_jokes))
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
