@@ -6,6 +6,8 @@ import urllib.parse
 
 
 class Plugin:
+    names = ["google", "search"]
+
     def __init__(self, key, cx):
         self.key = key
         self.cx = cx

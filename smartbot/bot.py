@@ -50,6 +50,15 @@ class Bot:
                 except:
                     traceback.print_exc()
 
+    def find_plugin(self, name):
+        for plugin_name, plugin in self.plugins.items():
+            try:
+                if name in plugin.names:
+                    return plugin
+            except AttributeError:
+                if name == plugin_name:
+                    return plugin
+
     def on_message(self, msg):
         reply = functools.partial(self.send, msg["reply_to"])
 
@@ -85,11 +94,8 @@ class Bot:
                 commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
                 pipe_buffer = ""
                 for command in commands:
-                    if command[0] not in self.plugins:
-                        break
-
-                    plugin = self.plugins[command[0]]
-                    if not hasattr(plugin, "on_command"):
+                    plugin = self.find_plugin(command[0])
+                    if not plugin or not hasattr(plugin, "on_command"):
                         break
 
                     try:
