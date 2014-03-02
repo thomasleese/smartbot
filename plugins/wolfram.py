@@ -2,9 +2,9 @@ import lxml.etree
 import io
 import re
 import requests
+import os
+import unittest
 import urllib.parse
-import sys
-
 
 
 class Plugin:
@@ -70,25 +70,15 @@ class Plugin:
     def on_message(self, bot, msg, reply):
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
-            old_stdout = sys.stdout
-            old_stdin = sys.stdin
+            stdout = io.StringIO()
+            self.on_command(bot, {"args": [None, query]}, None, None, None)  # stdin, stdout, reply is unused
+            output = stdout.getvalue().strip()
+            reply(output)
 
-            try:
-                sys.stdout = io.StringIO()
-                sys.stdin = io.StringIO(query)
-                self.on_command(bot, None)  # msg is unused
-                output = sys.stdout.getvalue().strip()
-                sys.stdout = old_stdout
-                sys.stdin = old_stdin
-                reply(output)
-            finally:
-                sys.stdout = old_stdout
-                sys.stdin = old_stdin
-
-    def on_command(self, bot, msg):
-        query = " ".join(sys.argv[1:])
+    def on_command(self, bot, msg, stdin, stdout, reply):
+        query = " ".join(msg["args"][1:])
         if not query:
-            query = sys.stdin.read().strip()
+            query = stdin.read().strip()
 
         if query:
             url = "http://api.wolframalpha.com/v2/query?input={0}&appid={1}".format(
@@ -107,18 +97,36 @@ class Plugin:
                 if len(pods) >= 2:
                     small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
                     if len(small_result) <= 100 and "\n" not in small_result:
-                        print(small_result)
+                        print(small_result, file=stdout)
                     else:
                         for pod in pods[:2]:
-                            print("# {0}".format(pod.get("title")))
+                            print("# {0}".format(pod.get("title")), file=stdout)
                             for subpod in pod.findall("subpod"):
                                 if subpod.get("title"):
-                                    print("## {0}".format(subpod.get("title")))
-                                print(self.format_subpod(subpod))
+                                    print("## {0}".format(subpod.get("title")), file=stdout)
+                                print(self.format_subpod(subpod), file=stdout)
                 else:
-                    print("Nothing more to say.")
+                    print("Nothing more to say.", file=stdout)
         else:
-            print(self.on_help())
+            print(self.on_help(), file=stdout)
 
     def on_help(self):
         return "Usage: wolfram <query>"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin(os.environ["WOLFRAM_APPID"])
+
+    def test_command(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "2+2"]}, None, stdout, None)
+        self.assertNotEqual("Nothing more to say.", stdout.getvalue().strip())
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
+
+    def test_no_args(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
+        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
