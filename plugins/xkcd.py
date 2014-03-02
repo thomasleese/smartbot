@@ -1,4 +1,6 @@
+import io
 import re
+import unittest
 
 from smartbot import utils
 
@@ -12,3 +14,14 @@ class Plugin:
 
     def on_help(self):
         return "Usage: xkcd <num>"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin()
+
+    def test_message(self):
+        self.plugin.on_message(None, {"message": "xkcd 1335"}, lambda x: self.assertEqual("http://xkcd.com/1335 -> xkcd: Now", x))
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
