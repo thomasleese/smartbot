@@ -2,14 +2,13 @@ import unittest
 
 
 class Plugin:
-    def __init__(self, channel, password, target="NiceBot"):
-        self.channel = channel
-        self.password = password
-        self.target = target
+    def __init__(self, nicebots):
+        self.nicebots = nicebots
 
     def on_join(self, bot, msg):
-        if self.channel == msg["channel"] and msg["is_me"]:
-            bot.send(self.target, self.password)
+        for nicebot in self.nicebots:
+            if nicebot["channel"] == msg["channel"] and msg["is_me"]:
+                bot.send(nicebot["target"], nicebot["password"])
 
     def on_help(self):
         return "Authenticate with NiceBot."
@@ -25,7 +24,7 @@ class Test(unittest.TestCase):
             self.test.assertEqual("password", message)
 
     def setUp(self):
-        self.plugin = Plugin("#test", "password")
+        self.plugin = Plugin([{"channel": "#test", "target": "NiceBot", "password": "password"}])
 
     def test_join(self):
         self.plugin.on_join(Test.ExampleBot(self), {"channel": "#test", "is_me": True})
