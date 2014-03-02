@@ -8,6 +8,8 @@ import urllib.parse
 
 
 class Plugin:
+    names = ["wolfram", "?"]
+
     def __init__(self, appid):
         self.appid = appid
 
@@ -71,7 +73,7 @@ class Plugin:
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
             stdout = io.StringIO()
-            self.on_command(bot, {"args": [None, query]}, None, None, None)  # stdin, stdout, reply is unused
+            self.on_command(bot, {"args": [None, query]}, None, stdout, None)  # stdin, reply is unused
             output = stdout.getvalue().strip()
             reply(output)
 
