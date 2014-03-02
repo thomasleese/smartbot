@@ -1,14 +1,15 @@
+import io
 import lxml.html
 import requests
-import sys
+import unittest
 
 from smartbot import utils
 
 
 class Plugin:
-    def on_command(self, bot, msg):
-        if len(sys.argv) >= 2:
-            action = sys.argv[1]
+    def on_command(self, bot, msg, stdin, stdout, reply):
+        if len(msg["args"]) >= 2:
+            action = msg["args"][1]
             if "deal".startswith(action):
                 page = requests.get("http://store.steampowered.com")
                 tree = lxml.html.fromstring(page.text)
@@ -19,13 +20,36 @@ class Plugin:
                     print("{0} - {1} - from {2} to {3}".format(url,
                                                                utils.web.get_title(url),
                                                                original_price,
-                                                               final_price))
+                                                               final_price), file=stdout)
                 else:
-                    print("No daily deal.")
+                    print("No daily deal.", file=stdout)
             else:
-                print("No such action:", action)
+                print("No such action:", action, file=stdout)
         else:
-            print(self.on_help())
+            print(self.on_help(), file=stdout)
 
     def on_help(self):
         return "Usage: steam deal"
+
+
+class Test(unittest.TestCase):
+    def setUp(self):
+        self.plugin = Plugin()
+
+    def test_bundle(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "deal"]}, stdout, stdout, None)
+        self.assertNotEqual("No daily deal.", stdout.getvalue().strip())
+
+    def test_no_action(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None, "cat"]}, stdout, stdout, None)
+        self.assertEqual("No such action: cat", stdout.getvalue().strip())
+
+    def test_help(self):
+        self.assertTrue(self.plugin.on_help())
+
+    def test_no_args(self):
+        stdout = io.StringIO()
+        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
+        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
