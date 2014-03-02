@@ -42,8 +42,8 @@ class Test(unittest.TestCase):
             self.start_time = datetime.datetime.now()
 
         def send(self, target, message):
-            self.test.assertNone(target)
-            self.test.assertEqual((self.start_time - datetime.datetime.now()).total_seconds(), 2)
+            self.test.assertIs(target, None)
+            self.test.assertEqual(int((datetime.datetime.now() - self.start_time).total_seconds()), 2)
 
     def setUp(self):
         self.plugin = Plugin()
