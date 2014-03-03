@@ -13,7 +13,7 @@ class Plugin:
 
         if url:
             headers = {"User-Agent": "SmartBot"}
-            page = requests.get(url, headers=headers)
+            page = requests.get(url, headers=headers, timeout=15)
             print(page.text, file=stdout)
         else:
             print(self.on_help(), file=stdout)
