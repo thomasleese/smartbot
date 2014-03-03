@@ -29,6 +29,7 @@ class Plugin:
 
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
                 t = threading.Thread(target=self.on_timeout, args=(message, duration, reply))
+                t.daemon = True
                 t.start()
 
     def on_help(self):

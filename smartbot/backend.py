@@ -1,3 +1,4 @@
+import random
 import socket
 import threading
 import time
@@ -29,6 +30,12 @@ class IRC(_Backend):
 
         self.lock = threading.Lock()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    def ping_thread(self):
+        while True:
+            time.sleep(60)
+            msg = "ping-" + str(random.randint(0, 100))
+            self.write("PING", msg)
 
     def write(self, *args):
         def convert_part(x):
@@ -87,6 +94,10 @@ class IRC(_Backend):
         self.socket.connect((self.hostname, self.port))
 
         self.dispatch_event("connect")
+
+        thread = threading.Thread(target=self.ping_thread)
+        thread.daemon = True
+        thread.start()
 
         self.write("NICK", self.nick)
         self.write("USER", self.username, "8", "*", self.realname)
