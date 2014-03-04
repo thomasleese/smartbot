@@ -1,13 +1,11 @@
 import io
+import sympy
 import unittest
-
-from sympy.parsing import sympy_parser
 
 class Plugin:
     def on_command(self, bot, msg, stdin, stdout, reply):
-        expr = " ".join(msg["args"][1:])
-        expr = sympy_parser.parse_expr(expr)
-        print(expr.evalf(), file=stdout)
+        expr = sympy.sympify(" ".join(msg["args"][1:]))
+        print(expr, file=stdout)
 
     def on_help(self):
         return "Perform maths expressions."
