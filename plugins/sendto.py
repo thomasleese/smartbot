@@ -11,6 +11,8 @@ class Plugin:
                 message = stdin.read().strip()
 
             print("{0}: {1}".format(user, message), file=stdout)
+        else:
+            print(self.on_help(), file=stdout)
 
     def on_help(self):
         return "Usage: sendto <user> [<message>]"
