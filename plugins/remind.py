@@ -14,18 +14,24 @@ class Plugin:
         reply(message)
 
     def on_command(self, bot, msg, stdin, stdout, reply):
-        match = re.match(r"remind me (to|about|that) (.*) (in|at) (.*)$", msg["message"], re.IGNORECASE)
+        pattern_str = r"remind (me|.*) (to|about|that) (.*) (in|at) (.*)$"
+        match = re.match(pattern_str, msg["message"], re.IGNORECASE)
         if not match:
-            match = re.match(r"remind me (to|about|that) (.*) (in|at) (.*)$", stdin.getvalue().strip(), re.IGNORECASE)
+            match = re.match(pattern_str, stdin.getvalue().strip(), re.IGNORECASE)
 
         if match:
             try:
-                date = utils.datetime.parse("{0} {1}".format(match.group(3), match.group(4)))
+                date = utils.datetime.parse("{0} {1}".format(match.group(4), match.group(5)))
             except ValueError:
                 print("I don't understand that date.", file=stdout)
             else:
-                print("Sure thing {0}, I'll remind you on {1}.".format(msg["sender"], date.strftime("%c")), file=stdout)
-                message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match.group(1), match.group(2))
+                message = None
+                if match.group(1) == "me":
+                    print("Sure thing {0}, I'll remind you on {1}.".format(msg["sender"], date.strftime("%c")), file=stdout)
+                    message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match.group(2), match.group(3))
+                else:
+                    print("Sure thing {0}, I'll remind {1} on {2}.".format(msg["sender"], match.group(1), date.strftime("%c")), file=stdout)
+                    message = "{0}: {1} asked me to remind you {2} {3}".format(match.group(1), msg["sender"], match.group(2), match.group(3))
 
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
                 t = threading.Thread(target=self.on_timeout, args=(message, duration, reply))
@@ -33,7 +39,7 @@ class Plugin:
                 t.start()
 
     def on_help(self):
-        return "Usage: remind me to|about|that <something> in|at <time>"
+        return "Usage: remind me|<target> to|about|that <something> in|at <time>"
 
 
 class Test(unittest.TestCase):
@@ -49,11 +55,20 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.plugin = Plugin()
 
-    def test_remind(self):
+    def test_me_remind(self):
         stdout = io.StringIO()
         bot = Test.ExampleBot(self)
         msg = {"message": "remind me to do something in 2 seconds", "sender": "test"}
         self.plugin.on_command(bot, msg, None, stdout, lambda x: bot.send(None, x))
+        self.assertTrue(stdout.getvalue().strip().startswith("Sure thing test, I'll remind you on"))
+        self.assertNotEqual("I don't understand that date.", stdout.getvalue().strip())
+
+    def test_target_remind(self):
+        stdout = io.StringIO()
+        bot = Test.ExampleBot(self)
+        msg = {"message": "remind test2 to do something in 2 seconds", "sender": "test"}
+        self.plugin.on_command(bot, msg, None, stdout, lambda x: bot.send(None, x))
+        self.assertTrue(stdout.getvalue().strip().startswith("Sure thing test, I'll remind test2 on"))
         self.assertNotEqual("I don't understand that date.", stdout.getvalue().strip())
 
     def test_help(self):
