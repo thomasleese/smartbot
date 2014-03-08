@@ -26,11 +26,11 @@ class Plugin:
                 print("I don't understand that date.", file=stdout)
             else:
                 message = None
-                if match.group(1) == "me":
-                    print("Sure thing {0}, I'll remind you on {1}.".format(msg["sender"], date.strftime("%c")), file=stdout)
+                if match.group(1) == "me" or match.group(1) == msg["sender"]:
+                    print("Sure thing {0}, I'll remind you on {1}.".format(msg["sender"], date.strftime("%c").strip()), file=stdout)
                     message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match.group(2), match.group(3))
                 else:
-                    print("Sure thing {0}, I'll remind {1} on {2}.".format(msg["sender"], match.group(1), date.strftime("%c")), file=stdout)
+                    print("Sure thing {0}, I'll remind {1} on {2}.".format(msg["sender"], match.group(1), date.strftime("%c").strip()), file=stdout)
                     message = "{0}: {1} asked me to remind you {2} {3}".format(match.group(1), msg["sender"], match.group(2), match.group(3))
 
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
