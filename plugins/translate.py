@@ -19,3 +19,6 @@ class Plugin:
         except:
             return
         print(translated, file=stdout)
+
+    def on_help(self):
+        return "Usage: translate [from <language>] [to <language>] <text>
