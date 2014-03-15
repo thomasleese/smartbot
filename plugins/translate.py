@@ -21,4 +21,4 @@ class Plugin:
         print(translated, file=stdout)
 
     def on_help(self):
-        return "Usage: translate [from <language>] [to <language>] <text>
+        return "Usage: translate [from <language>] [to <language>] <text>"
