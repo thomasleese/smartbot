@@ -18,4 +18,4 @@ class Plugin:
             translated = message.translate(from_lang=from_lang, to=to_lang)
         except:
             return
-        reply(translated)
+        print(translated, file=stdout)
