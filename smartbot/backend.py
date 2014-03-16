@@ -3,6 +3,8 @@ import socket
 import threading
 import time
 
+from .formatting import *
+
 
 class _Backend:
     def __init__(self):
@@ -136,6 +138,98 @@ class IRC(_Backend):
             self.write("PRIVMSG", target, msg)
             time.sleep(1)
 
+    def format(self, text, properties):
+        values = []
+
+        if Style.bold in properties:
+            values.append("\x02")
+        if Style.italic in properties:
+            values.append("\x1D")
+        if Style.underline in properties:
+            values.append("\x1F")
+
+        fg_colour = None
+
+        if Colour.fg_white in properties:
+            fg_colour = "00"
+        if Colour.fg_black in properties:
+            fg_colour = "01"
+        if Colour.fg_blue in properties:
+            fg_colour = "02"
+        if Colour.fg_green in properties:
+            fg_colour = "03"
+        if Colour.fg_red in properties:
+            fg_colour = "04"
+        if Colour.fg_brown in properties:
+            fg_colour = "05"
+        if Colour.fg_purple in properties:
+            fg_colour = "06"
+        if Colour.fg_orange in properties:
+            fg_colour = "07"
+        if Colour.fg_yellow in properties:
+            fg_colour = "08"
+        if Colour.fg_light_green in properties:
+            fg_colour = "09"
+        if Colour.fg_teal in properties:
+            fg_colour = "10"
+        if Colour.fg_light_cyan in properties:
+            fg_colour = "11"
+        if Colour.fg_light_blue in properties:
+            fg_colour = "12"
+        if Colour.fg_pink in properties:
+            fg_colour = "13"
+        if Colour.fg_grey in properties:
+            fg_colour = "14"
+        if Colour.fg_light_grey in properties:
+            fg_colour = "15"
+
+        bg_colour = None
+
+        if Colour.bg_white in properties:
+            bg_colour = "00"
+        if Colour.bg_black in properties:
+            bg_colour = "01"
+        if Colour.bg_blue in properties:
+            bg_colour = "02"
+        if Colour.bg_green in properties:
+            bg_colour = "03"
+        if Colour.bg_red in properties:
+            bg_colour = "04"
+        if Colour.bg_brown in properties:
+            bg_colour = "05"
+        if Colour.bg_purple in properties:
+            bg_colour = "06"
+        if Colour.bg_orange in properties:
+            bg_colour = "07"
+        if Colour.bg_yellow in properties:
+            bg_colour = "08"
+        if Colour.bg_light_green in properties:
+            bg_colour = "09"
+        if Colour.bg_teal in properties:
+            bg_colour = "10"
+        if Colour.bg_light_cyan in properties:
+            bg_colour = "11"
+        if Colour.bg_light_blue in properties:
+            bg_colour = "12"
+        if Colour.bg_pink in properties:
+            bg_colour = "13"
+        if Colour.bg_grey in properties:
+            bg_colour = "14"
+        if Colour.bg_light_grey in properties:
+            bg_colour = "15"
+
+        if bg_colour and not fg_colour:
+            fg_colour = "01" # default to black
+
+        if fg_colour or bg_colour:
+            values.append("\x03")
+            values.append(fg_colour)
+            if bg_colour:
+                values.append(",")
+                values.append(bg_colour)
+
+        return "{}{}\x0F".format("".join(values), text)
+
 
 class CommandLine(_Backend):
     def __init__(self):
@@ -159,3 +253,47 @@ class CommandLine(_Backend):
 
     def send(self, target, message):
         print(target + ":", message)
+
+    def format(self, text, properties):
+        values = []
+
+        if Style.bold in properties:
+            values.append("1")
+        if Style.italic in properties:
+            values.append("3")
+        if Style.underline in properties:
+            values.append("4")
+        if Colour.fg_white in properties:
+            values.append("37")
+        if Colour.fg_black in properties:
+            values.append("30")
+        if Colour.fg_blue in properties:
+            values.append("34")
+        if Colour.fg_green in properties:
+            values.append("32")
+        if Colour.fg_red in properties:
+            values.append("31")
+        if Colour.fg_purple in properties:
+            values.append("35")
+        if Colour.fg_yellow in properties:
+            values.append("33")
+        if Colour.fg_light_cyan in properties:
+            values.append("36")
+        if Colour.bg_white in properties:
+            values.append("47")
+        if Colour.bg_black in properties:
+            values.append("40")
+        if Colour.bg_blue in properties:
+            values.append("44")
+        if Colour.bg_green in properties:
+            values.append("42")
+        if Colour.bg_red in properties:
+            values.append("41")
+        if Colour.bg_purple in properties:
+            values.append("45")
+        if Colour.bg_yellow in properties:
+            values.append("43")
+        if Colour.bg_light_cyan in properties:
+            values.append("46")
+
+        return "\033[{}m{}\033[0m".format(";".join(values), text)
