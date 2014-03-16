@@ -7,12 +7,10 @@ class Plugin:
         colours = [x for x in dir(Colour) if not callable(x) and not x.startswith("__")]
 
         for style in styles:
-            print(bot.format(style, getattr(Style, style)), end=",", file=stdout)
-
-        print(file=stdout)
+            print(bot.format(style, getattr(Style, style)), file=stdout)
 
         for colour in colours:
-            print(bot.format(colour, getattr(Colour, colour)), end=",", file=stdout)
+            print(bot.format(colour, getattr(Colour, colour)), file=stdout)
 
     def on_help(self):
         return "Usage: debug"
