@@ -3,6 +3,7 @@ import re
 import unittest
 
 from smartbot import utils
+from smartbot.formatting import *
 
 
 class Plugin:
@@ -11,7 +12,7 @@ class Plugin:
         for i, url in enumerate(match):
             title = utils.web.get_title(url)
             if title:
-                reply("[{0}]: {1}".format(i, title))
+                reply("{}: {}".format(bot.format("[{}]".format(i), Style.bold), title))
 
     def on_help(self):
         return "Echos the titles of websites for any HTTP(S) URL."
