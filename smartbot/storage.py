@@ -25,6 +25,9 @@ class _DictionaryStorage(_Storage):
     def get(self, key, default=None):
         return self.data.get(key, default)
 
+    def setdefault(self, key, default=None):
+        return self.data.setdefault(key, default)
+
     def __getitem__(self, key):
         return self.data[key]
 
