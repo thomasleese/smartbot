@@ -118,3 +118,6 @@ class Bot:
 
     def send(self, target, message):
         self.backend.send(target, str(message))
+
+    def format(self, text, *properties):
+        return self.backend.format(text, properties)

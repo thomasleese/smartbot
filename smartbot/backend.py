@@ -136,6 +136,9 @@ class IRC(_Backend):
             self.write("PRIVMSG", target, msg)
             time.sleep(1)
 
+    def format(self, text, properties):
+        return text
+
 
 class CommandLine(_Backend):
     def __init__(self):
@@ -159,3 +162,6 @@ class CommandLine(_Backend):
 
     def send(self, target, message):
         print(target + ":", message)
+
+    def format(self, text, properties):
+        return text
