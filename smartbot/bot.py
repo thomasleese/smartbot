@@ -89,28 +89,28 @@ class Bot:
             try:
                 args = shlex.split(m)
             except ValueError:
-                pass # clearly not a command
-            else:
-                commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
-                pipe_buffer = ""
-                for command in commands:
-                    plugin = self.find_plugin(command[0])
-                    if not plugin or not hasattr(plugin, "on_command"):
-                        break
+                args = m.split(" ") # try and cope with invalid data
 
-                    try:
-                        stdin = io.StringIO(pipe_buffer)
-                        stdout = io.StringIO()
-                        msg["args"] = command
-                        msg["message"] = " ".join(command)
-                        plugin.on_command(self, msg, stdin, stdout, reply)
-                        pipe_buffer = stdout.getvalue()
-                    except Exception as e:
-                        traceback.print_exc()
-                        self.send(msg["reply_to"], str(e))
-                        break
-                else:
-                    self.send(msg["reply_to"], pipe_buffer.strip())
+            commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
+            pipe_buffer = ""
+            for command in commands:
+                plugin = self.find_plugin(command[0])
+                if not plugin or not hasattr(plugin, "on_command"):
+                    break
+
+                try:
+                    stdin = io.StringIO(pipe_buffer)
+                    stdout = io.StringIO()
+                    msg["args"] = command
+                    msg["message"] = " ".join(command)
+                    plugin.on_command(self, msg, stdin, stdout, reply)
+                    pipe_buffer = stdout.getvalue()
+                except Exception as e:
+                    traceback.print_exc()
+                    self.send(msg["reply_to"], str(e))
+                    break
+            else:
+                self.send(msg["reply_to"], pipe_buffer.strip())
 
     # actions
     def join(self, channel):
