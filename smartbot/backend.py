@@ -130,7 +130,7 @@ class IRC(_Backend):
                     else:
                         line.append(p)
 
-                self.parse([encode_string(x) for x in line])
+                self.parse([self.encode_string(x) for x in line])
 
             buf = array[-1]
 
