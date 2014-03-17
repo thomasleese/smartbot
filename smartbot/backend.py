@@ -86,6 +86,12 @@ class IRC(_Backend):
         else:
             print(args)
 
+    def encode_string(self, s):
+        try:
+            return str(s, "utf-8")
+        except UnicodeError:
+            return str(s, "ISO-8859-1", "ignore")
+
     def run(self, name):
         self.nick = name
         if not self.username:
@@ -124,7 +130,7 @@ class IRC(_Backend):
                     else:
                         line.append(p)
 
-                self.parse([str(x, "utf-8", "ignore") for x in line])
+                self.parse([encode_string(x) for x in line])
 
             buf = array[-1]
 
