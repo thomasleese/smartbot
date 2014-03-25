@@ -11,13 +11,12 @@ class Plugin:
         self.key = key
 
     def on_message(self, bot, msg, reply):
-        match = re.findall(r"https?://(?:www\.)youtube\.com/watch\?v=([^\s]+)", msg["message"], re.IGNORECASE)
+        match = re.findall(r"https?://(?:www\.)?youtube\.com/watch\?v=([^\s]+)", msg["message"], re.IGNORECASE)
         for i, id in enumerate(match):
             url = "https://www.googleapis.com/youtube/v3/videos?key={}&part=contentDetails%2Csnippet%2Cstatistics&id={}".format(
                 urllib.parse.quote(self.key),
                 urllib.parse.quote(id)
             )
-            print(url)
             headers = {"User-Agent": "SmartBot"}
 
             res = requests.get(url, headers=headers).json()
@@ -27,10 +26,12 @@ class Plugin:
                 duration = video["contentDetails"]["duration"]
                 views = video["statistics"]["viewCount"]
                 likes = video["statistics"]["likeCount"]
-                reply("{}: ⌚ {} 👀 {} 👍 {} {}".format(bot.format("[{}]".format(i), Style.bold),
+                dislikes = video["statistics"]["dislikeCount"]
+                reply("{}: {} | {} {} {} | {}".format(bot.format("[{}]".format(i), Style.bold),
                                                       duration,
                                                       views,
-                                                      likes,
+                                                      bot.format(likes, Colour.fg_green),
+                                                      bot.format(dislikes, Colour.fg_red),
                                                       bot.format(thumbnail, Colour.fg_grey)))
 
     def on_help(self):
