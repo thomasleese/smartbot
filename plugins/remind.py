@@ -14,7 +14,7 @@ class Plugin:
         reply(message)
 
     def on_command(self, bot, msg, stdin, stdout, reply):
-        pattern_str = r"remind (me|.*) (to|about|that) (.*) (in|at) (.*)$"
+        pattern_str = r"remind (me|[^\s]+) (to|about|that) (.*) (in|at) (.*)$"
         match = re.match(pattern_str, msg["message"], re.IGNORECASE)
         if not match:
             match = re.match(pattern_str, stdin.getvalue().strip(), re.IGNORECASE)
