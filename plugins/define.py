@@ -11,10 +11,14 @@ class Plugin:
             topic = stdin.read().strip()
 
         if topic:
-            url = "http://api.duckduckgo.com/?format=json&q={0}".format(urllib.parse.quote(topic))
+            url = "http://api.duckduckgo.com/"
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "q": topic,
+                "format": "json",
+            }
 
-            res = requests.get(url, headers=headers).json()
+            res = requests.get(url, headers=headers, params=payload).json()
             if res.get("AbstractText"):
                 print(res["AbstractText"], file=stdout)
                 if res.get("AbstractURL"):
