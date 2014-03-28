@@ -107,7 +107,7 @@ class Bot:
                     pipe_buffer = stdout.getvalue()
                 except Exception as e:
                     traceback.print_exc()
-                    self.send(msg["reply_to"], str(e))
+                    self.send(msg["reply_to"], repr(e))
                     break
             else:
                 self.send(msg["reply_to"], pipe_buffer.strip())
