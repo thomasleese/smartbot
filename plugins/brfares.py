@@ -58,7 +58,7 @@ class Plugin:
                     print("'fares more' to continue", file=stdout)
                     self.up_to = 10
                     return
-                print("[{0}] {1[ticket][code]} {1[ticket][tclass][desc]} {1[ticket][name]} route {1[route][name]} - £{2:.2f}".format(i, fare, fare["adult"]["fare"] / 100.0), file=stdout)
+                print("[{0}] {1[ticket][code]} {1[ticket][tclass][desc]} {1[ticket][name]} route {1[route][name]} - £{2:.2f}{3}".format(i, fare, (fare["adult"]["fare"] / 100.0) if "fare" in fare["adult"] else 0.00, "" if "fare" in fare["adult"] else " - No adult fare"), file=stdout)
             self.up_to = 0
             
         else:
@@ -132,7 +132,7 @@ Validity restriction code: {restrictions}
                             print("'fares more' to continue", file=stdout)
                             self.up_to += 10
                             return
-                        print("[{0}] {1[ticket][code]} {1[ticket][tclass][desc]} {1[ticket][name]} route {1[route][name]} - £{2:.2f}".format(i, fare, fare["adult"]["fare"] / 100.0), file=stdout)
+                        print("[{0}] {1[ticket][code]} {1[ticket][tclass][desc]} {1[ticket][name]} route {1[route][name]} - £{2:.2f}{3}".format(i, fare, (fare["adult"]["fare"] / 100.0) if "fare" in fare["adult"] else 0.00, "" if "fare" in fare["adult"] else " - No adult fare"), file=stdout)
                     self.up_to = 0
                 else:
                     print(self.on_help(), file=stdout)
