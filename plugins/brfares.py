@@ -91,6 +91,7 @@ class Plugin:
                 childminfarewarning = \
                     "- Minimum fare of £{:.2f} may apply".format(fare["child"]["min_fare"]/100.0) if "min_fare" in fare["child"] else \
                     ""
+                restrurl="www.nationalrail.co.uk/pdfs/{0}_{1}.pdf".format(fare["ticket"]["code"], fare["restriction_code"]) if fare["restriction_code"] != " " * 2 else ""
 
 
                 out_string = \
@@ -103,7 +104,7 @@ Cross-London Transfer: {maltese} ({maltesecode}) - please note that this only af
 Fare Setter: {setter} ({settercode})
 Fare validity: {validity} ({validitycode}), {restricttrain}restricted to a train, {restrictdate}restricted to a date, {restrictarea}restricted to an area{validityperiod}
 Reservations required: {reservations} ({reservationscode})
-Validity restriction code: {restrictions}
+Validity restriction code: {restrictions} {restrurl}
 {adultname} ({adultcode}): £{adultprice:.2f} {adultminfarewarning}
 {childname} ({childcode}): £{childprice:.2f} {childminfarewarning}
 '''.format(
@@ -116,7 +117,7 @@ Validity restriction code: {restrictions}
                     setter=fare["fare_setter"]["name"], settercode=fare["fare_setter"]["code"],
                     validity=fare["ticket"]["validity"]["desc"], validitycode=fare["ticket"]["validity"]["code"], restricttrain=restricttrain, restrictdate=restrictdate, restrictarea=restrictarea, validityperiod=validityperiod,
                     reservations=fare["ticket"]["reservations"]["desc"], reservationscode=fare["ticket"]["reservations"]["code"],
-                    restrictions=fare["restriction_code"] if fare["restriction_code"] != " " * 2 else "No restrictions",
+                    restrictions=fare["restriction_code"] if fare["restriction_code"] != " " * 2 else "No restrictions", restrurl=restrurl,
                     adultname=fare["adult"]["status"]["name"] if "status" in fare["adult"] else "No adult fare", adultcode=fare["adult"]["status"]["ticket_code"] if "status" in fare["adult"] else "", adultprice=fare["adult"]["fare"] / 100.0 if "fare" in fare["adult"] else 0.0, adultminfarewarning=adultminfarewarning,
                     childname=fare["child"]["status"]["name"] if "status" in fare["child"] else "No child fare", childcode=fare["child"]["status"]["ticket_code"] if "status" in fare["child"] else "", childprice=fare["child"]["fare"] / 100.0 if "fare" in fare["child"] else 0.0, childminfarewarning=childminfarewarning)
                 
