@@ -12,10 +12,14 @@ class Plugin:
             query = stdin.read().strip()
 
         if query:
-            url = "http://google.com/complete/search?q={0}&output=toolbar".format(urllib.parse.quote(query))
+            url = "http://google.com/complete/search"
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "q": query,
+                "output": "toolbar",
+            }
 
-            page = requests.get(url, headers=headers)
+            page = requests.get(url, headers=headers, params=payload)
             tree = lxml.etree.fromstring(page.text)
 
             suggestions = []

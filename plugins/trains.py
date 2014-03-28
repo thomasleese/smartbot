@@ -7,13 +7,15 @@ import urllib.parse
 class Plugin:
     def on_command(self, bot, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 3:
-            url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson?departing=true&liveTrainsFrom={0}&liveTrainsTo={1}".format(
-                urllib.parse.quote(msg["args"][1]),
-                urllib.parse.quote(msg["args"][2])
-            )
+            url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson"
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "liveTrainsFrom": msg["args"][1],
+                "liveTrainsTo"  : msg["args"][2],
+                "departing": "true",
+            }
 
-            res = requests.get(url, headers=headers).json()
+            res = requests.get(url, headers=headers, params=payload).json()
             if res["trains"]:
                 for i, train in enumerate(res["trains"]):
                     if train[4]:

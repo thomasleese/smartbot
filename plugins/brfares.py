@@ -11,8 +11,8 @@ class Plugin:
         self.saved_items = {}
         self.up_to = 0
 
-    def get_code(self, req_url, orig_string, headers, stdout):
-        res = requests.get(req_url, headers=headers).json()
+    def get_code(self, req_url, orig_string, headers, payload, stdout):
+        res = requests.get(req_url, headers=headers, params=payload).json()
         if len(res) == 0:
             print("No results for {0}!".format(orig_string), file=stdout)
             return None
@@ -28,26 +28,26 @@ class Plugin:
             station2 = match.group(2)
             rlc = match.group(3) or " " * 3 # three spaces == no railcard
 
-            station_url = "http://api.brfares.com/ac_loc?term={0}"
-            rlc_url = "http://api.brfares.com/ac_rlc?term={0}"
-            query_url = "http://api.brfares.com/querysimple?orig={0}&dest={1}&rlc={2}"
-            restriction_url = "http://www.brfares.com/restrictionspec?code={0}"
+            station_url = "http://api.brfares.com/ac_loc"
+            rlc_url = "http://api.brfares.com/ac_rlc"
+            query_url = "http://api.brfares.com/querysimple"
+            restriction_url = "http://www.brfares.com/restrictionspec"
 
             headers = {"User-Agent": "SmartBot"}
-
-            stn1_req = station_url.format(urllib.parse.quote(station1))
-            stn2_req = station_url.format(urllib.parse.quote(station2))
-            rlc_req = rlc_url.format(urllib.parse.quote(rlc))
             
-            stn1_code = self.get_code(stn1_req, station1, headers, stdout)
-            stn2_code = self.get_code(stn2_req, station2, headers, stdout)
-            rlc_code = self.get_code(rlc_req, rlc, headers, stdout)
+            stn1_code = self.get_code(station_url, station1, headers, {"term": station1}, stdout)
+            stn2_code = self.get_code(station_url, station2, headers, {"term": station2}, stdout)
+            rlc_code = self.get_code(rlc_url, rlc, headers, {'term': rlc}, stdout)
 
             if not stn1_code or not stn2_code or not rlc_code:
                 return
 
-            query_req = query_url.format(stn1_code, stn2_code, rlc_code)
-            fares = requests.get(query_req, headers=headers).json()
+            query_payload = {
+                "orig": stn1_code,
+                "dest": stn2_code,
+                "rlc" : rlc_code,
+            }
+            fares = requests.get(query_url, headers=headers, params=query_payload).json()
             if len(fares["fares"]) == 0:
                 print('No fares from {orig[ticketname]} ({orig[code]}) to {dest[ticketname]} ({dest[code]}) with {railcard[name]} ({railcard[code]})!'.format(**fares), file=stdout)
                 return

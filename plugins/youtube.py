@@ -18,6 +18,11 @@ class Plugin:
                 urllib.parse.quote(id)
             )
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "key": self.key,
+                "id": id,
+                "part": ",".join(["contentDetails", "snippet", "statistics"]),
+            }
 
             res = requests.get(url, headers=headers).json()
             if res["items"]:

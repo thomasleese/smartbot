@@ -83,13 +83,14 @@ class Plugin:
             query = stdin.read().strip()
 
         if query:
-            url = "http://api.wolframalpha.com/v2/query?input={0}&appid={1}".format(
-                urllib.parse.quote(query),
-                urllib.parse.quote(self.appid)
-            )
+            url = "http://api.wolframalpha.com/v2/query"
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "input": query,
+                "appid": self.appid,
+            }
 
-            page = requests.get(url, headers=headers, timeout=15)
+            page = requests.get(url, headers=headers, params=payload, timeout=15)
             if page.status_code == 200:
                 tree = lxml.etree.fromstring(page.content)
                 pods = []

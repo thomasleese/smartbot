@@ -18,14 +18,16 @@ class Plugin:
             query = stdin.read().strip()
 
         if query:
-            url = "https://www.googleapis.com/customsearch/v1?key={0}&cx={1}&q={2}&num=5".format(
-                urllib.parse.quote(self.key),
-                urllib.parse.quote(self.cx),
-                urllib.parse.quote(query)
-            )
+            url = "https://www.googleapis.com/customsearch/v1"
             headers = {"User-Agent": "SmartBot"}
+            payload = {
+                "key": self.key,
+                "cx" : self.cx,
+                "q": query,
+                "num": 5,
+            }
 
-            res = requests.get(url, headers=headers).json()
+            res = requests.get(url, headers=headers, params=payload).json()
             if "error" in res:
                 print(res["error"]["message"], file=stdout)
             elif "items" in res:
