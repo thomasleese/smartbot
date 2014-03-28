@@ -35,8 +35,8 @@ class Plugin:
 
             headers = {"User-Agent": "SmartBot"}
             
-            stn1_code = self.get_code(station_url, station1, headers, {'term': station1}, stdout)
-            stn2_code = self.get_code(station_url, station2, headers, {'term': station2}, stdout)
+            stn1_code = self.get_code(station_url, station1, headers, {"term": station1}, stdout)
+            stn2_code = self.get_code(station_url, station2, headers, {"term": station2}, stdout)
             rlc_code = self.get_code(rlc_url, rlc, headers, {'term': rlc}, stdout)
 
             if not stn1_code or not stn2_code or not rlc_code:
