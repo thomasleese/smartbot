@@ -117,8 +117,8 @@ Validity restriction code: {restrictions}
                     validity=fare["ticket"]["validity"]["desc"], validitycode=fare["ticket"]["validity"]["code"], restricttrain=restricttrain, restrictdate=restrictdate, restrictarea=restrictarea, validityperiod=validityperiod,
                     reservations=fare["ticket"]["reservations"]["desc"], reservationscode=fare["ticket"]["reservations"]["code"],
                     restrictions=fare["restriction_code"] if fare["restriction_code"] != " " * 2 else "No restrictions",
-                    adultname=fare["adult"]["status"]["name"], adultcode=fare["adult"]["status"]["ticket_code"], adultprice=fare["adult"]["fare"] / 100.0, adultminfarewarning=adultminfarewarning,
-                    childname=fare["child"]["status"]["name"], childcode=fare["child"]["status"]["ticket_code"], childprice=fare["child"]["fare"] / 100.0, childminfarewarning=childminfarewarning)
+                    adultname=fare["adult"]["status"]["name"] if "status" in fare["adult"] else "No adult fare", adultcode=fare["adult"]["status"]["ticket_code"] if "status" in fare["adult"] else "", adultprice=fare["adult"]["fare"] / 100.0 if "fare" in fare["adult"] else 0.0, adultminfarewarning=adultminfarewarning,
+                    childname=fare["child"]["status"]["name"] if "status" in fare["child"] else "No child fare", childcode=fare["child"]["status"]["ticket_code"] if "status" in fare["child"] else "", childprice=fare["child"]["fare"] / 100.0 if "fare" in fare["child"] else 0.0, childminfarewarning=childminfarewarning)
                 
 
                 print(out_string, file=stdout)
