@@ -11,7 +11,7 @@ class Plugin:
         self.key = key
 
     def on_message(self, bot, msg, reply):
-        match = re.findall(r"https?://(?:www\.)?youtube\.com/watch\?v=([^\s]+)", msg["message"], re.IGNORECASE)
+        match = re.findall(r"(?:https?://)?(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?([^\s]+)", msg["message"], re.IGNORECASE)
         for i, id in enumerate(match):
             url = "https://www.googleapis.com/youtube/v3/videos?key={}&part=contentDetails%2Csnippet%2Cstatistics&id={}".format(
                 urllib.parse.quote(self.key),
