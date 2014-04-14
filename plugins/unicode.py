@@ -12,23 +12,16 @@ class Plugin:
             query = stdin.read().strip()
 
         if query:
-            result = None
             try:
-                result = unicodedata.lookup(query)
+                c = unicodedata.lookup(query)
+                result = "{} (U+{})".format(c, hex(ord(c))[2:])
             except KeyError:
                 try:
-                    result = unicodedata.name(query)
-                except ValueError:
-                    try:
-                        result = unicodedata.decimal(query)
-                    except ValueError:
-                        try:
-                            result = unicodedata.digit(query)
-                        except ValueError:
-                            try:
-                                result = unicodedata.numeric(query)
-                            except ValueError:
-                                result = None
+                    name = unicodedata.name(query)
+                    result = "{} (U+{})".format(name, hex(ord(query))[2:])
+                except (ValueError, TypeError):
+                    result = None
+
             if result:
                 print(result, file=stdout)
             else:
