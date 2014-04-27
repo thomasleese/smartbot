@@ -36,7 +36,7 @@ def _parse_literal(string, from_date=None):
         result = map(lambda x: int(x or 0), result)
 
         current_date = from_date
-        if not current_date:
+        if current_date is None:
             current_date = datetime.datetime.now()
 
         r = tuple(result)
