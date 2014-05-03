@@ -141,7 +141,7 @@ class IRC(_Backend):
 
     def send(self, target, message):
         for msg in message.splitlines():
-            self.write("PRIVMSG", target, msg)
+            self.write("PRIVMSG", target, msg[:400])  # to avoid flooding
             time.sleep(1)
 
     def format(self, text, properties):
