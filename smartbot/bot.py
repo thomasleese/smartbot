@@ -59,7 +59,7 @@ class Bot:
                 if name == plugin_name:
                     return plugin
 
-    def on_message(self, msg):
+    def call_plugins_on_message(self, msg):
         reply = functools.partial(self.send, msg["reply_to"])
 
         for name, plugin in self.plugins.items():
@@ -69,6 +69,11 @@ class Bot:
                 except Exception as e:
                     traceback.print_exc()
                     reply(name + ": " + str(e))
+
+    def on_message(self, msg):
+        call_plugins_on_message(msg)
+
+        reply = functools.partial(self.send, msg["reply_to"])
 
         m = msg["message"].strip()
         if m.startswith(self.name) or m.startswith("!"):

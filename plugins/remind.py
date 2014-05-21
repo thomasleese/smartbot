@@ -9,10 +9,6 @@ from smartbot import utils
 
 
 class Plugin:
-    def on_timeout(self, message, duration, reply):
-        time.sleep(duration)
-        reply(message)
-
     def on_command(self, bot, msg, stdin, stdout, reply):
         pattern_str = r"remind (me|[^\s]+) (to|about|that) (.*) (in|at) (.*)$"
         match = re.match(pattern_str, msg["message"], re.IGNORECASE)
@@ -34,9 +30,8 @@ class Plugin:
                     message = "{0}: {1} asked me to remind you {2} {3}".format(match.group(1), msg["sender"], match.group(2), match.group(3))
 
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
-                t = threading.Thread(target=self.on_timeout, args=(message, duration, reply))
-                t.daemon = True
-                t.start()
+                time.sleep(duration)
+                print(message, file=stdout)
 
     def on_help(self):
         return "Usage: remind me|<target> to|about|that <something> in|at <time>"
