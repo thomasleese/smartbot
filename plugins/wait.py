@@ -3,7 +3,7 @@ import re
 import time
 import unittest
 
-from smartbot import utils
+from smartbot import HelpException, StopCommandException, utils
 
 
 class Plugin:
@@ -14,12 +14,12 @@ class Plugin:
                 try:
                     date = utils.datetime.parse(" ".join(msg["args"][1:]))
                 except ValueError:
-                    raise Exception("I don't understand that date.")
+                    raise StopCommandException("I don't understand that date.")
                 else:
                     duration = max(0, (date - datetime.datetime.now()).total_seconds())
                     time.sleep(duration)
         else:
-            print(self.on_help(), file=stdout)
+            raise HelpException(self)
 
     def on_help(self):
         return "Usage: wait in <time>|at <time>"
