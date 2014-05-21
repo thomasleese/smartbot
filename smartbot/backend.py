@@ -30,7 +30,7 @@ class IRC(_Backend):
         self.realname = realname
         self.channels = []
 
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def ping_thread(self):
@@ -140,9 +140,10 @@ class IRC(_Backend):
         self.write("JOIN", channel)
 
     def send(self, target, message):
-        for msg in message.splitlines():
-            self.write("PRIVMSG", target, msg[:400])  # to avoid flooding
-            time.sleep(1)
+        with self.lock:
+            for msg in message.splitlines():
+                self.write("PRIVMSG", target, msg[:400])  # to avoid flooding
+                time.sleep(1.5)
 
     def format(self, text, properties):
         values = []
