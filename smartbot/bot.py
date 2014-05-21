@@ -3,6 +3,7 @@ import itertools
 import functools
 import shlex
 import sys
+import threading
 import traceback
 
 
@@ -70,8 +71,48 @@ class Bot:
                     traceback.print_exc()
                     reply(name + ": " + str(e))
 
+    def call_plugins_on_respond(self, msg):
+        reply = functools.partial(self.send, msg["reply_to"])
+
+        for name, plugin in self.plugins.items():
+            if hasattr(plugin, "on_respond"):
+                try:
+                    plugin.on_respond(self, msg, reply)
+                except Exception as e:
+                    traceback.print_exc()
+                    reply(name + ": " + str(e))
+
+    def call_plugins_on_command(self, msg):
+        reply = functools.partial(self.send, msg["reply_to"])
+
+        try:
+            args = shlex.split(msg["message"])
+        except ValueError:
+            args = m.split(" ")  # try and cope with invalid data
+
+        commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
+        pipe_buffer = ""
+        for command in commands:
+            plugin = self.find_plugin(command[0])
+            if not plugin or not hasattr(plugin, "on_command"):
+                break
+
+            try:
+                stdin = io.StringIO(pipe_buffer)
+                stdout = io.StringIO()
+                msg["args"] = command
+                msg["message"] = " ".join(command)
+                plugin.on_command(self, msg, stdin, stdout, reply)
+                pipe_buffer = stdout.getvalue()
+            except Exception as e:
+                traceback.print_exc()
+                self.send(msg["reply_to"], repr(e))
+                break
+        else:
+            self.send(msg["reply_to"], pipe_buffer.strip())
+
     def on_message(self, msg):
-        call_plugins_on_message(msg)
+        self.call_plugins_on_message(msg)
 
         reply = functools.partial(self.send, msg["reply_to"])
 
@@ -83,39 +124,9 @@ class Bot:
                 m = m[len(self.name)+1:].strip()
 
             msg["message"] = m
-            for name, plugin in self.plugins.items():
-                if hasattr(plugin, "on_respond"):
-                    try:
-                        plugin.on_respond(self, msg, reply)
-                    except Exception as e:
-                        traceback.print_exc()
-                        reply(name + ": " + str(e))
 
-            try:
-                args = shlex.split(m)
-            except ValueError:
-                args = m.split(" ") # try and cope with invalid data
-
-            commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
-            pipe_buffer = ""
-            for command in commands:
-                plugin = self.find_plugin(command[0])
-                if not plugin or not hasattr(plugin, "on_command"):
-                    break
-
-                try:
-                    stdin = io.StringIO(pipe_buffer)
-                    stdout = io.StringIO()
-                    msg["args"] = command
-                    msg["message"] = " ".join(command)
-                    plugin.on_command(self, msg, stdin, stdout, reply)
-                    pipe_buffer = stdout.getvalue()
-                except Exception as e:
-                    traceback.print_exc()
-                    self.send(msg["reply_to"], repr(e))
-                    break
-            else:
-                self.send(msg["reply_to"], pipe_buffer.strip())
+            self.call_plugins_on_respond(msg)
+            threading.Thread(target=self.call_plugins_on_command, args=(msg,)).start()
 
     # actions
     def join(self, channel):
