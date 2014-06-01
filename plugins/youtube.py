@@ -27,17 +27,19 @@ class Plugin:
             res = requests.get(url, headers=headers).json()
             if res["items"]:
                 video = res["items"][0]
-                thumbnail = video["snippet"]["thumbnails"]["default"]["url"]
+                channelTitle = video["snippet"]["channelTitle"]
                 duration = video["contentDetails"]["duration"]
                 views = video["statistics"]["viewCount"]
                 likes = video["statistics"]["likeCount"]
                 dislikes = video["statistics"]["dislikeCount"]
-                reply("{}: {} | {} {} {} | {}".format(bot.format("[{}]".format(i), Style.bold),
-                                                      duration,
-                                                      views,
-                                                      bot.format(likes, Colour.fg_green),
-                                                      bot.format(dislikes, Colour.fg_red),
-                                                      bot.format(thumbnail, Colour.fg_grey)))
+                thumbnail = video["snippet"]["thumbnails"]["default"]["url"]
+                reply("{}: {} | {} | {} {} {} | {}".format(bot.format("[{}]".format(i), Style.bold),
+                                                           channelTitle,
+                                                           duration,
+                                                           views,
+                                                           bot.format(likes, Colour.fg_green),
+                                                           bot.format(dislikes, Colour.fg_red),
+                                                           bot.format(thumbnail, Colour.fg_grey)))
 
     def on_help(self):
         return "Sends information about YouTube URLs posted."
