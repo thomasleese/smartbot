@@ -7,21 +7,7 @@ import threading
 import traceback
 
 
-class StopCommandException(RuntimeError):
-    """
-    An exception that can be raise to halt the execution of a command, marking
-    a user error somewhere.
-    """
-    pass
-
-
-class HelpException(StopCommandException):
-    """
-    A convinience StopCommandException which contains the plugin help as the
-    message.
-    """
-    def __init__(self, plugin):
-        super().__init__(plugin.on_help())
+from .exceptions import *
 
 
 class Bot:
@@ -122,7 +108,7 @@ class Bot:
                 msg["message"] = " ".join(command)
                 plugin.on_command(self, msg, stdin, stdout, reply)
                 pipe_buffer = stdout.getvalue()
-            except StopCommandException as e:
+            except StopCommand as e:
                 self.send(msg["reply_to"], "{0}: {1}".format(command[0], e))
                 break
             except Exception as e:

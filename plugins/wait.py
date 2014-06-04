@@ -3,7 +3,8 @@ import re
 import time
 import unittest
 
-from smartbot import HelpException, StopCommandException, utils
+from smartbot import utils
+from smartbot.exceptions import *
 
 
 class Plugin:
@@ -14,12 +15,14 @@ class Plugin:
                 try:
                     date = utils.datetime.parse(" ".join(msg["args"][1:]))
                 except ValueError:
-                    raise StopCommandException("I don't understand that date.")
+                    raise smartbot.StopCommand("I don't understand that date.")
                 else:
-                    duration = max(0, (date - datetime.datetime.now()).total_seconds())
-                    time.sleep(duration)
+                    duration = (date - datetime.datetime.now()).total_seconds()
+                    time.sleep(max(0, duration))
+            else:
+                raise StopCommand("‘{}’ is not a valid command.".format(cmd))
         else:
-            raise HelpException(self)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
         return "Usage: wait in <time>|at <time>"
