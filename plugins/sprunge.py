@@ -2,15 +2,14 @@ import io
 import requests
 import unittest
 
+import smartbot.utils
+
 
 class Plugin:
     def on_command(self, bot, msg, stdin, stdout, reply):
         contents = stdin.read().strip()
         if contents:
-            headers = {"User-Agent": "SmartBot"}
-            payload = {"sprunge": contents}
-            page = requests.post("http://sprunge.us", data=payload, headers=headers)
-            print(page.text, file=stdout)
+            print(smartbot.utils.web.sprunge(contents), file=stdout)
         else:
             print("Expected input on stdin.", file=stdout)
 
