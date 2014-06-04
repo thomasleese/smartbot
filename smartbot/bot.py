@@ -105,9 +105,10 @@ class Bot:
         try:
             args = shlex.split(msg["message"])
         except ValueError:
-            args = m.split(" ")  # try and cope with invalid data
+            args = msg["message"].split(" ")  # try and cope with invalid data
 
-        commands = [list(group) for k, group in itertools.groupby(args, lambda x: x == "|") if not k]
+        groups = itertools.groupby(args, lambda x: x == "|")
+        commands = [list(group) for k, group in groups if not k]
         pipe_buffer = ""
         for command in commands:
             plugin = self.find_plugin(command[0])
@@ -146,7 +147,9 @@ class Bot:
             msg["message"] = m
 
             self.call_plugins_on_respond(msg)
-            threading.Thread(target=self.call_plugins_on_command, args=(msg,)).start()
+
+            target = self.call_plugins_on_command
+            threading.Thread(target=target, args=(msg,)).start()
 
     # actions
     def join(self, channel):
