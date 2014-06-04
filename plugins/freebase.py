@@ -34,16 +34,12 @@ class Plugin:
         return res
 
     def _look_for_text(self, topic):
-        for key, value in topic.get("property", {}).items():
-            if key == "/common/document/text":
-                return value["values"][0]["text"], value["values"][0]["value"]
-            else:
-                for v in value["values"]:
-                    arg1, arg2 = self._look_for_text(v)
-                    if arg1 and arg2:
-                        return arg1, arg2
-
-        return None, None
+        description = topic["property"].get("/common/topic/description")
+        if description:
+            return description["values"][0]["text"], \
+                   description["values"][0]["value"]
+        else:
+            return None, None
 
     def on_command(self, bot, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
@@ -59,7 +55,7 @@ class Plugin:
                     url = utils.web.sprunge(long_text)
                     print("{} {}".format(short_text, url), file=stdout)
                 else:
-                    print("There isn't much information about this", file=stdout)
+                    print("There isn't much information about this.", file=stdout)
             else:
                 print("I don't know what you're on about.", file=stdout)
         else:
