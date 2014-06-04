@@ -1,3 +1,4 @@
+import smartbot.utils.web
 import requests
 import re
 
