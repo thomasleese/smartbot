@@ -3,6 +3,7 @@ import pprint
 
 import requests
 
+from smartbot import utils
 
 class Plugin:
     names = ["define", "freebase"]
@@ -35,12 +36,14 @@ class Plugin:
     def _look_for_text(self, topic):
         for key, value in topic.get("property", {}).items():
             if key == "/common/document/text":
-                return value["values"][0]["value"]
+                return value["values"][0]["text"], value["values"][0]["value"]
             else:
                 for v in value["values"]:
-                    text = self._look_for_text(v)
-                    if text:
-                        return text
+                    arg1, arg2 = self._look_for_text(v)
+                    if arg1 and arg2:
+                        return arg1, arg2
+
+        return None, None
 
     def on_command(self, bot, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
@@ -51,9 +54,10 @@ class Plugin:
             mid = self._search_mid(query)
             if mid:
                 topic = self._topic(mid)
-                text = self._look_for_text(topic)
-                if text:
-                    print(text, file=stdout)
+                short_text, long_text = self._look_for_text(topic)
+                if short_text and long_text:
+                    url = utils.web.sprunge(long_text)
+                    print("{} {}".format(short_text, url), file=stdout)
                 else:
                     print("There isn't much information about this", file=stdout)
             else:

@@ -17,3 +17,10 @@ def get_title(url):
         return "Timeout!"
     except IndexError: # no title element
         return "No title."
+
+
+def sprunge(data):
+    headers = {"User-Agent": "SmartBot"}
+    payload = {"sprunge": data}
+    page = requests.post("http://sprunge.us", data=payload, headers=headers)
+    return page.text
