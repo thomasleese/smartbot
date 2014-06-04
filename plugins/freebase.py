@@ -53,7 +53,7 @@ class Plugin:
                 topic = self._topic(mid)
                 text = self._look_for_text(topic)
                 if text:
-                    print(text)
+                    print(text, file=stdout)
                 else:
                     print("There isn't much information about this", file=stdout)
             else:
