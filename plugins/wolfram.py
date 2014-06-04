@@ -7,6 +7,10 @@ import unittest
 import urllib.parse
 
 
+from smartbot import utils
+from smartbot.exceptions import *
+
+
 class Plugin:
     names = ["wolfram", "?"]
 
@@ -84,13 +88,13 @@ class Plugin:
 
         if query:
             url = "http://api.wolframalpha.com/v2/query"
-            headers = {"User-Agent": "SmartBot"}
             payload = {
                 "input": query,
                 "appid": self.appid,
             }
 
-            page = requests.get(url, headers=headers, params=payload, timeout=15)
+            s = utils.web.requests_session()
+            page = s.get(url, params=payload, timeout=15)
             if page.status_code == 200:
                 tree = lxml.etree.fromstring(page.content)
                 pods = []
@@ -109,9 +113,9 @@ class Plugin:
                                     print("## {0}".format(subpod.get("title")), file=stdout)
                                 print(self.format_subpod(subpod), file=stdout)
                 else:
-                    print("Nothing more to say.", file=stdout)
+                    raise StopCommand("Nothing more to say.")
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
         return "Usage: wolfram <query>"

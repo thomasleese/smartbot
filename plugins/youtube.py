@@ -36,14 +36,14 @@ class Plugin:
         match = re.findall(REGEX, msg["message"], re.IGNORECASE)
         for i, video_id in enumerate(match):
             url = "https://www.googleapis.com/youtube/v3/videos"
-            headers = {"User-Agent": "SmartBot"}
             payload = {
                 "key": self.key,
                 "id": video_id,
-                "part": ",".join(["contentDetails", "snippet", "statistics"]),
+                "part": ",".join(["contentDetails", "snippet", "statistics"])
             }
 
-            res = requests.get(url, headers=headers, params=payload).json()
+            s = utils.web.requests_session()
+            res = s.get(url, params=payload).json()
             if res["items"]:
                 video = res["items"][0]
                 reply(self._get_reply(bot, i, video))
