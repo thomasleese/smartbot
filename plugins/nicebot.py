@@ -1,4 +1,5 @@
 import smartbot
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -12,5 +13,8 @@ class Plugin(smartbot.Plugin):
             if nicebot["channel"] == msg["channel"] and msg["is_me"]:
                 self.bot.send(nicebot["target"], nicebot["password"])
 
+    def on_command(self, msg, stdin, stdout, reply):
+        print(" ".join(nicebot["channel"] for nicebot in self.nicebots), file=stdout)
+
     def on_help(self):
-        return "Authenticate with NiceBot."
+        return self.bot.format("nicebot", Style.bold)
