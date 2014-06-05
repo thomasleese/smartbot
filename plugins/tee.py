@@ -1,4 +1,6 @@
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
