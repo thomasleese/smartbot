@@ -3,12 +3,14 @@ import lxml.html
 import requests
 import unittest
 
+from smartbot.exceptions import *
+
 
 class Plugin:
     def __init__(self):
         self.saved_items = {}
 
-    def search(self, terms):
+    def _search(self, terms):
         url = "http://www.xboxachievements.com/search.php"
         page = requests.post(url, data={"search": terms})
         tree = lxml.html.fromstring(page.text)
@@ -22,7 +24,7 @@ class Plugin:
 
         return results
 
-    def guide(self, name):
+    def _guide(self, name):
         game_id = name.lower().replace(" ", "-")
         url = "http://www.xboxachievements.com/game/{0}/guide/".format(game_id)
         page = requests.get(url)
@@ -59,61 +61,19 @@ class Plugin:
             except (IndexError, ValueError):
                 pass
 
-            guide = self.guide(game)
+            guide = self._guide(game)
             if guide:
                 for g in guide:
                     print(g, file=stdout)
             else:
-                results = self.search(game)
+                results = self._search(game)
                 if results:
                     for i, r in enumerate(results):
                         print("[{0}]: {1}".format(i, r), file=stdout)
                 else:
-                    print("Can't find any games.", file=stdout)
+                    raise StopCommand("Can't find any games.")
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
         return "Usage: ach <game>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_no_game(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "DHKLfskldjslfjsdklasjhlsJKLfsdhalfsdlk"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 1)
-
-    def test_search(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "portal"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 2)
-
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "half life"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 1)
-
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "grand theft"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 3)
-
-    def test_search_then_guide(self):
-        self.plugin.on_command(None, {"args": [None, "portal"]}, None, io.StringIO(), None)
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "0"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 5)
-
-    def test_guide(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "Portal 2"]}, None, stdout, None)
-        self.assertEqual(len(stdout.getvalue().strip().splitlines()), 5)
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
