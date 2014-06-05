@@ -1,6 +1,8 @@
 import datetime
 
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -20,9 +22,12 @@ class Plugin(smartbot.Plugin):
                 datetime_str = info["datetime"].strftime("%a %d %b %H:%M %Z").strip()
                 print("{0} {1} on {2}.".format(user, info["action"], datetime_str), file=stdout)
             except KeyError:
-                print("I don't know anything about {0}.".format(user), file=stdout)
+                raise StopCommand("I don't know anything about {0}.".format(user))
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: seen <user>"
+        return "{} {}".format(
+            super().on_help(),
+            self.bot.format("user", Style.underline)
+        )
