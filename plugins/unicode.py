@@ -3,6 +3,8 @@ import unicodedata
 import requests
 
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -13,23 +15,26 @@ class Plugin(smartbot.Plugin):
         if not query:
             query = stdin.read().strip()
 
-        if query:
-            try:
-                c = unicodedata.lookup(query)
-                result = "{} (U+{})".format(c, hex(ord(c))[2:])
-            except KeyError:
-                try:
-                    name = unicodedata.name(query)
-                    result = "{} (U+{})".format(name, hex(ord(query))[2:])
-                except (ValueError, TypeError):
-                    result = None
+        if not query:
+            raise StopCommandWithHelp(self)
 
-            if result:
-                print(result, file=stdout)
-            else:
-                print("Nothing found.", file=stdout)
+        try:
+            c = unicodedata.lookup(query)
+            result = "{} (U+{})".format(c, hex(ord(c))[2:])
+        except KeyError:
+            try:
+                name = unicodedata.name(query)
+                result = "{} (U+{})".format(name, hex(ord(query))[2:])
+            except (ValueError, TypeError):
+                result = None
+
+        if result:
+            print(result, file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommand("Nothing found.")
 
     def on_help(self):
-        return "Usage: unicode <query>"
+        return "{} {}".format(
+            super().on_help(),
+            self.bot.format("query", Style.underline)
+        )
