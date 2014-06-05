@@ -1,6 +1,9 @@
 import requests
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -9,25 +12,32 @@ class Plugin(smartbot.Plugin):
     def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 3:
             url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson"
-            headers = {"User-Agent": "SmartBot"}
             payload = {
                 "liveTrainsFrom": msg["args"][1],
                 "liveTrainsTo"  : msg["args"][2],
                 "departing": "true",
             }
 
-            res = requests.get(url, headers=headers, params=payload).json()
-            if res["trains"]:
-                for i, train in enumerate(res["trains"]):
-                    if train[4]:
-                        print("[{0}]: the {1} to {2} on platform {3} ({4}).".format(i, train[1], train[2], train[4],
-                                                                                    train[3].lower()), file=stdout)
-                    else:
-                        print("[{0}]: the {1} to {2} ({3}).".format(i, train[1], train[2], train[3].lower()), file=stdout)
-            else:
-                print("No trains.", file=stdout)
+            session = utils.web.requests_session()
+            res = session.get(url, params=payload).json()
+            if not res["trains"]:
+                raise StopCommand("No trains.")
+
+            for i, train in enumerate(res["trains"]):
+                if train[4]:
+                    print("[{}]: the {} to {} on platform {} ({}).".format(
+                        i, train[1], train[2], train[4], train[3].lower()
+                    ), file=stdout)
+                else:
+                    print("[{}]: the {} to {} ({}).".format(
+                        i, train[1], train[2], train[3].lower()
+                    ), file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: trains <from> <to>"
+        return "{} {} {}".format(
+            super().on_help(),
+            self.bot.format("from", Style.underline),
+            self.bot.format("to", Style.underline)
+        )
