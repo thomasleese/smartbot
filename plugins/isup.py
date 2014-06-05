@@ -3,6 +3,9 @@ import urllib.parse
 import requests
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -15,14 +18,19 @@ class Plugin(smartbot.Plugin):
         else:
             url = stdin.read().strip()
 
-        url = "http://isitup.org/{0}.json".format(urllib.parse.quote(url))
-        headers = {"User-Agent": "SmartBot"}
+        if not url:
+            raise StopCommandWithHelp(self)
 
-        res = requests.get(url, headers=headers).json()
+        url = "http://isitup.org/{0}.json".format(urllib.parse.quote(url))
+        session = utils.web.requests_session()
+        res = session.get(url).json()
         if res["status_code"] == 1:
-            print("{0} looks up for me.".format(res["domain"]), file=stdout)
+            print("{0} is up from here.".format(res["domain"]), file=stdout)
         else:
-            print("{0} looks down for me.".format(res["domain"]), file=stdout)
+            print("{0} is down from here.".format(res["domain"]), file=stdout)
 
     def on_help(self):
-        return "Usage: isup <domain>"
+        return "{} {}".format(
+            self.bot.format("isup", Style.bold),
+            self.bot.format("domain", Style.underline),
+        )
