@@ -1,6 +1,8 @@
 import twython
 
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -18,13 +20,16 @@ class Plugin(smartbot.Plugin):
         else:
             person = stdin.read().strip()
 
-        if person:
-            tweets = self.twitter.get_user_timeline(screen_name=person)
-            for i, tweet in enumerate(tweets[:3]):
-                text = tweet["text"].replace("\n", " ").replace("\r", "").strip()
-                print("[{0}]: {1}".format(i, text), file=stdout)
-        else:
-            print(self.on_help(), file=stdout)
+        if not person:
+            raise StopCommandWithHelp(self)
+
+        tweets = self.twitter.get_user_timeline(screen_name=person)
+        for i, tweet in enumerate(tweets[:3]):
+            text = tweet["text"].replace("\n", " ").replace("\r", "").strip()
+            print("[{0}]: {1}".format(i, text), file=stdout)
 
     def on_help(self):
-        return "Usage: twitter <person>"
+        return "{} {}".format(
+            super().on_help(),
+            self.bot.format("person", Style.underline)
+        )
