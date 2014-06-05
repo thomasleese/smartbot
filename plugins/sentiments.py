@@ -4,6 +4,8 @@ import math
 from textblob import TextBlob
 
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Statistics:
@@ -79,8 +81,7 @@ class Plugin(smartbot.Plugin):
             user_list = stdin.read().strip()
 
         if not user_list:
-            print(self.on_help(), file=stdout)
-            return
+            raise StopCommandWithHelp(self)
 
         for user in user_list.split():
             if user not in self.sentiments:
@@ -96,4 +97,8 @@ class Plugin(smartbot.Plugin):
             print(self.stats_string.format("σ", p=polarity.stdev, s=subjectivity.stdev), file=stdout)
 
     def on_help(self):
-        return "Usage: sentiments <user> [<user>...]"
+        return "{} {} [{}…]".format(
+            super().on_help(),
+            self.bot.format("user", Style.underline),
+            self.bot.format("user", Style.underline),
+        )
