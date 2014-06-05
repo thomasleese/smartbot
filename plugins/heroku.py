@@ -1,25 +1,32 @@
 import requests
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
+
+
+STATUS_URL = "https://status.heroku.com/api/v3/current-status"
 
 
 class Plugin(smartbot.Plugin):
     names = ["heroku"]
 
     def on_command(self, msg, stdin, stdout, reply):
-        if len(msg["args"]) >= 2:
-            action = msg["args"][1]
-            if "status".startswith(action):
-                url = "https://status.heroku.com/api/v3/current-status"
-                headers = {"User-Agent": "SmartBot"}
+        if len(msg["args"]) <= 1:
+            raise StopCommandWithHelp(self)
 
-                res = requests.get(url, headers=headers).json()
-                print("Production: {0}".format(res["status"]["Production"]), file=stdout)
-                print("Development: {0}".format(res["status"]["Development"]), file=stdout)
-            else:
-                print("No such action:", action, file=stdout)
+        action = msg["args"][1]
+        if "status".startswith(action):
+            session = utils.web.requests_session()
+            res = session.get(STATUS_URL).json()
+            status = res["status"]
+            print("Production: {}".format(status["Production"]), file=stdout)
+            print("Development: {}".format(status["Development"]), file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: heroku status"
+        return "{} status".format(
+            self.bot.format("heroku", Style.bold),
+        )
