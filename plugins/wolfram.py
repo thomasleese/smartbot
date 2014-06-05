@@ -1,17 +1,16 @@
-import lxml.etree
 import io
 import re
-import requests
 import os
-import unittest
-import urllib.parse
 
+import requests
+import lxml.etree
 
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
     names = ["wolfram", "?"]
 
     def __init__(self, appid):
@@ -73,15 +72,15 @@ class Plugin:
         else:
             return s.strip()
 
-    def on_message(self, bot, msg, reply):
+    def on_message(self, msg, reply):
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
             stdout = io.StringIO()
-            self.on_command(bot, {"args": [None, query]}, None, stdout, None)  # stdin, reply is unused
+            self.on_command({"args": [None, query]}, None, stdout, None)  # stdin, reply is unused
             output = stdout.getvalue().strip()
             reply(output)
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()
@@ -119,21 +118,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: wolfram <query>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin(os.environ["WOLFRAM_APPID"])
-
-    def test_command(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "2+2"]}, None, stdout, None)
-        self.assertNotEqual("Nothing more to say.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())

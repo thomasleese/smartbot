@@ -3,8 +3,10 @@ import math
 
 from textblob import TextBlob
 
+import smartbot
 
-class Statistics():
+
+class Statistics:
     """
     This class is based on Donald Knuth"s "The Art of Computer Programming, Volume 2:
     Seminumerical Algorithms" section 4.2.2, of which a summary can be seen on
@@ -48,13 +50,15 @@ class Statistics():
         return math.sqrt(self.variance)
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
+    names = ["sentiments"]
     stats_string = "{}:    Polarity: {p: f},   Subjectivity: {s: f}"
 
-    def sentiments(self, bot):
-        return bot.storage.setdefault("sentiments", collections.defaultdict(dict))
+    @property
+    def sentiments(self):
+        return self.bot.storage.setdefault("sentiments", collections.defaultdict(dict))
 
-    def on_message(self, bot, msg, reply):
+    def on_message(self, msg, reply):
         message_sentiment = TextBlob(msg["message"]).sentiment
 
         polarity = message_sentiment.polarity
@@ -62,13 +66,13 @@ class Plugin:
         if not polarity and not subjectivity:
             return
 
-        sender_sentiments = self.sentiments(bot)[msg["sender"]]
+        sender_sentiments = self.sentiments[msg["sender"]]
         sender_sentiments.setdefault('polarity', Statistics()).add(polarity)
         sender_sentiments.setdefault('subjectivity', Statistics()).add(subjectivity)
 
         bot.storage.commit()
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             user_list = " ".join(msg["args"][1:])
         else:
@@ -79,11 +83,11 @@ class Plugin:
             return
 
         for user in user_list.split():
-            if user not in self.sentiments(bot):
+            if user not in self.sentiments:
                 print("'{user}' is unknown or has not said anything useful yet".format(user=user), file=stdout)
                 continue
 
-            user_sentiments = self.sentiments(bot)[user]
+            user_sentiments = self.sentiments[user]
             polarity = user_sentiments["polarity"]
             subjectivity = user_sentiments["subjectivity"]
 

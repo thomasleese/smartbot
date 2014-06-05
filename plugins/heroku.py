@@ -1,10 +1,12 @@
-import io
 import requests
-import unittest
+
+import smartbot
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["heroku"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             action = msg["args"][1]
             if "status".startswith(action):
@@ -21,22 +23,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: heroku status"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_status(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "status"]}, None, stdout, None)
-        self.assertFalse(stdout.getvalue().startswith("No such action"))
-        self.assertNotEqual(self.plugin.on_help(), stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())

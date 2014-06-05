@@ -1,16 +1,17 @@
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
     names = ["google", "search"]
 
     def __init__(self, key, cx):
         self.key = key
         self.cx = cx
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

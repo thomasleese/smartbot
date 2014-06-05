@@ -1,5 +1,10 @@
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+import smartbot
+
+
+class Plugin(smartbot.Plugin):
+    names = ["tee"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         text = stdin.read().strip()
 
         reply(text)

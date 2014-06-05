@@ -1,11 +1,12 @@
 import requests
 
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
     names = ["define", "freebase"]
 
     def __init__(self, key):
@@ -28,10 +29,8 @@ class Plugin:
 
     def _topic(self, mid):
         url = "https://www.googleapis.com/freebase/v1/topic{}".format(mid)
-        headers = {"User-Agent": "SmartBot"}
-
-        res = requests.get(url, headers=headers).json()
-        return res
+        session = utils.web.requests_session()
+        return requests.get(url).json()
 
     def _look_for_text(self, topic):
         description = topic["property"].get("/common/topic/description")
@@ -41,7 +40,7 @@ class Plugin:
         else:
             return None, None
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

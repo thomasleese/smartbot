@@ -1,12 +1,12 @@
-import io
 import re
-import requests
-import urllib.parse
 
+import requests
+
+import smartbot
 from smartbot.formatting import *
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
     names = ["fares", "brfares"]
 
     def __init__(self):
@@ -21,7 +21,7 @@ class Plugin:
         else:
             return res[0]["code"]
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         pattern = r"(?:br)?fares (?:from )?(.*) to (.*?)(?: with (.*))?$"
         match = re.match(pattern, msg["message"], re.IGNORECASE)
         if match:

@@ -1,11 +1,12 @@
-import io
 import requests
-import unittest
-import urllib.parse
+
+import smartbot
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["news"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         topic = " ".join(msg["args"][1:])
         if not topic:
             topic = stdin.read().strip()
@@ -33,21 +34,3 @@ class Plugin:
 
     def on_help(self):
         return "Syntax: news [<topic>]"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_no_category(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertNotEqual("No news stories.", stdout.getvalue().strip())
-
-    def test_category(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "cats"]}, stdout, stdout, None)
-        self.assertNotEqual("No news stories.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

@@ -1,13 +1,14 @@
-import io
 import lxml.html
 import requests
-import unittest
 
+import smartbot
 from smartbot import utils
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["steam"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             action = msg["args"][1]
             if "deal".startswith(action):
@@ -30,26 +31,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: steam deal"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_bundle(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "deal"]}, stdout, stdout, None)
-        self.assertNotEqual("No daily deal.", stdout.getvalue().strip())
-
-    def test_no_action(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "cat"]}, stdout, stdout, None)
-        self.assertEqual("No such action: cat", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())

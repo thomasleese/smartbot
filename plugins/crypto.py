@@ -1,11 +1,13 @@
 import base64
-import io
 
+import smartbot
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
+    names = ["crypto"]
+
     @staticmethod
     def _get_hash_func(algorithm, action):
         if algorithm == "base64" or algorithm == "b64":
@@ -26,7 +28,7 @@ class Plugin:
 
         raise StopCommand("{} is not a valid algorithm.".format(algorithm))
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 3:
             algorithm = msg["args"][1]
             action = msg["args"][2]
@@ -40,7 +42,7 @@ class Plugin:
             if not value:
                 raise StopCommandWithHelp(self)
 
-            func = Plugin._get_hash_func(algorithm, action)
+            func = self._get_hash_func(algorithm, action)
             result = str(func(bytes(value, "utf-8")), "utf-8")
             print(result, file=stdout)
         else:

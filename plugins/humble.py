@@ -1,11 +1,13 @@
-import io
 import lxml.html
 import requests
-import unittest
+
+import smartbot
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["humble", "humblebundle"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         url = "https://www.humblebundle.com/"
         if "weekly" in msg["args"] or "weekly" in stdin.read().strip():
             url = "https://www.humblebundle.com/weekly"
@@ -31,21 +33,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: humble [weekly]"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_bundle(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertNotEqual("No sale.", stdout.getvalue().strip())
-
-    def test_weekly(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "weekly"]}, stdout, stdout, None)
-        self.assertNotEqual("No sale.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

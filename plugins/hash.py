@@ -1,11 +1,14 @@
 import hashlib
 
+import smartbot
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["hash"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             algorithm = msg["args"][1]
             value = " ".join(msg["args"][2:])

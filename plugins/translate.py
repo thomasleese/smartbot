@@ -1,17 +1,21 @@
-import sys
-import re
 import argparse
+import sys
 
+import re
 from textblob import TextBlob
 
-class Plugin:
+import smartbot
+
+
+class Plugin(smartbot.Plugin):
+    names = ["translate"]
 
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("-from","--from-language", default=None, nargs="?")  # let autodetect decide
     parser.add_argument("-to"  ,"--to-language",   default="en", nargs="?")
     parser.add_argument("message", nargs="*")
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         # pre-process args
         # this might mess up if "from" or "to" is left out and
         # the message contains "from" or "to"

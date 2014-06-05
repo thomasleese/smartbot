@@ -3,22 +3,26 @@ import lxml.html
 import requests
 import unittest
 
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
+SEARCH_URL = "http://www.xboxachievements.com/search.php"
+GUIDE_URL = "http://www.xboxachievements.com/game/{0}/guide/"
+
+
+class Plugin(smartbot.Plugin):
     """A plugin which provides an interface to xboxachievements.com."""
-    SEARCH_URL = "http://www.xboxachievements.com/search.php"
-    GUIDE_URL = "http://www.xboxachievements.com/game/{0}/guide/"
+    names = ["ach"]
 
     def __init__(self):
         self.saved_items = {}
 
     def _search(self, terms):
         session = utils.web.requests_session()
-        page = session.post(Plugin.SEARCH_URL, data={"search": terms})
+        page = session.post(SEARCH_URL, data={"search": terms})
         tree = lxml.html.fromstring(page.text)
 
         results = []
@@ -33,7 +37,7 @@ class Plugin:
     def _guide(self, name):
         game_id = name.lower().replace(" ", "-")
         session = utils.web.requests_session()
-        page = session.get(Plugin.GUIDE_URL.format(game_id))
+        page = session.get(GUIDE_URL.format(game_id))
         tree = lxml.html.fromstring(page.text)
 
         li_elements = tree.cssselect("#col_l .bl_la_main_guide .showhide ul li")
@@ -56,7 +60,7 @@ class Plugin:
                     info.append(s)
                 return info
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         game = " ".join(msg["args"][1:])
         if not game:
             game = stdin.read().strip()

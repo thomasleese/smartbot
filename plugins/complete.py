@@ -2,18 +2,21 @@ import io
 
 import requests
 import lxml.etree
-import urllib.parse
 
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
-    """Provide Google auto-complete suggestions."""
-    URL = "http://google.com/complete/search"
+URL = "http://google.com/complete/search"
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+
+class Plugin(smartbot.Plugin):
+    """Provide Google auto-complete suggestions."""
+    names = ["complete", "autocomplete"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()
@@ -21,7 +24,7 @@ class Plugin:
         if query:
             payload = {"q": query, "output": "toolbar"}
             session = utils.web.requests_session()
-            page = session.get(Plugin.URL, params=payload)
+            page = session.get(URL, params=payload)
             tree = lxml.etree.fromstring(page.text)
 
             suggestions = []
@@ -36,7 +39,8 @@ class Plugin:
             raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "{} {}".format(
+        return "{}|{} {}".format(
             self.bot.format("complete", Style.bold),
+            self.bot.format("autocomplete", Style.bold),
             self.bot.format("query", Style.underline)
         )

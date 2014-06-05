@@ -1,19 +1,16 @@
-import io
-import re
-import unittest
-
+import smartbot
 from smartbot import utils
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
     names = ["pastebin.com", "badpastebin"]
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout, reply):
         arg0 = msg["args"][0]
         if arg0 == "pastebin.com":
-            reply("Don't use it. Use some sane pastebin like bpaste.net, gist.github.com, sprunge.us or ix.io. Also see !badpastebin")
+            print("Don't use it. Use some sane pastebin like bpaste.net, gist.github.com, sprunge.us or ix.io. Also see !badpastebin", file=stdout)
         elif arg0 == "badpastebin":
-            reply("Ads, Spamfilters, Captcha, Adds whitespace, Slow, Ugly, No comment/fork/annotate, Breaks copy/paste, Blocked for some people, etc. See !pastebin.com")
+            print("Ads, Spamfilters, Captcha, Adds whitespace, Slow, Ugly, No comment/fork/annotate, Breaks copy/paste, Blocked for some people, etc. See !pastebin.com", file=stdout)
 
     def on_help(self):
         return "Usage: pastebin.com|badpastebin"

@@ -1,9 +1,10 @@
-import io
-import unittest
+import smartbot
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["sendto"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             user = msg["args"][1]
             message = " ".join(msg["args"][2:])
@@ -16,16 +17,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: sendto <user> [<message>]"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_words(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "thing", "hello"]}, None, stdout, None)
-        self.assertEqual(stdout.getvalue().strip(), "thing: hello")
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

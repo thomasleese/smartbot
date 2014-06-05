@@ -1,13 +1,17 @@
-import smartbot.utils.web
-import requests
 import re
 
+import requests
 
-class Plugin:
+import smartbot
+from smartbot import utils
+
+
+class Plugin(smartbot.Plugin):
+    names = ["oeis"]
     limit = 5
 
-    def on_command(self, bot, msg, stdin, stdout, reply):
-        session = smartbot.utils.web.requests_session()
+    def on_command(self, msg, stdin, stdout, reply):
+        session = utils.web.requests_session()
         url = "http://oeis.org/search"
         payload = {
             "fmt": "text",

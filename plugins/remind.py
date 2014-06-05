@@ -1,15 +1,15 @@
 import datetime
-import io
 import re
 import time
-import threading
-import unittest
 
+import smartbot
 from smartbot import utils
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["remind"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         pattern_str = r"remind (me|[^\s]+) (to|about|that) (.*) (in|at) (.*)$"
         match = re.match(pattern_str, msg["message"], re.IGNORECASE)
         if not match:
@@ -35,36 +35,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: remind me|<target> to|about|that <something> in|at <time>"
-
-
-class Test(unittest.TestCase):
-    class ExampleBot:
-        def __init__(self, test):
-            self.test = test
-            self.start_time = datetime.datetime.now()
-
-        def send(self, target, message):
-            self.test.assertIs(target, None)
-            self.test.assertEqual(int((datetime.datetime.now() - self.start_time).total_seconds()), 2)
-
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_me_remind(self):
-        stdout = io.StringIO()
-        bot = Test.ExampleBot(self)
-        msg = {"message": "remind me to do something in 2 seconds", "sender": "test"}
-        self.plugin.on_command(bot, msg, None, stdout, lambda x: bot.send(None, x))
-        self.assertTrue(stdout.getvalue().strip().startswith("Sure thing test, I'll remind you on"))
-        self.assertNotEqual("I don't understand that date.", stdout.getvalue().strip())
-
-    def test_target_remind(self):
-        stdout = io.StringIO()
-        bot = Test.ExampleBot(self)
-        msg = {"message": "remind test2 to do something in 2 seconds", "sender": "test"}
-        self.plugin.on_command(bot, msg, None, stdout, lambda x: bot.send(None, x))
-        self.assertTrue(stdout.getvalue().strip().startswith("Sure thing test, I'll remind test2 on"))
-        self.assertNotEqual("I don't understand that date.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

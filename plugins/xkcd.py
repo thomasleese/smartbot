@@ -1,12 +1,13 @@
-import io
 import re
-import unittest
 
+import smartbot
 from smartbot import utils
 
 
-class Plugin:
-    def on_message(self, bot, msg, reply):
+class Plugin(smartbot.Plugin):
+    names = ["xkcd"]
+
+    def on_message(self, msg, reply):
         match = re.findall(r"xkcd\s+(\d+)", msg["message"], re.IGNORECASE)
         for num in match:
             url = "http://xkcd.com/" + num
@@ -14,14 +15,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: xkcd <num>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_message(self):
-        self.plugin.on_message(None, {"message": "xkcd 1335"}, lambda x: self.assertEqual("http://xkcd.com/1335 -> xkcd: Now", x))
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

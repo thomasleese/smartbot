@@ -1,11 +1,12 @@
-import io
 import random
-import requests
 import time
-import unittest
+
+import requests
+
+import smartbot
 
 
-good_jokes = [
+GOOD_JOKES = [
     "I want to write a mystery novel… or do I?",
     "I saw a documentary on how ships are kept together; it was riveting.",
     "There are two types of people I hate… racists and Norwegians.",
@@ -52,9 +53,11 @@ good_jokes = [
 ]
 
 
-class Plugin:
+class Plugin(smartbot.Plugin):
+    names = ["joke", "'joke'"]
+
     def get_good_joke(self):
-        return [random.choice(good_jokes)]
+        return [random.choice(GOOD_JOKES)]
 
     def get_bad_joke(self):
         url = "http://jokels.com/random_joke"
@@ -63,35 +66,21 @@ class Plugin:
         res = requests.get(url, headers=headers).json()
         return [res["joke"]["question"], res["joke"]["answer"]]
 
-    def on_respond(self, bot, msg, reply):
+    def on_respond(self, msg, reply):
         if msg["message"].startswith("'joke'"):
-            self.on_respond_bad(bot, msg, reply)
+            self.on_respond_bad(msg, reply)
         elif msg["message"].startswith("joke"):
-            self.on_respond_good(bot, msg, reply)
+            self.on_respond_good(msg, reply)
 
-    def on_respond_good(self, bot, msg, reply):
+    def on_respond_good(self, msg, reply):
         for line in self.get_good_joke():
             reply(line)
             time.sleep(1)
 
-    def on_respond_bad(self, bot, msg, reply):
+    def on_respond_bad(self, msg, reply):
         for line in self.get_bad_joke():
             reply(line)
             time.sleep(1)
 
     def on_help(self):
         return "Usage: joke"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_good_joke(self):
-        self.plugin.on_respond(None, {"message": "joke"}, lambda x: self.assertIn(x, good_jokes))
-
-    def test_bad_joke(self):
-        self.plugin.on_respond(None, {"message": "'joke'"}, lambda x: self.assertNotIn(x, good_jokes))
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

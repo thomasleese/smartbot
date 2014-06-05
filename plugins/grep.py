@@ -1,11 +1,14 @@
 import re
 
+import smartbot
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["grep"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         pattern_str = " ".join(msg["args"][1:])
         if not pattern_str:
             raise StopCommandWithHelp(self)

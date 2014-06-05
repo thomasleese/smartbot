@@ -1,11 +1,12 @@
-import io
 import requests
-import unittest
-import urllib.parse
+
+import smartbot
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["trains"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 3:
             url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson"
             headers = {"User-Agent": "SmartBot"}
@@ -30,29 +31,3 @@ class Plugin:
 
     def on_help(self):
         return "Usage: trains <from> <to>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_command(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "WAT", "SAL"]}, None, stdout, None)
-        self.assertNotEqual("No trains.", stdout.getvalue().strip())
-
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "fsdfs", "fsdfs"]}, None, stdout, None)
-        self.assertEqual("No trains.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
-
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())

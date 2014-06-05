@@ -1,14 +1,16 @@
 import datetime
 import re
 import time
-import unittest
 
+import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
 
 
-class Plugin:
-    def on_command(self, bot, msg, stdin, stdout, reply):
+class Plugin(smartbot.Plugin):
+    names = ["wait"]
+
+    def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
             cmd = msg["args"][1]
             if cmd == "in" or cmd == "at":
