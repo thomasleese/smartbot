@@ -34,6 +34,11 @@ class Bot:
         except TypeError:
             plugin.bot = self
 
+        try:
+            _ = plugin.names
+        except AttributeError:
+            plugin.names = [name]
+
     def set_plugins(self, plugins):
         self.plugins.clear()
         for plugin in plugins:
@@ -60,13 +65,9 @@ class Bot:
                     traceback.print_exc()
 
     def find_plugin(self, name):
-        for plugin_name, plugin in self.plugins.items():
-            try:
-                if name in plugin.names:
-                    return plugin
-            except AttributeError:
-                if name == plugin_name:
-                    return plugin
+        for _, plugin in self.plugins.items():
+            if name in plugin.names:
+                return plugin
 
     def call_plugins_on_message(self, msg):
         reply = functools.partial(self.send, msg["reply_to"])
@@ -114,7 +115,7 @@ class Bot:
                 plugin.on_command(self, msg, stdin, stdout, reply)
                 pipe_buffer = stdout.getvalue()
             except StopCommand as e:
-                self.send(msg["reply_to"], "{0}: {1}".format(command[0], e))
+                self.send(msg["reply_to"], str(e))
                 break
             except Exception as e:
                 traceback.print_exc()

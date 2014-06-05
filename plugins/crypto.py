@@ -1,10 +1,13 @@
 import base64
 import io
-import unittest
+
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin:
-    def get_hash_func(self, algorithm, action):
+    @staticmethod
+    def _get_hash_func(algorithm, action):
         if algorithm == "base64" or algorithm == "b64":
             if "encode".startswith(action):
                 return base64.b64encode
@@ -21,69 +24,31 @@ class Plugin:
             elif "decode".startswith(action):
                 return base64.b16decode
 
+        raise StopCommand("{} is not a valid algorithm.".format(algorithm))
+
     def on_command(self, bot, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 3:
             algorithm = msg["args"][1]
             action = msg["args"][2]
-            contents = " ".join(msg["args"][3:])
-            if not contents:
-                contents = stdin.read().strip()
+            value = " ".join(msg["args"][3:])
+            if not value:
+                value = stdin.read().strip()
 
-            func = self.get_hash_func(algorithm, action)
-            if func:
-                result = str(func(bytes(contents, "utf-8")), "utf-8")
-                print(result, file=stdout)
-            else:
-                print("No hash algorithm:", algorithm, file=stdout)
+            if action not in ["encode", "decode"]:
+                raise StopCommandWithHelp(self)
+
+            if not value:
+                raise StopCommandWithHelp(self)
+
+            func = Plugin._get_hash_func(algorithm, action)
+            result = str(func(bytes(value, "utf-8")), "utf-8")
+            print(result, file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: crypto <algorithm> encode|decode <contents>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_base64(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b64", "encode", "hello"]}, None, stdout, None)
-        self.assertEqual("aGVsbG8=", stdout.getvalue().strip())
-
-        stdout.seek(0)
-        stdout2 = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b64", "decode"]}, stdout, stdout2, None)
-        self.assertEqual("hello", stdout2.getvalue().strip())        
-
-    def test_base32(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b32", "encode", "hello"]}, None, stdout, None)
-        self.assertEqual("NBSWY3DP", stdout.getvalue().strip())
-
-        stdout.seek(0)
-        stdout2 = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b32", "decode"]}, stdout, stdout2, None)
-        self.assertEqual("hello", stdout2.getvalue().strip())        
-
-    def test_base16(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b16", "encode", "hello"]}, None, stdout, None)
-        self.assertEqual("68656C6C6F", stdout.getvalue().strip())
-
-        stdout.seek(0)
-        stdout2 = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "b16", "decode"]}, stdout, stdout2, None)
-        self.assertEqual("hello", stdout2.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
-
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
+        return "{} {} encode|decode {}".format(
+            self.bot.format("crypto", Style.bold),
+            self.bot.format("algorithm", Style.underline),
+            self.bot.format("value", Style.underline)
+        )
