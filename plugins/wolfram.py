@@ -8,6 +8,7 @@ import lxml.etree
 import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -92,8 +93,8 @@ class Plugin(smartbot.Plugin):
                 "appid": self.appid,
             }
 
-            s = utils.web.requests_session()
-            page = s.get(url, params=payload, timeout=15)
+            session = utils.web.requests_session()
+            page = session.get(url, params=payload, timeout=15)
             if page.status_code == 200:
                 tree = lxml.etree.fromstring(page.content)
                 pods = []
@@ -117,4 +118,7 @@ class Plugin(smartbot.Plugin):
             raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: wolfram <query>"
+        return "{} {}".format(
+            super().on_help(),
+            self.bot.format("query", Style.underline)
+        )

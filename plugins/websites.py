@@ -2,6 +2,7 @@ import re
 
 import smartbot
 from smartbot import utils
+from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
@@ -14,9 +15,8 @@ class Plugin(smartbot.Plugin):
             title = utils.web.get_title(url)
             if title:
                 reply("{}: {}".format(
-                    self.bot.format("[{}]".format(i), Style.bold),
-                    title)
-                )
+                    self.bot.format("[{}]".format(i), Style.bold), title
+                ))
 
     def on_help(self):
         return "Echos the titles of websites for any HTTP(S) URL."
