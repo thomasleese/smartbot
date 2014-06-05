@@ -1,4 +1,6 @@
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -13,7 +15,11 @@ class Plugin(smartbot.Plugin):
 
             print("{0}: {1}".format(user, message), file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: sendto <user> [<message>]"
+        return "{} {} [{}]".format(
+            super().on_help(),
+            self.bot.format("user", Style.underline),
+            self.bot.format("message", Style.underline)
+        )
