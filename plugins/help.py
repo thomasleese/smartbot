@@ -16,10 +16,10 @@ class Plugin(smartbot.Plugin):
             plugin_name = stdin.read().strip()
 
         if plugin_name:
-            try:
-                plugin = self.bot.find_plugin(plugin_name)
+            plugin = self.bot.find_plugin(plugin_name)
+            if plugin:
                 print(plugin.on_help(), file=stdout)
-            except KeyError:
+            else:
                 raise StopCommand("{} does not exist.".format(plugin_name))
         else:
             plugin_names = ", ".join(sorted(itertools.chain.from_iterable(plugin.names for plugin in self.bot.plugins)))
