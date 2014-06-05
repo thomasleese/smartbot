@@ -5,6 +5,9 @@ import re
 from textblob import TextBlob
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -40,11 +43,17 @@ class Plugin(smartbot.Plugin):
         try:
             translated = message.translate(from_lang=from_lang, to=to_lang)
         except:
-            return
-        print(translated, file=stdout)
+            pass
+        else:
+            print(translated, file=stdout)
 
     def on_help(self):
-        return "Usage: translate [from <language>] [to <language>] [<text>]"
+        return "{} [from {}] [to {}] [{}]".format(
+            super().on_help(),
+            self.bot.format("language", Style.underline),
+            self.bot.format("language", Style.underline),
+            self.bot.format("text", Style.underline)
+        )
 
     @staticmethod
     def _push_character(args, target, character, n):
