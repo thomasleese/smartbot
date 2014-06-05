@@ -14,9 +14,6 @@ class Plugin:
     def __init__(self):
         self.saved_items = {}
 
-    def __call__(self, bot):
-        self.bot = bot
-
     def _search(self, terms):
         session = utils.web.requests_session()
         page = session.post(Plugin.SEARCH_URL, data={"search": terms})

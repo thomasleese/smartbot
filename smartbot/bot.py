@@ -32,7 +32,7 @@ class Bot:
         try:
             plugin(self)
         except TypeError:
-            pass
+            plugin.bot = self
 
     def set_plugins(self, plugins):
         self.plugins.clear()
