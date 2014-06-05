@@ -1,6 +1,9 @@
 import requests
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -14,11 +17,15 @@ class Plugin(smartbot.Plugin):
             url = stdin.read().strip()
 
         if url:
-            headers = {"User-Agent": "SmartBot"}
-            page = requests.get(url, headers=headers, timeout=15)
+            session = utils.web.requests_session()
+            page = session.get(url, timeout=15)
             print(page.text, file=stdout)
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: http get <url>"
+        return "{}|{} get {}".format(
+            self.bot.format("http", Style.bold),
+            self.bot.format("web", Style.bold),
+            self.bot.format("url", Style.underline),
+        )
