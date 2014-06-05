@@ -1,12 +1,14 @@
 import io
 import re
 import requests
-import unittest
 import urllib.parse
+
+from smartbot.formatting import *
 
 
 class Plugin:
     names = ["fares", "brfares"]
+
     def __init__(self):
         self.saved_items = {}
         self.up_to = 0
@@ -18,7 +20,6 @@ class Plugin:
             return None
         else:
             return res[0]["code"]
-        
 
     def on_command(self, bot, msg, stdin, stdout, reply):
         pattern = r"(?:br)?fares (?:from )?(.*) to (.*?)(?: with (.*))?$"
@@ -34,7 +35,7 @@ class Plugin:
             restriction_url = "http://www.brfares.com/restrictionspec"
 
             headers = {"User-Agent": "SmartBot"}
-            
+
             stn1_code = self.get_code(station_url, station1, headers, {"term": station1}, stdout)
             stn2_code = self.get_code(station_url, station2, headers, {"term": station2}, stdout)
             rlc_code = self.get_code(rlc_url, rlc, headers, {'term': rlc}, stdout)
@@ -60,7 +61,7 @@ class Plugin:
                     return
                 print("[{0}] {1[ticket][code]} {1[ticket][tclass][desc]} {1[ticket][name]} route {1[route][name]} - £{2:.2f}{3}".format(i, fare, (fare["adult"]["fare"] / 100.0) if "fare" in fare["adult"] else 0.00, "" if "fare" in fare["adult"] else " - No adult fare"), file=stdout)
             self.up_to = 0
-            
+
         else:
             pattern = r"(?:br)?fares ([0-9]+)"
             match = re.match(pattern, msg["message"], re.IGNORECASE)
@@ -70,7 +71,7 @@ class Plugin:
                     fare = fares["fares"][int(match.group(1))]
                 except (IndexError, ValueError):
                     return
-                
+
                 # Print out fare!
                 fare_orig = fare["group_orig"] or fares["orig"]
                 extraorig = "Travelcard " if (fare["group_orig"] and fare["travelcard_orig"]) or (not fare["group_orig"] and fares["travelcard_orig"]) else ""
@@ -120,7 +121,7 @@ Validity restriction code: {restrictions} {restrurl}
                     restrictions=fare["restriction_code"] if fare["restriction_code"] != " " * 2 else "No restrictions", restrurl=restrurl,
                     adultname=fare["adult"]["status"]["name"] if "status" in fare["adult"] else "No adult fare", adultcode=fare["adult"]["status"]["ticket_code"] if "status" in fare["adult"] else "", adultprice=fare["adult"]["fare"] / 100.0 if "fare" in fare["adult"] else 0.0, adultminfarewarning=adultminfarewarning,
                     childname=fare["child"]["status"]["name"] if "status" in fare["child"] else "No child fare", childcode=fare["child"]["status"]["ticket_code"] if "status" in fare["child"] else "", childprice=fare["child"]["fare"] / 100.0 if "fare" in fare["child"] else 0.0, childminfarewarning=childminfarewarning)
-                
+
 
                 print(out_string, file=stdout)
             else:
@@ -139,23 +140,10 @@ Validity restriction code: {restrictions} {restrurl}
                     print(self.on_help(), file=stdout)
 
     def on_help(self):
-        return "Usage: fares [from] <station> to <station> [with <railcard>]"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-#    def test_status(self):
-#        stdout = io.StringIO()
-#        self.plugin.on_command(None, {"args": [None, "fares"]}, None, stdout, None)
-#        self.assertFalse(stdout.getvalue().startswith("No such action"))
-#        self.assertNotEqual(self.plugin.on_help(), stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
+        return "{} [{}] {} to {} [with {}]".format(
+            self.bot.format("fares", Style.bold),
+            self.bot.format("from", Style.underline),
+            self.bot.format("station", Style.underline),
+            self.bot.format("station", Style.underline),
+            self.bot.format("railcard", Style.underline),
+        )

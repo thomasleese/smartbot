@@ -1,3 +1,6 @@
+from smartbot.formatting import *
+
+
 class Plugin:
     """
     A plugin which automatically joins channels/rooms when the bot connects to
@@ -14,6 +17,9 @@ class Plugin:
         for channel in self.channels:
             self.bot.join(channel)
 
+    def on_command(self, bot, msg, stdin, stdout, reply):
+        print(" ".join(self.channels), file=stdout)
+
     def on_help(self):
         """Get help about the plugin."""
-        return "Automatically joins channels when the bot connects."
+        return "{}".format(self.bot.format("autojoin", Style.bold))

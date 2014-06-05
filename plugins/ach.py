@@ -82,5 +82,7 @@ class Plugin:
             raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "{} {}".format(self.bot.format("ach", Style.bold),
-                              self.bot.format("game", Style.underline))
+        return "{} {}".format(
+            self.bot.format("ach", Style.bold),
+            self.bot.format("game", Style.underline)
+        )
