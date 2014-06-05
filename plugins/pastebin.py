@@ -11,6 +11,3 @@ class Plugin(smartbot.Plugin):
             print("Don't use it. Use some sane pastebin like bpaste.net, gist.github.com, sprunge.us or ix.io. Also see !badpastebin", file=stdout)
         elif arg0 == "badpastebin":
             print("Ads, Spamfilters, Captcha, Adds whitespace, Slow, Ugly, No comment/fork/annotate, Breaks copy/paste, Blocked for some people, etc. See !pastebin.com", file=stdout)
-
-    def on_help(self):
-        return "Usage: pastebin.com|badpastebin"

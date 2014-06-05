@@ -1,4 +1,5 @@
 from .exceptions import *
+from .formatting import Style
 
 class Plugin:
     def __call__(self, bot):
@@ -18,3 +19,7 @@ class Plugin:
 
     def on_command(self, msg, stdin, stdout, reply):
         raise NotImplementedError()
+
+    def on_help(self):
+        _bold = lambda s: self.bot.format(s, Style.bold)
+        return "|".join(map(_bold, self.names))
