@@ -4,6 +4,8 @@ import time
 
 import smartbot
 from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -19,7 +21,7 @@ class Plugin(smartbot.Plugin):
             try:
                 date = utils.datetime.parse("{0} {1}".format(match.group(4), match.group(5)))
             except ValueError:
-                print("I don't understand that date.", file=stdout)
+                raise StopCommand("I don't understand that date.")
             else:
                 message = None
                 if match.group(1) == "me" or match.group(1) == msg["sender"]:
@@ -34,4 +36,9 @@ class Plugin(smartbot.Plugin):
                 print(message, file=stdout)
 
     def on_help(self):
-        return "Usage: remind me|<target> to|about|that <something> in|at <time>"
+        return "{} me|{} to|about|that {} in|at {}".format(
+            super().on_help(),
+            self.bot.format("target", Style.underline),
+            self.bot.format("something", Style.underline),
+            self.bot.format("time", Style.underline),
+        )
