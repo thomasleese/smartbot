@@ -5,6 +5,7 @@ import time
 import smartbot
 from smartbot import utils
 from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -27,4 +28,8 @@ class Plugin(smartbot.Plugin):
             raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: wait in <time>|at <time>"
+        return "{} in {}|at {}".format(
+            super().on_help(),
+            self.bot.format("time", Style.underline),
+            self.bot.format("time", Style.underline)
+        )
