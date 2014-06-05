@@ -1,6 +1,7 @@
-import requests
-
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -12,7 +13,6 @@ class Plugin(smartbot.Plugin):
             topic = stdin.read().strip()
 
         url = "https://ajax.googleapis.com/ajax/services/search/news"
-        headers = {"User-Agent": "SmartBot"}
         payload = {
             "v": "1.0",
             "rsz": "5",
@@ -22,7 +22,8 @@ class Plugin(smartbot.Plugin):
         else:
             payload["topic"] = "h"
 
-        res = requests.get(url, headers=headers, params=payload).json()
+        session = utils.web.requests_session()
+        res = session.get(url, params=payload).json()
         stories = res["responseData"]["results"][:3]
         if stories:
             for i, story in enumerate(stories):
@@ -30,7 +31,10 @@ class Plugin(smartbot.Plugin):
                 link = story["unescapedUrl"]
                 print("[{0}]: {1} - {2}".format(i, title, link), file=stdout)
         else:
-            print("No news stories.", file=stdout)
+            raise StopCommand("No news stories.")
 
     def on_help(self):
-        return "Syntax: news [<topic>]"
+        return "{} [{}]".format(
+            self.bot.format("news", Style.bold),
+            self.bot.format("topic", Style.underline),
+        )
