@@ -4,6 +4,9 @@ import time
 import requests
 
 import smartbot
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 GOOD_JOKES = [
@@ -56,14 +59,13 @@ GOOD_JOKES = [
 class Plugin(smartbot.Plugin):
     names = ["joke", "'joke'"]
 
-    def get_good_joke(self):
+    def _get_good_joke(self):
         return [random.choice(GOOD_JOKES)]
 
-    def get_bad_joke(self):
+    def _get_bad_joke(self):
         url = "http://jokels.com/random_joke"
-        headers = {"User-Agent": "SmartBot"}
-
-        res = requests.get(url, headers=headers).json()
+        session = utils.web.requests_session()
+        res = session.get(url).json()
         return [res["joke"]["question"], res["joke"]["answer"]]
 
     def on_respond(self, msg, reply):
@@ -73,14 +75,17 @@ class Plugin(smartbot.Plugin):
             self.on_respond_good(msg, reply)
 
     def on_respond_good(self, msg, reply):
-        for line in self.get_good_joke():
+        for line in self._get_good_joke():
             reply(line)
             time.sleep(1)
 
     def on_respond_bad(self, msg, reply):
-        for line in self.get_bad_joke():
+        for line in self._get_bad_joke():
             reply(line)
             time.sleep(1)
 
     def on_help(self):
-        return "Usage: joke"
+        return "{}|{}".format(
+            self.bot.format("joke", Style.bold),
+            self.bot.format("'joke'", Style.bold)
+        )
