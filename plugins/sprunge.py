@@ -2,6 +2,7 @@ import requests
 
 import smartbot
 from smartbot import utils
+from smartbot.exceptions import *
 
 
 class Plugin(smartbot.Plugin):
@@ -12,7 +13,4 @@ class Plugin(smartbot.Plugin):
         if contents:
             print(utils.web.sprunge(contents), file=stdout)
         else:
-            print("Expected input on stdin.", file=stdout)
-
-    def on_help(self):
-        return "Usage: sprunge"
+            raise StopCommand("Expected input on stdin.")
