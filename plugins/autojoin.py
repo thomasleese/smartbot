@@ -1,31 +1,19 @@
-import unittest
-
 class Plugin:
+    """
+    A plugin which automatically joins channels/rooms when the bot connects to
+    the server.
+
+    You should provide a list of channels to join in the plugin configuration,
+    under the name 'channels'.
+    """
     def __init__(self, channels):
         self.channels = channels
 
     def on_ready(self, bot):
+        """Join all the channels."""
         for channel in self.channels:
-            bot.join(channel)
+            self.bot.join(channel)
 
     def on_help(self):
+        """Get help about the plugin."""
         return "Automatically joins channels when the bot connects."
-
-
-class Test(unittest.TestCase):
-    class ExampleBot:
-        def __init__(self, test, channel):
-            self.test = test
-            self.channel = channel
-
-        def join(self, channel):
-            self.test.assertEqual(channel, self.channel)
-
-    def setUp(self):
-        self.plugin = Plugin(["#test"])
-
-    def test_join(self):
-        self.plugin.on_ready(Test.ExampleBot(self, "#test"))
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())

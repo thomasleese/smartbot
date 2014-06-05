@@ -7,7 +7,9 @@ from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 
+
 class Plugin:
+    """A plugin which provides an interface to xboxachievements.com."""
     SEARCH_URL = "http://www.xboxachievements.com/search.php"
     GUIDE_URL = "http://www.xboxachievements.com/game/{0}/guide/"
 
