@@ -3,6 +3,8 @@ import requests
 
 import smartbot
 from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -23,11 +25,13 @@ class Plugin(smartbot.Plugin):
                                                                original_price,
                                                                final_price), file=stdout)
                 else:
-                    print("No daily deal.", file=stdout)
+                    raise StopCommand("No daily deal.")
             else:
-                print("No such action:", action, file=stdout)
+                raise StopCommand("{} is not a valid action.".format(action))
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: steam deal"
+        return "{} deal".format(
+            super().on_help()
+        )
