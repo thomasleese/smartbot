@@ -3,16 +3,19 @@ import lxml.html
 import requests
 import unittest
 
+from smartbot import utils
 from smartbot.exceptions import *
 
-
 class Plugin:
+    SEARCH_URL = "http://www.xboxachievements.com/search.php"
+    GUIDE_URL = "http://www.xboxachievements.com/game/{0}/guide/"
+
     def __init__(self):
         self.saved_items = {}
 
     def _search(self, terms):
-        url = "http://www.xboxachievements.com/search.php"
-        page = requests.post(url, data={"search": terms})
+        session = utils.web.requests_session()
+        page = session.post(Plugin.SEARCH_URL, data={"search": terms})
         tree = lxml.html.fromstring(page.text)
 
         results = []
@@ -26,8 +29,8 @@ class Plugin:
 
     def _guide(self, name):
         game_id = name.lower().replace(" ", "-")
-        url = "http://www.xboxachievements.com/game/{0}/guide/".format(game_id)
-        page = requests.get(url)
+        session = utils.web.requests_session()
+        page = session.get(Plugin.GUIDE_URL.format(game_id))
         tree = lxml.html.fromstring(page.text)
 
         li_elements = tree.cssselect("#col_l .bl_la_main_guide .showhide ul li")
