@@ -1,25 +1,27 @@
 import io
+
 import requests
 import lxml.etree
-import unittest
 import urllib.parse
+
+from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin:
+    """Provide Google auto-complete suggestions."""
+    URL = "http://google.com/complete/search"
+
     def on_command(self, bot, msg, stdin, stdout, reply):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()
 
         if query:
-            url = "http://google.com/complete/search"
-            headers = {"User-Agent": "SmartBot"}
-            payload = {
-                "q": query,
-                "output": "toolbar",
-            }
-
-            page = requests.get(url, headers=headers, params=payload)
+            payload = {"q": query, "output": "toolbar"}
+            session = utils.web.requests_session()
+            page = session.get(Plugin.URL, params=payload)
             tree = lxml.etree.fromstring(page.text)
 
             suggestions = []
@@ -29,32 +31,12 @@ class Plugin:
             if suggestions:
                 print(", ".join(suggestions[:5]), file=stdout)
             else:
-                print("No suggestions.", file=stdout)
+                raise StopCommand("No suggestions.")
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: complete <query>"
-
-
-class Test(unittest.TestCase):
-    def setUp(self):
-        self.plugin = Plugin()
-
-    def test_suggestions(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "hello"]}, None, stdout, None)
-        self.assertTrue(stdout.getvalue().strip())
-
-    def test_no_suggestions(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None, "fsjklfsjlkfsjklfsdajlkfdsjklfjlkfajlkfajklfa"]}, None, stdout, None)
-        self.assertEqual("No suggestions.", stdout.getvalue().strip())
-
-    def test_help(self):
-        self.assertTrue(self.plugin.on_help())
-
-    def test_no_args(self):
-        stdout = io.StringIO()
-        self.plugin.on_command(None, {"args": [None]}, stdout, stdout, None)
-        self.assertEqual(self.plugin.on_help(), stdout.getvalue().strip())
+        return "{} {}".format(
+            self.bot.format("complete", Style.bold),
+            self.bot.format("query", Style.underline)
+        )
