@@ -29,6 +29,11 @@ class Bot:
     def add_plugin(self, name, plugin):
         self.plugins[name] = plugin
 
+        try:
+            plugin(self)
+        except TypeError:
+            pass
+
     def set_plugins(self, plugins):
         self.plugins.clear()
         for plugin in plugins:

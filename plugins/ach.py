@@ -5,6 +5,7 @@ import unittest
 
 from smartbot import utils
 from smartbot.exceptions import *
+from smartbot.formatting import *
 
 class Plugin:
     SEARCH_URL = "http://www.xboxachievements.com/search.php"
@@ -12,6 +13,9 @@ class Plugin:
 
     def __init__(self):
         self.saved_items = {}
+
+    def __call__(self, bot):
+        self.bot = bot
 
     def _search(self, terms):
         session = utils.web.requests_session()
@@ -79,4 +83,5 @@ class Plugin:
             raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: ach <game>"
+        return "{} {}".format(self.bot.format("ach", Style.bold),
+                              self.bot.format("game", Style.underline))
