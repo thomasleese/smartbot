@@ -4,6 +4,7 @@ import requests
 
 import smartbot
 from smartbot import utils
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -45,4 +46,7 @@ class Plugin(smartbot.Plugin):
             print(content, file=stdout)
 
     def on_help(self):
-        return "Usage: oeis <query>  (see https://oeis.org/hints.html)"
+        return "{} {}   (see https://oeis.org/hints.html)".format(
+            self.bot.format("oeis", Style.bold),
+            self.bot.format("query", Style.underline),
+        )
