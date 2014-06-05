@@ -72,7 +72,7 @@ class Plugin(smartbot.Plugin):
         sender_sentiments.setdefault('polarity', Statistics()).add(polarity)
         sender_sentiments.setdefault('subjectivity', Statistics()).add(subjectivity)
 
-        bot.storage.commit()
+        self.bot.storage.commit()
 
     def on_command(self, msg, stdin, stdout, reply):
         if len(msg["args"]) >= 2:
