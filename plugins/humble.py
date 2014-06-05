@@ -2,6 +2,8 @@ import lxml.html
 import requests
 
 import smartbot
+from smartbot.exceptions import *
+from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
@@ -29,7 +31,10 @@ class Plugin(smartbot.Plugin):
                 title, c0, c1, c2, c3, c4, c5, c6, c7
             ), file=stdout)
         except IndexError:
-            print("No sale.", file=stdout)
+            raise StopCommand("No sale.")
 
     def on_help(self):
-        return "Usage: humble [weekly]"
+        return "{}[{}] [weekly]".format(
+            self.bot.format("humble", Style.bold),
+            self.bot.format("bundle", Style.bold),
+        )
