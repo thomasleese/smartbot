@@ -1,9 +1,9 @@
-import io
-import pprint
-
 import requests
 
 from smartbot import utils
+from smartbot.exceptions import *
+from smartbot.formatting import *
+
 
 class Plugin:
     names = ["define", "freebase"]
@@ -13,14 +13,14 @@ class Plugin:
 
     def _search_mid(self, query):
         url = "https://www.googleapis.com/freebase/v1/search"
-        headers = {"User-Agent": "SmartBot"}
         payload = {
             "query": query,
             "key": self.key,
             "limit": 1
         }
 
-        res = requests.get(url, headers=headers, params=payload).json()
+        session = utils.web.requests_session()
+        res = session.get(url, params=payload).json()
         if res["result"]:
             return res["result"][0]["mid"]
         else:
@@ -55,11 +55,15 @@ class Plugin:
                     url = utils.web.sprunge(long_text)
                     print("{} {}".format(short_text, url), file=stdout)
                 else:
-                    print("There isn't much information about this.", file=stdout)
+                    raise StopCommand("There isn't much information about this.")
             else:
-                print("I don't know what you're on about.", file=stdout)
+                raise StopCommand("I don't know what you're on about.")
         else:
-            print(self.on_help(), file=stdout)
+            raise StopCommandWithHelp(self)
 
     def on_help(self):
-        return "Usage: define|freebase <topic>"
+        return "{}|{} {}".format(
+            self.bot.format("define", Style.bold),
+            self.bot.format("freebase", Style.bold),
+            self.bot.format("topic", Style.underline),
+        )
