@@ -66,7 +66,7 @@ class Bot:
                 plugin.on_message(msg, reply)
             except Exception as e:
                 traceback.print_exc()
-                reply(name + ": " + str(e))
+                reply(str(e))
 
     def call_plugins_on_respond(self, msg):
         reply = functools.partial(self.send, msg["reply_to"])
