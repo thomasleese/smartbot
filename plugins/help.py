@@ -6,6 +6,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get help information about loaded plugins."""
     names = ["help", "what?"]
 
     def on_command(self, msg, stdin, stdout, reply):

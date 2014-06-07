@@ -53,7 +53,8 @@ class Plugin(smartbot.Plugin):
                 html = lxml.html.tostring(elements[0])
                 lines = html.decode("utf-8").split("<br>")
                 for line in lines[1:6]:
-                    span = lxml.html.fragment_fromstring("<span>{0}</span>".format(line))
+                    span_str = "<span>{0}</span>".format(line)
+                    span = lxml.html.fragment_fromstring(span_str)
                     s = span.text_content().strip()
                     if s.startswith("-"):
                         s = s[1:]

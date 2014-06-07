@@ -8,6 +8,7 @@ STATUS_URL = "https://status.github.com/api/last-message.json"
 
 
 class Plugin(smartbot.Plugin):
+    """Get the status of GitHub."""
     names = ["github", "gh"]
 
     def on_command(self, msg, stdin, stdout, reply):

@@ -5,6 +5,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Perform a Google search and get the results."""
     names = ["google", "search"]
 
     def __init__(self, key, cx):

@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """A plugin for searching Freebase."""
     names = ["define", "freebase"]
 
     def __init__(self, key):

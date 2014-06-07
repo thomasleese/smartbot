@@ -6,6 +6,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Perform a hash of a string."""
     names = ["hash"]
 
     def on_command(self, msg, stdin, stdout, reply):
