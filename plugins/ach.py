@@ -34,7 +34,8 @@ class Plugin(smartbot.Plugin):
 
         return results
 
-    def _guide(self, name):
+    @staticmethod
+    def _guide(name):
         game_id = name.lower().replace(" ", "-")
         session = utils.web.requests_session()
         page = session.get(GUIDE_URL.format(game_id))
