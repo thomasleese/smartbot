@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get an XKCD comic."""
     names = ["xkcd"]
 
     def on_message(self, msg, reply):

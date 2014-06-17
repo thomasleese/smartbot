@@ -9,6 +9,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Remind me to do something."""
     names = ["remind"]
 
     def on_command(self, msg, stdin, stdout, reply):

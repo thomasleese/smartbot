@@ -3,6 +3,11 @@ from smartbot import utils
 
 
 class Plugin(smartbot.Plugin):
+    """
+    Argh, don't use Pastebin, please!
+
+    Inspired by the bot in the #archlinux freenode channel.
+    """
     names = ["pastebin.com", "badpastebin"]
 
     def on_command(self, msg, stdin, stdout, reply):

@@ -4,6 +4,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Copy stdin to a reply, while also to standard output."""
     names = ["tee"]
 
     def on_command(self, msg, stdin, stdout, reply):

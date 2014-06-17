@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get train times from National Rail."""
     names = ["trains"]
 
     def on_command(self, msg, stdin, stdout, reply):

@@ -6,6 +6,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Check last time someone was seen."""
     names = ["seen"]
 
     def on_message(self, msg, reply):

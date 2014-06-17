@@ -9,6 +9,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Wait for an amount of time."""
     names = ["wait"]
 
     def on_command(self, msg, stdin, stdout, reply):

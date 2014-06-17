@@ -8,6 +8,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Display the steam daily deal."""
     names = ["steam"]
 
     def on_command(self, msg, stdin, stdout, reply):

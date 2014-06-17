@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get Humble Bundle information."""
     names = ["humble", "humblebundle"]
 
     def on_command(self, msg, stdin, stdout, reply):

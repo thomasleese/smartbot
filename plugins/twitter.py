@@ -6,6 +6,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get tweets from a user."""
     names = ["tweetie", "twitter"]
 
     def __init__(self, consumer_key, consumer_secret,

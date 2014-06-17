@@ -12,6 +12,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Perform a wolfram request."""
     names = ["wolfram", "?"]
 
     def __init__(self, appid):

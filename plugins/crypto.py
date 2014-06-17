@@ -6,6 +6,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Provide crypto functions."""
     names = ["crypto"]
 
     @staticmethod

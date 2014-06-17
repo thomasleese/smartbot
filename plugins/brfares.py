@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """A plugin which provides fare information for British trains."""
     names = ["fares", "brfares"]
 
     def __init__(self):
@@ -24,7 +25,7 @@ class Plugin(smartbot.Plugin):
     def filter_fares(self, fares, category):
         if not category:
             return fares
-        return list(filter(lambda fare: fare["category"]["code"] == category 
+        return list(filter(lambda fare: fare["category"]["code"] == category
             or fare["category"]["desc"] == category, fares))
 
     def on_command(self, msg, stdin, stdout, reply):
@@ -82,7 +83,7 @@ class Plugin(smartbot.Plugin):
                 if 'rover_nlc' in fares:
                     print('No additional information available.', file=stdout)
                     return # don't support this
-                
+
                 # Print out fare!
                 fare_orig = fare["group_orig"] or fares["orig"]
                 extraorig = "Travelcard " if (fare["group_orig"] and fare["travelcard_orig"]) or (not fare["group_orig"] and fares["travelcard_orig"]) else ""
@@ -151,7 +152,7 @@ Validity restriction code: {restrictions} {restrurl}
 
                     rlc_code = self.get_code(rlc_url, rlc, headers, {'term': rlc}, stdout)
                     rover_code = self.get_code(rover_url, rover, headers, {'term': rover}, stdout)
-                    
+
                     if not rover_code or not rlc_code:
                         return
 

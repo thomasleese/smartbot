@@ -9,6 +9,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Check if a website is up or not."""
     names = ["isup"]
 
     def on_command(self, msg, stdin, stdout, reply):

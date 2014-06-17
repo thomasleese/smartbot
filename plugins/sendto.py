@@ -4,6 +4,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Forward a message to a user."""
     names = ["sendto"]
 
     def on_command(self, msg, stdin, stdout, reply):

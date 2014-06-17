@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Perform an HTTP GET request."""
     names = ["http", "web"]
 
     def on_command(self, msg, stdin, stdout, reply):

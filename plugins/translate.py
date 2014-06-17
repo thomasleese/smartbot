@@ -11,6 +11,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Perform a Google translation."""
     names = ["translate"]
 
     parser = argparse.ArgumentParser(add_help=False)

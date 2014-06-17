@@ -7,6 +7,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get website title."""
     names = ["websites"]
 
     def on_message(self, msg, reply):

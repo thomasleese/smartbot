@@ -6,6 +6,7 @@ from smartbot.exceptions import *
 
 
 class Plugin(smartbot.Plugin):
+    """Upload piped content to sprunge."""
     names = ["sprunge"]
 
     def on_command(self, msg, stdin, stdout, reply):

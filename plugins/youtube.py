@@ -14,6 +14,7 @@ REGEX = r"(?:https?://)?(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?([^\s]+)"
 
 
 class Plugin(smartbot.Plugin):
+    """Get information about posted YouTube videos."""
     names = ["youtube", "utube"]
 
     def __init__(self, key):

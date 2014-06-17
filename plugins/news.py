@@ -5,6 +5,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Get news stories."""
     names = ["news"]
 
     def on_command(self, msg, stdin, stdout, reply):
@@ -27,7 +28,9 @@ class Plugin(smartbot.Plugin):
         stories = res["responseData"]["results"][:3]
         if stories:
             for i, story in enumerate(stories):
-                title = story["titleNoFormatting"].replace("&#39;", "'").replace("`", "'").replace("&quot;", "\"")
+                title = story["titleNoFormatting"].replace("&#39;", "'") \
+                                                  .replace("`", "'") \
+                                                  .replace("&quot;", "\"")
                 link = story["unescapedUrl"]
                 print("[{0}]: {1} - {2}".format(i, title, link), file=stdout)
         else:

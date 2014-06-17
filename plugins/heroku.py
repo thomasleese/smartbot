@@ -10,6 +10,7 @@ STATUS_URL = "https://status.heroku.com/api/v3/current-status"
 
 
 class Plugin(smartbot.Plugin):
+    """Get status of Heroku."""
     names = ["heroku"]
 
     def on_command(self, msg, stdin, stdout, reply):

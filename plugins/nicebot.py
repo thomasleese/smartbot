@@ -3,6 +3,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Authenticate with a NiceBot."""
     names = ["nicebot"]
 
     def __init__(self, nicebots):

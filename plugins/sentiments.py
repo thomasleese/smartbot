@@ -53,6 +53,7 @@ class Statistics:
 
 
 class Plugin(smartbot.Plugin):
+    """Get sentiments for users on an IRC server."""
     names = ["sentiments"]
     stats_string = "{}:    Polarity: {p: f},   Subjectivity: {s: f}"
 

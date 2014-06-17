@@ -8,6 +8,7 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
+    """Interface to OEIS."""
     names = ["oeis"]
     limit = 5
 

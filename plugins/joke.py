@@ -57,6 +57,7 @@ GOOD_JOKES = [
 
 
 class Plugin(smartbot.Plugin):
+    """Tell a joke."""
     names = ["joke", "'joke'"]
 
     def _get_good_joke(self):
