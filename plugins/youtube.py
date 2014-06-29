@@ -10,8 +10,7 @@ from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-REGEX = r"(?:https?://)?(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?([^\s]+)"
-
+REGEX = r"(?:https?://)?(?:www\.)?(?:youtu\.?be|listenonrepeat)(?:\.com)?/(?:watch/?\?v=)?([^\s]+)"
 
 class Plugin(smartbot.Plugin):
     """Get information about posted YouTube videos."""
