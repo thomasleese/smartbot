@@ -8,6 +8,7 @@ import traceback
 
 
 from .exceptions import *
+from .handler import Handler
 
 
 class Bot:
@@ -59,9 +60,14 @@ class Bot:
                 return plugin
 
     def call_plugins_on_message(self, msg):
+        handler = Handler(self.plugins)
+
+        for plugin in handler.plugins:
+            plugin.pre_on_message(handler, msg)
+
         reply = functools.partial(self.send, msg["reply_to"])
 
-        for plugin in self.plugins:
+        for plugin in handler.plugins:
             try:
                 plugin.on_message(msg, reply)
             except Exception as e:
@@ -69,26 +75,35 @@ class Bot:
                 reply(str(e))
 
     def call_plugins_on_respond(self, msg):
+        handler = Handler(self.plugins)
+
+        for plugin in handler.plugins:
+            plugin.pre_on_respond(handler, msg)
+
         reply = functools.partial(self.send, msg["reply_to"])
 
-        for plugin in self.plugins:
+        for plugin in handler.plugins:
             try:
                 plugin.on_respond(msg, reply)
             except Exception as e:
                 traceback.print_exc()
                 reply(name + ": " + str(e))
 
-    def call_plugins_on_command(self, msg):
-        reply = functools.partial(self.send, msg["reply_to"])
-
+    @staticmethod
+    def _parse_message_into_commands(msg):
         try:
             args = shlex.split(msg["message"])
         except ValueError:
             args = msg["message"].split(" ")  # try and cope with invalid data
 
         groups = itertools.groupby(args, lambda x: x == "|")
-        commands = [list(group) for k, group in groups if not k]
+        return [list(group) for k, group in groups if not k]
+
+    def call_plugins_on_command(self, msg):
+        reply = functools.partial(self.send, msg["reply_to"])
+        commands = self._parse_message_into_commands(msg)
         pipe_buffer = ""
+
         for command in commands:
             plugin = self.find_plugin(command[0])
             if not plugin:

@@ -2,6 +2,8 @@ from .exceptions import *
 from .formatting import Style
 
 class Plugin:
+    disable_plugins = []
+
     def __call__(self, bot):
         self.bot = bot
 
@@ -11,7 +13,13 @@ class Plugin:
     def on_join(self, msg):
         pass
 
+    def pre_on_message(self, handler, msg):
+        pass
+
     def on_message(self, msg, reply):
+        pass
+
+    def pre_on_respond(self, handler, msg):
         pass
 
     def on_respond(self, msg, reply):

@@ -20,6 +20,7 @@ class Plugin(smartbot.Plugin):
         self.key = key
 
     def _get_reply(self, i, video):
+        title = video["snippet"]["title"]
         channelTitle = video["snippet"]["channelTitle"]
         duration = isodate.parse_duration(video["contentDetails"]["duration"])
         views = video["statistics"]["viewCount"]
@@ -27,15 +28,18 @@ class Plugin(smartbot.Plugin):
         dislikes = video["statistics"]["dislikeCount"]
         thumbnail = video["snippet"]["thumbnails"]["default"]["url"]
 
-        return "{}: {} | {} | {} {} {} | {}".format(
+        return "{}: {} by {} | {} | {} {} {}".format(
             self.bot.format("[{}]".format(i), Style.bold),
+            title,
             channelTitle,
             duration,
             views,
             self.bot.format(likes, Colour.fg_green),
-            self.bot.format(dislikes, Colour.fg_red),
-            self.bot.format(thumbnail, Colour.fg_grey)
+            self.bot.format(dislikes, Colour.fg_red)
         )
+
+    def pre_on_message(self, handler, msg):
+        handler.disable_plugin("websites")
 
     def on_message(self, msg, reply):
         match = re.findall(REGEX, msg["message"], re.IGNORECASE)
