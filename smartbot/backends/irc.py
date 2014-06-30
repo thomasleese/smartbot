@@ -1,5 +1,7 @@
-import threading
+import random
 import socket
+import time
+import threading
 
 import smartbot
 from ..formatting import *
@@ -44,11 +46,11 @@ class Backend(smartbot.Backend):
         if args[0] == "PING":
             self.write("PONG", args[1])
         elif args[1] == "001":
-            self.dispatch_event("ready")
+            self.on_ready.trigger()
         elif args[1] == "JOIN":
             nick = self.parse_usermask(args[0])
             self.channels.append(args[2])
-            self.dispatch_event("join", {
+            self.on_join.trigger({
                 "user": nick, "channel": args[2], "is_me": nick == self.nick
             })
         elif args[1] == "KICK":
@@ -64,7 +66,7 @@ class Backend(smartbot.Backend):
             if target == self.nick:
                 reply_to = sender
 
-            self.dispatch_event("message", {
+            self.on_message.trigger({
                 "sender": sender, "target": target,
                 "message": message, "reply_to": reply_to
             })
@@ -86,7 +88,7 @@ class Backend(smartbot.Backend):
 
         self.socket.connect((self.hostname, self.port))
 
-        self.dispatch_event("connect")
+        self.on_connect.trigger()
 
         thread = threading.Thread(target=self.ping_thread)
         thread.daemon = True
@@ -119,7 +121,7 @@ class Backend(smartbot.Backend):
 
             buf = array[-1]
 
-        self.dispatch_event("disconnect")
+        self.on_disconnect.trigger()
 
     def join(self, channel):
         self.write("JOIN", channel)

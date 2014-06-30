@@ -7,17 +7,17 @@ class Backend(smartbot.Backend):
         super().__init__()
 
     def run(self, name):
-        self.dispatch_event("connect")
-        self.dispatch_event("ready")
+        self.on_connect.trigger()
+        self.on_ready.trigger()
 
         while True:
             line = input("> ").strip()
-            self.dispatch_event("message", {
+            self.on_message.trigger({
                 "sender": "stdin", "target": "stdout",
                 "message": line, "reply_to": "stdin"
             })
 
-        self.dispatch_event("disconnect")
+        self.on_disconnect.trigger()
 
     def join(self, channel):
         print("Joining", channel)

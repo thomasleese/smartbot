@@ -7,8 +7,8 @@ called, with some optional arguments, when an event happens.
 
 You can control which functions get called by using a comparator, which is
 just a function with three arguments, the event handler, the positional
-arguments and the keyword arguments. The default comparator simply checks that
-these are the same.
+arguments and the keyword arguments. The default comparator will allow all the
+functions to be executed on a trigger.
 """
 import collections
 
@@ -23,11 +23,10 @@ Handler = collections.namedtuple('Handler', ['args', 'kwargs', 'function'])
 
 
 """
-The default comparator checks that the handler args and kwargs are the samer as
-the event ones.
+The default comparator always returns True, it allows all event handlers to be
+executed on a trigger.
 """
-DEFAULT_COMPARATOR = lambda handler, args, kwargs: handler.args == args and \
-                                                   handler.kwargs == kwargs
+DEFAULT_COMPARATOR = lambda *args, **kwargs: True
 
 
 class Event:

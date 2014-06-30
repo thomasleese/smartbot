@@ -23,9 +23,9 @@ class Bot:
 
     def set_backend(self, backend):
         self.backend = backend
-        self.backend.add_event_listener("ready", self.on_ready)
-        self.backend.add_event_listener("join", self.on_join)
-        self.backend.add_event_listener("message", self.on_message)
+        self.backend.on_ready.register(self.on_ready)
+        self.backend.on_join.register(self.on_join)
+        self.backend.on_message.register(self.on_message)
 
     def add_plugin(self, plugin):
         self.plugins.append(plugin)
