@@ -2,6 +2,8 @@ __pycache__
 *.py[cod]
 
 venv
+dist
+*.egg-info
 
 config.yaml
 storage.yaml
