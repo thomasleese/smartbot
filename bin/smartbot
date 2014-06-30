@@ -8,16 +8,14 @@ import yaml
 import smartbot
 import smartbot.backends
 import smartbot.plugins
+import smartbot.stores
 
 
 def read_storage(config):
     name = config["name"]
     del config["name"]
 
-    if name == "yaml":
-        return smartbot.storage.YAML(**config)
-    else:
-        raise Exception("Storage {0} doesn't exist.".format(name))
+    return getattr(smartbot.stores, name).Storage(**config)
 
 
 def read_backend(config):
@@ -40,5 +38,5 @@ with open("config.yaml") as fd:
 bot = smartbot.Bot(**config["bot"])
 bot.set_storage(read_storage(config["storage"]))
 bot.set_backend(read_backend(config["backend"]))
-bot.set_plugins([ read_plugin(x) for x in config["plugins"] ])
+bot.set_plugins(map(read_plugin, config["plugins"]))
 bot.run()
