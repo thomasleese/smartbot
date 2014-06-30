@@ -2,9 +2,12 @@
 import sys
 sys.path.append(".")
 import argparse
-import importlib.machinery
-import smartbot
+
 import yaml
+
+import smartbot
+import smartbot.backends
+import smartbot.plugins
 
 
 def read_storage(config):
@@ -21,19 +24,14 @@ def read_backend(config):
     name = config["name"]
     del config["name"]
 
-    if name == "irc":
-        return smartbot.backend.IRC(**config)
-    elif name == "cmdline":
-        return smartbot.backend.CommandLine(**config)
-    else:
-        raise Exception("Backend {0} doesn't exist.".format(name))
+    return getattr(smartbot.backends, name).Backend(**config)
 
 
 def read_plugin(config):
     name = config["name"]
     del config["name"]
-    loader = importlib.machinery.SourceFileLoader("plugins." + name, "plugins/" + name + ".py")
-    return loader.load_module("plugins." + name).Plugin(**config)
+
+    return getattr(smartbot.plugins, name).Plugin(**config)
 
 
 with open("config.yaml") as fd:
