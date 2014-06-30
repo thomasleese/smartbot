@@ -40,6 +40,7 @@ class Event:
     comparator is used which is described above.
     """
     def __init__(self, default_comparator=None):
+        """Create a new event with an optional default comparator."""
         self.handlers = []
         self.default_comparator = default_comparator or DEFAULT_COMPARATOR
 

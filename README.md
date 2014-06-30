@@ -21,9 +21,10 @@ Before you run the bot you must create a configuration file similar to this with
         - name: autojoin
           channels: [ "#robots" ]
 
-## Running
+## Building & Running
 
-    $ ./bin/smartbot
+    $ python3 setup.py build
+    # python3 setup.py install
 
 ## Plugins
 
