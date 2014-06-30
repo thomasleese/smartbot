@@ -39,7 +39,8 @@ class Plugin(smartbot.Plugin):
         )
 
     def pre_on_message(self, handler, msg):
-        handler.disable_plugin("websites")
+        if re.findall(REGEX, msg["message"], re.IGNORECASE):
+            handler.disable_plugin("websites")
 
     def on_message(self, msg, reply):
         match = re.findall(REGEX, msg["message"], re.IGNORECASE)
