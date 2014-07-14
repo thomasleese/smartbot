@@ -44,7 +44,10 @@ class Plugin(smartbot.Plugin):
         for match in matches:
             try:
                 url = urllib.parse.urlparse("".join(match))
-                video_ids.extend(urllib.parse.parse_qs(url.query)["v"])
+                if url.netloc == "youtu.be":
+                    video_ids.append(url.path[1:])
+                else:
+                    video_ids.extend(urllib.parse.parse_qs(url.query)["v"])
             except (ValueError, KeyError):
                 pass
         return video_ids
@@ -53,21 +56,38 @@ class Plugin(smartbot.Plugin):
         if self._find_video_ids(msg["message"]):
             handler.disable_plugin("websites")
 
+    def _get_video_info(self, video_id):
+        url = "https://www.googleapis.com/youtube/v3/videos"
+        payload = {
+            "key": self.key,
+            "id": video_id,
+            "part": ",".join(["contentDetails", "snippet", "statistics"])
+        }
+
+        s = utils.web.requests_session()
+        res = s.get(url, params=payload).json()
+        if res["items"]:
+            video = res["items"][0]
+            return video
+        else:
+            return None
+
     def on_message(self, msg, reply):
         video_ids = self._find_video_ids(msg["message"])
         for i, video_id in enumerate(video_ids):
-            url = "https://www.googleapis.com/youtube/v3/videos"
-            payload = {
-                "key": self.key,
-                "id": video_id,
-                "part": ",".join(["contentDetails", "snippet", "statistics"])
-            }
-
-            s = utils.web.requests_session()
-            res = s.get(url, params=payload).json()
-            if res["items"]:
-                video = res["items"][0]
+            video = self._get_video_info(video_id)
+            if video:
                 reply(self._get_reply(i, video))
 
+    def on_command(self, msg, stdin, stdout, reply):
+        video_ids = msg["args"][1:]
+        for i, video_id in enumerate(video_ids):
+            video = self._get_video_info(video_id)
+            if video:
+                print(self._get_reply(i, video), file=stdout)
+
     def on_help(self):
-        return "Sends information about YouTube URLs posted."
+        return "{} {} …".format(
+            super().on_help(),
+            self.bot.format("id", Style.underline)
+        )
