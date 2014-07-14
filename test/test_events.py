@@ -30,7 +30,7 @@ class TestEvents(unittest.TestCase):
     def test_default_comparator(self):
         event = events.Event()
         event.register(lambda *args, **kwargs: None, a=10)
-        self.assertEqual(len(event.trigger()), 0)
+        self.assertEqual(len(event.trigger()), 1)
         self.assertEqual(len(event.trigger(a=10)), 1)
 
     def test_decorator(self):
