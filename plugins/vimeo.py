@@ -1,3 +1,4 @@
+import datetime
 import re
 import urllib
 
@@ -10,31 +11,26 @@ from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-REGEX = r"(https?://)?(www\.)?(youtu\.?be|listenonrepeat)(\.com)?([^\s]+)"
+REGEX = r"(https?://)?(www\.)?(vimeo\.com)([^\s]+)"
 
 class Plugin(smartbot.Plugin):
-    """Get information about posted YouTube videos."""
-    names = ["youtube", "utube"]
-
-    def __init__(self, key):
-        self.key = key
+    """Get information about posted Vimeo videos."""
+    names = ["vimeo"]
 
     def _get_reply(self, i, video):
-        title = video["snippet"]["title"]
-        channelTitle = video["snippet"]["channelTitle"]
-        duration = isodate.parse_duration(video["contentDetails"]["duration"])
-        views = video["statistics"]["viewCount"]
-        likes = video["statistics"]["likeCount"]
-        dislikes = video["statistics"]["dislikeCount"]
+        title = video["title"]
+        userName = video["user_name"]
+        duration = datetime.timedelta(seconds=video["duration"])
+        views = video["stats_number_of_plays"]
+        likes = video["stats_number_of_likes"]
 
-        return "{}: {} by {} | {} | {} {} {}".format(
+        return "{}: {} by {} | {} | {} {}".format(
             self.bot.format("[{}]".format(i), Style.bold),
             self.bot.format(title, Style.underline),
-            self.bot.format(channelTitle, Style.underline),
+            self.bot.format(userName, Style.underline),
             duration,
             views,
             self.bot.format(likes, Colour.fg_green),
-            self.bot.format(dislikes, Colour.fg_red)
         )
 
     def _find_video_ids(self, text):
@@ -43,10 +39,7 @@ class Plugin(smartbot.Plugin):
         for match in matches:
             try:
                 url = urllib.parse.urlparse("".join(match))
-                if url.netloc == "youtu.be":
-                    video_ids.append(url.path[1:])
-                else:
-                    video_ids.extend(urllib.parse.parse_qs(url.query)["v"])
+                video_ids.append(url.path[1:])
             except (ValueError, KeyError):
                 pass
         return video_ids
@@ -56,19 +49,13 @@ class Plugin(smartbot.Plugin):
             handler.disable_plugin("websites")
 
     def _get_video_info(self, video_id):
-        url = "https://www.googleapis.com/youtube/v3/videos"
-        payload = {
-            "key": self.key,
-            "id": video_id,
-            "part": ",".join(["contentDetails", "snippet", "statistics"])
-        }
+        url = "http://vimeo.com/api/v2/video/{}.json".format(video_id)
 
         s = utils.web.requests_session()
-        res = s.get(url, params=payload).json()
-        if res["items"]:
-            video = res["items"][0]
-            return video
-        else:
+        res = s.get(url).json()
+        try:
+            return res[0]
+        except IndexError:
             return None
 
     def on_message(self, msg, reply):
