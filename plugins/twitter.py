@@ -1,3 +1,5 @@
+import html.parser
+
 import twython
 
 import smartbot
@@ -27,6 +29,7 @@ class Plugin(smartbot.Plugin):
         tweets = self.twitter.get_user_timeline(screen_name=person)
         for i, tweet in enumerate(tweets[:3]):
             text = tweet["text"].replace("\n", " ").replace("\r", "").strip()
+            text = html.parser.HTMLParser().unescape(text)
             print("[{0}]: {1}".format(i, text), file=stdout)
 
     def on_help(self):
