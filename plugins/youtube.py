@@ -10,7 +10,7 @@ from smartbot.exceptions import *
 from smartbot.formatting import *
 
 
-REGEX = r"(?:https?://)?(?:www\.)?(?:youtu\.?be|listenonrepeat)(?:\.com)?/(?:watch/?\?v=)?([^\s]+)"
+REGEX = r"(https?://)?(www\.)?(youtu\.?be|listenonrepeat)(\.com)?([^\s]+)"
 
 class Plugin(smartbot.Plugin):
     """Get information about posted YouTube videos."""
@@ -30,21 +30,32 @@ class Plugin(smartbot.Plugin):
 
         return "{}: {} by {} | {} | {} {} {}".format(
             self.bot.format("[{}]".format(i), Style.bold),
-            title,
-            channelTitle,
+            self.bot.format(title, Style.underline),
+            self.bot.format(channelTitle, Style.underline),
             duration,
             views,
             self.bot.format(likes, Colour.fg_green),
             self.bot.format(dislikes, Colour.fg_red)
         )
 
+    def _find_video_ids(self, text):
+        video_ids = []
+        matches = re.findall(REGEX, text, re.IGNORECASE)
+        for match in matches:
+            try:
+                url = urllib.parse.urlparse("".join(match))
+                video_ids.extend(urllib.parse.parse_qs(url.query)["v"])
+            except (ValueError, KeyError):
+                pass
+        return video_ids
+
     def pre_on_message(self, handler, msg):
-        if re.findall(REGEX, msg["message"], re.IGNORECASE):
+        if self._find_video_ids(msg["message"]):
             handler.disable_plugin("websites")
 
     def on_message(self, msg, reply):
-        match = re.findall(REGEX, msg["message"], re.IGNORECASE)
-        for i, video_id in enumerate(match):
+        video_ids = self._find_video_ids(msg["message"])
+        for i, video_id in enumerate(video_ids):
             url = "https://www.googleapis.com/youtube/v3/videos"
             payload = {
                 "key": self.key,
