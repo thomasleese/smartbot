@@ -1,1 +1,2 @@
-from . import cmdline, irc
+from . import cmdline, \
+              irc

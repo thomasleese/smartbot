@@ -1,1 +1,2 @@
-from . import memory, yaml
+from . import memory, \
+              yaml
