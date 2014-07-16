@@ -1,3 +1,4 @@
+import datetime
 import re
 import urllib
 
@@ -67,6 +68,53 @@ class YouTube:
                 return self._get_title(plugin.bot, video)
 
 
+class Vimeo:
+    REGEX = r"(https?://)?(www\.)?(vimeo\.com)([^\s]+)"
+
+    @staticmethod
+    def _get_video_id(url):
+        matches = re.findall(Vimeo.REGEX, url, re.IGNORECASE)
+        for match in matches:
+            try:
+                url = urllib.parse.urlparse("".join(match))
+                return url.path[1:]
+            except (ValueError, KeyError):
+                pass
+
+    def _get_video_info(self, video_id):
+        url = "http://vimeo.com/api/v2/video/{}.json".format(video_id)
+
+        s = utils.web.requests_session()
+        res = s.get(url).json()
+        try:
+            return res[0]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def _get_title(bot, video):
+        title = video["title"]
+        userName = video["user_name"]
+        duration = datetime.timedelta(seconds=video["duration"])
+        views = video["stats_number_of_plays"]
+        likes = video["stats_number_of_likes"]
+
+        return "{} by {} | {} | {} {}".format(
+            bot.format(title, Style.underline),
+            bot.format(userName, Style.underline),
+            duration,
+            views,
+            bot.format(likes, Colour.fg_green),
+        )
+
+    def __call__(self, plugin, url):
+        video_id = self._get_video_id(url)
+        if video_id:
+            video = self._get_video_info(video_id)
+            if video:
+                return self._get_title(plugin.bot, video)
+
+
 class Website:
     def __call__(self, plugin, url):
         return utils.web.get_title(url)
@@ -80,6 +128,7 @@ class Plugin(smartbot.Plugin):
         self.handlers = []
         if youtube_key:
             self.handlers.append(YouTube(youtube_key))
+        self.handlers.append(Vimeo())
         self.handlers.append(Website())
 
     def _get_title(self, url):
