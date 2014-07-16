@@ -6,9 +6,7 @@ import sys
 import threading
 import traceback
 
-
 from .exceptions import *
-from .handler import Handler
 
 
 class Bot:
@@ -60,14 +58,9 @@ class Bot:
                 return plugin
 
     def call_plugins_on_message(self, msg):
-        handler = Handler(self.plugins)
-
-        for plugin in handler.plugins:
-            plugin.pre_on_message(handler, msg)
-
         reply = functools.partial(self.send, msg["reply_to"])
 
-        for plugin in handler.plugins:
+        for plugin in self.plugins:
             try:
                 plugin.on_message(msg, reply)
             except Exception as e:
@@ -75,14 +68,9 @@ class Bot:
                 reply(str(e))
 
     def call_plugins_on_respond(self, msg):
-        handler = Handler(self.plugins)
-
-        for plugin in handler.plugins:
-            plugin.pre_on_respond(handler, msg)
-
         reply = functools.partial(self.send, msg["reply_to"])
 
-        for plugin in handler.plugins:
+        for plugin in self.plugins:
             try:
                 plugin.on_respond(msg, reply)
             except Exception as e:
