@@ -7,8 +7,8 @@ from smartbot.formatting import *
 
 
 class Plugin(smartbot.Plugin):
-    """Get website title."""
-    names = ["websites"]
+    """Get URL titles."""
+    names = ["url_titles"]
 
     def on_message(self, msg, reply):
         match = re.findall(r"(https?://[^\s]+)", msg["message"], re.IGNORECASE)
@@ -20,4 +20,4 @@ class Plugin(smartbot.Plugin):
                 ))
 
     def on_help(self):
-        return "Echos the titles of websites for any HTTP(S) URL."
+        return "Echos the title of any HTTP(S) URL."
