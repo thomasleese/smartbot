@@ -115,6 +115,55 @@ class Vimeo:
                 return self._get_title(plugin.bot, video)
 
 
+class Instagram:
+    REGEX = r"(https?://)?(www\.)?(instagram.com/p/[^\s]+)"
+
+    def __init__(self, client_id):
+        self.client_id = client_id
+
+    @staticmethod
+    def _get_title(bot, media):
+        caption = media["caption"]["text"]
+        userName = media["user"]["full_name"]
+        likes = media["likes"]["count"]
+
+        return "{} by {} | {}".format(
+            bot.format(caption, Style.underline),
+            bot.format(userName, Style.underline),
+            bot.format(likes, Colour.fg_green),
+        )
+
+    @staticmethod
+    def _get_shortcode(text):
+        matches = re.findall(Instagram.REGEX, text, re.IGNORECASE)
+        for match in matches:
+            try:
+                url = urllib.parse.urlparse("".join(match))
+                return url.path[3:]
+            except (ValueError, KeyError):
+                pass
+
+    def _get_media_info(self, shortcode):
+        url = "https://api.instagram.com/v1/media/shortcode/{}".format(shortcode)
+        params = {
+            "client_id": self.client_id,
+        }
+
+        s = utils.web.requests_session()
+        res = s.get(url, params=params).json()
+        try:
+            return res["data"]
+        except KeyError:
+            return None
+
+    def __call__(self, plugin, url):
+        shortcode = self._get_shortcode(url)
+        if shortcode:
+            media = self._get_media_info(shortcode)
+            if media:
+                return self._get_title(plugin.bot, media)
+
+
 class Website:
     def __call__(self, plugin, url):
         return utils.web.get_title(url)
@@ -124,10 +173,12 @@ class Plugin(smartbot.Plugin):
     """Get URL titles."""
     names = ["url_titles"]
 
-    def __init__(self, youtube_key=None):
+    def __init__(self, youtube_key=None, instagram_client_id=None):
         self.handlers = []
         if youtube_key:
             self.handlers.append(YouTube(youtube_key))
+        if instagram_client_id:
+            self.handlers.append(Instagram(instagram_client_id))
         self.handlers.append(Vimeo())
         self.handlers.append(Website())
 
