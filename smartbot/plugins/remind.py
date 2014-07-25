@@ -29,7 +29,7 @@ class Plugin(smartbot.Plugin):
                     reply("Sure thing {0}, I'll remind you on {1}.".format(msg["sender"], date.strftime("%c").strip()))
                     message = "{0}: you asked me to remind you {1} {2}".format(msg["sender"], match.group(2), match.group(3))
                 else:
-                    replyreply("Sure thing {0}, I'll remind {1} on {2}.".format(msg["sender"], match.group(1), date.strftime("%c").strip()))
+                    reply("Sure thing {0}, I'll remind {1} on {2}.".format(msg["sender"], match.group(1), date.strftime("%c").strip()))
                     message = "{0}: {1} asked me to remind you {2} {3}".format(match.group(1), msg["sender"], match.group(2), match.group(3))
 
                 duration = max(0, (date - datetime.datetime.now()).total_seconds())
