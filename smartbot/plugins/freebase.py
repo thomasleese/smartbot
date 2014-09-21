@@ -25,8 +25,6 @@ class Plugin(smartbot.Plugin):
         res = session.get(url, params=payload).json()
         if res["result"]:
             return res["result"][0]["mid"]
-        else:
-            return None
 
     def _topic(self, mid):
         url = "https://www.googleapis.com/freebase/v1/topic{}".format(mid)
