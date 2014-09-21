@@ -189,6 +189,44 @@ class Twitter:
             )
 
 
+class Twitch:
+    REGEX = r"(https?://)?(www\.)?(twitch\.tv)([^\s]+)"
+
+    @staticmethod
+    def _get_channel_id(url):
+        matches = re.findall(Twitch.REGEX, url, re.IGNORECASE)
+        for match in matches:
+            try:
+                url = urllib.parse.urlparse("".join(match))
+                return url.path[1:]
+            except (ValueError, KeyError):
+                pass
+
+    def _get_channel_info(self, channel_id):
+        url = "https://api.twitch.tv/kraken/channels/{}".format(channel_id)
+        s = utils.web.requests_session()
+        res = s.get(url).json()
+        if res.get("error", None) is None:
+            return res
+
+    @staticmethod
+    def _get_title(bot, channel):
+        title = channel["status"]
+        userName = channel["display_name"]
+
+        return "{} by {}".format(
+            bot.format(title, Style.underline),
+            bot.format(userName, Style.underline)
+        )
+
+    def __call__(self, plugin, url):
+        channel_id = self._get_channel_id(url)
+        if channel_id:
+            channel = self._get_channel_info(channel_id)
+            if channel:
+                return self._get_title(plugin.bot, channel)
+
+
 class Website:
     def __call__(self, plugin, url):
         return utils.web.get_title(url)
@@ -214,6 +252,7 @@ class Plugin(smartbot.Plugin):
                                          twitter_access_token_key,
                                          twitter_access_token_secret))
         self.handlers.append(Vimeo())
+        self.handlers.append(Twitch())
         self.handlers.append(Website())
 
     def _get_title(self, url):
