@@ -9,6 +9,14 @@ setup(
     author="Tom Leese",
     author_email="tom@tomleese.me.uk",
     packages=["smartbot", "smartbot.backends", "smartbot.plugins", "smartbot.stores", "smartbot.utils"],
+    install_requires=[
+        "PyYaml",
+        "lxml",
+        "requests==2.1.0",
+        "isodate",
+        "textblob",
+        "twython"
+    ],
     entry_points = {
         "console_scripts": ["smartbot = smartbot:main"]
     }

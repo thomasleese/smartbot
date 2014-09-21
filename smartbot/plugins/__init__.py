@@ -32,9 +32,9 @@ from . import ach, \
               translate, \
               twitter, \
               unicode, \
+              url_titles, \
               vimeo, \
               wait, \
-              websites, \
               wolfram, \
               xkcd, \
               youtube
