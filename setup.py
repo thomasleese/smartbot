@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="smartbot",
-    version="1.0.0",
+    version="1.0.0-dev",
     description="A supposedly smart IRC bot.",
     url="https://github.com/tomleese/smartbot",
     author="Tom Leese",
