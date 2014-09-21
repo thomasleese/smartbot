@@ -13,44 +13,38 @@ class Plugin(smartbot.Plugin):
     def __init__(self, key):
         self.key = key
 
-    def _get_reply(self, video):
-        title = video["snippet"]["title"]
-        channelTitle = video["snippet"]["channelTitle"]
-        duration = isodate.parse_duration(video["contentDetails"]["duration"])
-        views = video["statistics"]["viewCount"]
-        likes = video["statistics"]["likeCount"]
-        dislikes = video["statistics"]["dislikeCount"]
-
-        return "{} by {} | {} | {} {} {}".format(
-            self.bot.format(title, Style.underline),
-            self.bot.format(channelTitle, Style.underline),
-            duration,
-            views,
-            self.bot.format(likes, Colour.fg_green),
-            self.bot.format(dislikes, Colour.fg_red)
-        )
-
-    def _get_video_info(self, video_id):
-        url = "https://www.googleapis.com/youtube/v3/videos"
+    def _search(self, query):
+        url = "https://www.googleapis.com/youtube/v3/search"
         payload = {
             "key": self.key,
-            "id": video_id,
-            "part": ",".join(["contentDetails", "snippet", "statistics"])
+            "q": query,
+            "maxResults": 3,
+            "part": "snippet"
         }
 
         s = utils.web.requests_session()
         res = s.get(url, params=payload).json()
-        if res["items"]:
-            return res["items"][0]
+        return res.get("items", [])
+
+    def _format_result(self, i, result):
+        url = "https://www.youtube.com/watch?v={}".format(result["id"]["videoId"])
+        return "{}: {} {}".format(
+            self.bot.format("[{}]".format(i), Style.bold),
+            self.bot.format(result["snippet"]["title"], Style.underline),
+            url
+        )
 
     def on_command(self, msg, stdin, stdout, reply):
-        for video_id in msg["args"][1:]:
-            video = self._get_video_info(video_id)
-            if video:
-                print(self._get_reply(video), file=stdout)
+        query = " ".join(msg["args"][1:])
+        if not query:
+            query = stdin.read().strip()
+
+        results = self._search(query)
+        for i, result in enumerate(results):
+            print(self._format_result(i, result), file=stdout)
 
     def on_help(self):
-        return "{} {} …".format(
+        return "{} {}".format(
             super().on_help(),
-            self.bot.format("id", Style.underline)
+            self.bot.format("query", Style.underline)
         )
