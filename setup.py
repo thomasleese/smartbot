@@ -15,7 +15,8 @@ setup(
         "requests==2.1.0",
         "isodate",
         "textblob",
-        "twython"
+        "twython",
+        "cssselect"
     ],
     entry_points = {
         "console_scripts": ["smartbot = smartbot:main"]
