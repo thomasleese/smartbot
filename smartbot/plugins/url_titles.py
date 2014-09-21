@@ -3,6 +3,7 @@ import re
 import urllib
 
 import isodate
+import twython
 
 import smartbot
 from smartbot import utils
@@ -164,6 +165,30 @@ class Instagram:
                 return self._get_title(plugin.bot, media)
 
 
+class Twitter:
+    REGEX = r"(?:https?://)?(?:www\.)?(?:twitter\.com)([^\s]+)/status/([^\s]+)"
+
+    def __init__(self, consumer_key, consumer_secret, access_token_key,
+                 access_token_secret):
+        self.twitter = twython.Twython(consumer_key, consumer_secret,
+                                       access_token_key, access_token_secret)
+
+    @staticmethod
+    def _get_status_id(text):
+        matches = re.findall(Twitter.REGEX, text, re.IGNORECASE)
+        for match in matches:
+            return match[1]
+
+    def __call__(self, plugin, url):
+        status_id = self._get_status_id(url)
+        if status_id is not None:
+            status = self.twitter.show_status(id=status_id)
+            return "{} {}".format(
+                status["text"],
+                plugin.bot.format("@" + status["user"]["screen_name"], Style.underline, Style.bold)
+            )
+
+
 class Website:
     def __call__(self, plugin, url):
         return utils.web.get_title(url)
@@ -173,12 +198,21 @@ class Plugin(smartbot.Plugin):
     """Get URL titles."""
     names = ["url_titles"]
 
-    def __init__(self, youtube_key=None, instagram_client_id=None):
+    def __init__(self, youtube_key=None, instagram_client_id=None,
+                 twitter_consumer_key=None, twitter_consumer_secret=None,
+                 twitter_access_token_key=None,
+                 twitter_access_token_secret=None):
         self.handlers = []
         if youtube_key:
             self.handlers.append(YouTube(youtube_key))
         if instagram_client_id:
             self.handlers.append(Instagram(instagram_client_id))
+        if twitter_consumer_key and twitter_consumer_secret and \
+            twitter_access_token_key and twitter_access_token_secret:
+            self.handlers.append(Twitter(twitter_consumer_key,
+                                         twitter_consumer_secret,
+                                         twitter_access_token_key,
+                                         twitter_access_token_secret))
         self.handlers.append(Vimeo())
         self.handlers.append(Website())
 
