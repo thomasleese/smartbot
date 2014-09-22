@@ -32,6 +32,7 @@ from . import ach, \
               translate, \
               twitter, \
               unicode, \
+              unshorten, \
               url_titles, \
               vimeo, \
               wait, \
