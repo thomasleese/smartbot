@@ -19,7 +19,8 @@ class Plugin(smartbot.Plugin):
             "key": self.key,
             "q": query,
             "maxResults": 3,
-            "part": "snippet"
+            "part": "snippet",
+            "type": "video"
         }
 
         s = utils.web.requests_session()
