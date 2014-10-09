@@ -140,7 +140,7 @@ class Instagram:
         for match in matches:
             try:
                 url = urllib.parse.urlparse("".join(match))
-                return url.path[3:]
+                return url.path.split("/")[2]
             except (ValueError, KeyError):
                 pass
 
