@@ -166,7 +166,7 @@ class Instagram:
 
 
 class Twitter:
-    REGEX = r"(?:https?://)?(?:www\.)?(?:twitter\.com)([^\s]+)/status/([^\s]+)"
+    REGEX = r"(?:https?://)?(?:www\.)?(?:twitter\.com)([^\s]+)/status/([0-9]+)"
 
     def __init__(self, consumer_key, consumer_secret, access_token_key,
                  access_token_secret):
