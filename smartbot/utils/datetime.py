@@ -1,6 +1,8 @@
 import datetime
 import re
 
+import dateutil.parser
+
 
 TIMESPAN_REGEX = r"^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
 LITERAL_REGEX = r"^at (?:(\d+)\:)?(?:(\d+)\:)?(?:(\d+)\:)?(\d+)?$"
@@ -31,6 +33,11 @@ def _parse_timespan(string, from_date=None):
 
 
 def _parse_literal(string, from_date=None):
+    try:
+        return dateutil.parser.parse(string)
+    except TypeError:
+        pass
+
     match = re.match(LITERAL_REGEX, string.strip(), re.IGNORECASE)
     if match:
         result = filter(None, match.group(1, 2, 3, 4))
