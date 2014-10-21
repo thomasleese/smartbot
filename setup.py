@@ -16,7 +16,8 @@ setup(
         "isodate",
         "textblob",
         "twython",
-        "cssselect"
+        "cssselect",
+        "python-dateutil"
     ],
     entry_points = {
         "console_scripts": ["smartbot = smartbot:main"]
