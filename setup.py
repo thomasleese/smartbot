@@ -1,14 +1,18 @@
-#!/usr/bin/env python3
-from setuptools import setup
+#!/usr/bin/env python
+import ez_setup
+ez_setup.use_setuptools()
+
+from setuptools import find_packages, setup
+
 
 setup(
     name="smartbot",
-    version="1.0.0-dev",
+    version="1.0.0",
     description="A supposedly smart IRC bot.",
     url="https://github.com/tomleese/smartbot",
     author="Tom Leese",
-    author_email="tom@tomleese.me.uk",
-    packages=["smartbot", "smartbot.backends", "smartbot.plugins", "smartbot.stores", "smartbot.utils"],
+    author_email="inbox@tomleese.me.uk",
+    packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         "PyYaml",
         "lxml",
@@ -21,5 +25,6 @@ setup(
     ],
     entry_points = {
         "console_scripts": ["smartbot = smartbot:main"]
-    }
+    },
+    test_suite='tests'
 )
