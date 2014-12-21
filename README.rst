@@ -1,9 +1,6 @@
 Smart Bot
 =========
 
-.. image:: https://travis-ci.org/tomleese/smartbot.svg?branch=master
-    :target: https://travis-ci.org/tomleese/smartbot
-
 A supposedly smart IRC bot.
 
 Configuration
@@ -32,8 +29,7 @@ Building & Running
 
 SmartBot uses a standard ``setup.py`` script, like so::
 
-    $ python3 setup.py build
-    # python3 setup.py install
+    $ ./setup.py install
     $ smartbot
 
 Plugins
