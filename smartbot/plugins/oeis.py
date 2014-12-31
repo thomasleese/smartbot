@@ -1,7 +1,5 @@
 import re
 
-import requests
-
 import smartbot
 from smartbot import utils
 from smartbot.formatting import *

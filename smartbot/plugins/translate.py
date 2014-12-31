@@ -1,11 +1,8 @@
 import argparse
-import sys
 
-import re
 from textblob import TextBlob
 
 import smartbot
-from smartbot import utils
 from smartbot.exceptions import *
 from smartbot.formatting import *
 

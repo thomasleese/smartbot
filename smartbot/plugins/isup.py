@@ -1,7 +1,5 @@
 import urllib.parse
 
-import requests
-
 import smartbot
 from smartbot import utils
 from smartbot.exceptions import *

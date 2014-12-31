@@ -1,9 +1,4 @@
 import datetime
-import re
-import urllib
-
-import isodate
-import requests
 
 import smartbot
 from smartbot import utils

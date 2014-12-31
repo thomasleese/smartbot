@@ -1,7 +1,5 @@
 import unicodedata
 
-import requests
-
 import smartbot
 from smartbot.exceptions import *
 from smartbot.formatting import *

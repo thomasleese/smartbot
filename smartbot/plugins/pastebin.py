@@ -1,5 +1,4 @@
 import smartbot
-from smartbot import utils
 
 
 class Plugin(smartbot.Plugin):

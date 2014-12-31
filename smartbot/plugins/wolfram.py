@@ -1,8 +1,6 @@
 import io
 import re
-import os
 
-import requests
 import lxml.etree
 
 import smartbot

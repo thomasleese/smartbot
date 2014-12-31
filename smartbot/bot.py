@@ -2,7 +2,6 @@ import io
 import itertools
 import functools
 import shlex
-import sys
 import threading
 import traceback
 

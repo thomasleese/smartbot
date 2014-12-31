@@ -1,8 +1,6 @@
 import random
 import time
 
-import requests
-
 import smartbot
 from smartbot import utils
 from smartbot.exceptions import *

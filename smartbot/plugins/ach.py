@@ -1,7 +1,4 @@
-import io
 import lxml.html
-import requests
-import unittest
 
 import smartbot
 from smartbot import utils

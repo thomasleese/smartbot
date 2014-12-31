@@ -1,6 +1,3 @@
-import io
-
-import requests
 import lxml.etree
 
 import smartbot
