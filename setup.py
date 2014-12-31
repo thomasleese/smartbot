@@ -24,7 +24,7 @@ setup(
         "python-dateutil"
     ],
     entry_points = {
-        "console_scripts": ["smartbot = smartbot:main"]
+        "console_scripts": ["smartbot = smartbot.cli:main"]
     },
     test_suite='tests'
 )
