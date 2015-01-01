@@ -10,9 +10,9 @@ from smartbot.formatting import Style
 
 class Statistics:
     """
-    This class is based on Donald Knuth"s "The Art of Computer Programming, Volume 2:
-    Seminumerical Algorithms" section 4.2.2, of which a summary can be seen on
-    http://mathcentral.uregina.ca/QQ/database/QQ.09.02/carlos1.html
+    This class is based on Donald Knuth"s "The Art of Computer Programming,
+    Volume 2: Seminumerical Algorithms" section 4.2.2, of which a summary can
+    be seen on http://mathcentral.uregina.ca/QQ/database/QQ.09.02/carlos1.html
     It uses a recurrence relation, so that the time and space complexity
     is O(1), compared to O(n) of a naive approach by storing the full dataset.
     """
@@ -59,7 +59,8 @@ class Plugin(smartbot.plugin.Plugin):
 
     @property
     def sentiments(self):
-        return self.bot.storage.setdefault("sentiments", collections.defaultdict(dict))
+        return self.bot.storage.setdefault("sentiments",
+                                           collections.defaultdict(dict))
 
     def on_message(self, msg, reply):
         message_sentiment = TextBlob(msg["message"]).sentiment
@@ -71,7 +72,8 @@ class Plugin(smartbot.plugin.Plugin):
 
         sender_sentiments = self.sentiments[msg["sender"]]
         sender_sentiments.setdefault('polarity', Statistics()).add(polarity)
-        sender_sentiments.setdefault('subjectivity', Statistics()).add(subjectivity)
+        sender_sentiments.setdefault('subjectivity',
+                                     Statistics()).add(subjectivity)
 
         self.bot.storage.commit()
 
@@ -86,7 +88,8 @@ class Plugin(smartbot.plugin.Plugin):
 
         for user in user_list.split():
             if user not in self.sentiments:
-                print("'{user}' is unknown or has not said anything useful yet".format(user=user), file=stdout)
+                print("'{}' is unknown or has not said anything useful yet"
+                      .format(user), file=stdout)
                 continue
 
             user_sentiments = self.sentiments[user]
@@ -94,8 +97,10 @@ class Plugin(smartbot.plugin.Plugin):
             subjectivity = user_sentiments["subjectivity"]
 
             print("Sentiments of {user}".format(user=user), file=stdout)
-            print(self.stats_string.format("μ", p=polarity.mean, s=subjectivity.mean), file=stdout)
-            print(self.stats_string.format("σ", p=polarity.stdev, s=subjectivity.stdev), file=stdout)
+            print(self.stats_string.format("μ", p=polarity.mean,
+                                           s=subjectivity.mean), file=stdout)
+            print(self.stats_string.format("σ", p=polarity.stdev,
+                                           s=subjectivity.stdev), file=stdout)
 
     def on_help(self):
         return "{} {} [{}…]".format(

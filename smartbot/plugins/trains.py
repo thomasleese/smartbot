@@ -13,7 +13,7 @@ class Plugin(smartbot.plugin.Plugin):
             url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson"
             payload = {
                 "liveTrainsFrom": msg["args"][1],
-                "liveTrainsTo"  : msg["args"][2],
+                "liveTrainsTo": msg["args"][2],
                 "departing": "true",
             }
 

@@ -22,7 +22,8 @@ class Plugin(smartbot.plugin.Plugin):
         )
 
     def _get_media_info(self, shortcode):
-        url = "https://api.instagram.com/v1/media/shortcode/{}".format(shortcode)
+        url = "https://api.instagram.com/v1/media/shortcode/{}" \
+              .format(shortcode)
         params = {
             "client_id": self.client_id,
         }

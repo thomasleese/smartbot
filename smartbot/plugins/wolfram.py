@@ -58,7 +58,8 @@ class Plugin(smartbot.plugin.Plugin):
 
                 return list(map(format_col, enumerate(row.split("|"))))
 
-            rows = list(map(format_row, rows)) # list to force max_column_widths evaluation
+            # force max_column_widths evaluation
+            rows = list(map(format_row, rows))
 
             result = ""
             for row in rows:
@@ -76,7 +77,7 @@ class Plugin(smartbot.plugin.Plugin):
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
             stdout = io.StringIO()
-            self.on_command({"args": [None, query]}, None, stdout, None)  # stdin, reply is unused
+            self.on_command({"args": [None, query]}, None, stdout, None)
             output = stdout.getvalue().strip()
             reply(output)
 
@@ -101,15 +102,18 @@ class Plugin(smartbot.plugin.Plugin):
                     pods.append(pod)
 
                 if len(pods) >= 2:
-                    small_result = self.format_pod(pods[0]) + " -> " + self.format_pod(pods[1])
+                    small_result = '{} -> {}'.format(self.format_pod(pods[0]),
+                                                     self.format_pod(pods[1]))
                     if len(small_result) <= 100 and "\n" not in small_result:
                         print(small_result, file=stdout)
                     else:
                         for pod in pods[:2]:
-                            print("# {0}".format(pod.get("title")), file=stdout)
+                            print("# {0}".format(pod.get("title")),
+                                  file=stdout)
                             for subpod in pod.findall("subpod"):
                                 if subpod.get("title"):
-                                    print("## {0}".format(subpod.get("title")), file=stdout)
+                                    print("## {0}".format(subpod.get("title")),
+                                          file=stdout)
                                 print(self.format_subpod(subpod), file=stdout)
                 else:
                     raise StopCommand("Nothing more to say.")

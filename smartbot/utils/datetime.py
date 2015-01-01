@@ -4,7 +4,12 @@ import re
 import dateutil.parser
 
 
-TIMESPAN_REGEX = r"^(?:(in) )?(?:(\d+) ?week(?:s)?)? ?(?:(\d+) ?day(?:s)?)? ?(?:(\d+) ?hour(?:s)?)? ?(?:(\d+) ?min(?:ute)?(?:s)?)? ?(?:(\d+) ?sec(:?ond)?(?:s)?)? ?(ago)?$"
+TIMESPAN_REGEX = r'^(?:(in) )?(?:(\d+) ' \
+                 r'?week(?:s)?)? ?(?:(\d+) ' \
+                 r'?day(?:s)?)? ?(?:(\d+) ' \
+                 r'?hour(?:s)?)? ?(?:(\d+) ' \
+                 r'?min(?:ute)?(?:s)?)? ?(?:(\d+) ' \
+                 r'?sec(:?ond)?(?:s)?)? ?(ago)?$'
 LITERAL_REGEX = r"^at (?:(\d+)\:)?(?:(\d+)\:)?(?:(\d+)\:)?(\d+)?$"
 
 
@@ -55,7 +60,8 @@ def _parse_literal(string, from_date=None):
         elif len(r) == 3:
             return current_date.replace(hour=r[0], minute=r[1], second=r[2])
         elif len(r) == 4:
-            return current_date.replace(day=r[0], hour=r[1], minute=r[2], second=r[3])
+            return current_date.replace(day=r[0], hour=r[1], minute=r[2],
+                                        second=r[3])
 
     raise ValueError("Absolute date does not match format.")
 

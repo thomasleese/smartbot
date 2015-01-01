@@ -33,7 +33,7 @@ class Plugin(smartbot.plugin.Plugin):
         description = topic["property"].get("/common/topic/description")
         if description:
             return description["values"][0]["text"], \
-                   description["values"][0]["value"]
+                description["values"][0]["value"]
         else:
             return None, None
 
@@ -51,7 +51,8 @@ class Plugin(smartbot.plugin.Plugin):
                     url = sprunge(long_text)
                     print("{} {}".format(short_text, url), file=stdout)
                 else:
-                    raise StopCommand("There isn't much information about this.")
+                    raise StopCommand(
+                        "There isn't much information about this.")
             else:
                 raise StopCommand("I don't know what you're on about.")
         else:

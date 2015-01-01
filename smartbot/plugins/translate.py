@@ -11,8 +11,8 @@ class Plugin(smartbot.plugin.Plugin):
     names = ["translate"]
 
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("-from","--from-language", default=None, nargs="?")  # let autodetect decide
-    parser.add_argument("-to"  ,"--to-language",   default="en", nargs="?")
+    parser.add_argument("-from", "--from-language", default=None, nargs="?")
+    parser.add_argument("-to", "--to-language", default="en", nargs="?")
     parser.add_argument("message", nargs="*")
 
     def on_command(self, msg, stdin, stdout, reply):
@@ -35,8 +35,9 @@ class Plugin(smartbot.plugin.Plugin):
 
         # translate
         from_lang = args.from_language
-        to_lang   = args.to_language
-        message   = TextBlob(message)
+        to_lang = args.to_language
+        message = TextBlob(message)
+
         try:
             translated = message.translate(from_lang=from_lang, to=to_lang)
         except:

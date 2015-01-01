@@ -3,6 +3,7 @@ class Style:
     italic = 1
     underline = 2
 
+
 class Colour:
     fg_white = 3
     fg_black = 4

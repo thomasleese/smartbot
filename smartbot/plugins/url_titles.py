@@ -144,7 +144,8 @@ class Instagram:
                 pass
 
     def _get_media_info(self, shortcode):
-        url = "https://api.instagram.com/v1/media/shortcode/{}".format(shortcode)
+        url = "https://api.instagram.com/v1/media/shortcode/{}" \
+              .format(shortcode)
         params = {
             "client_id": self.client_id,
         }
@@ -184,7 +185,8 @@ class Twitter:
             status = self.twitter.show_status(id=status_id)
             return "{} {}".format(
                 status["text"],
-                plugin.bot.format("@" + status["user"]["screen_name"], Style.underline, Style.bold)
+                plugin.bot.format("@" + status["user"]["screen_name"],
+                                  Style.underline, Style.bold)
             )
 
 
@@ -245,7 +247,7 @@ class Plugin(smartbot.plugin.Plugin):
         if instagram_client_id:
             self.handlers.append(Instagram(instagram_client_id))
         if twitter_consumer_key and twitter_consumer_secret and \
-            twitter_access_token_key and twitter_access_token_secret:
+                twitter_access_token_key and twitter_access_token_secret:
             self.handlers.append(Twitter(twitter_consumer_key,
                                          twitter_consumer_secret,
                                          twitter_access_token_key,

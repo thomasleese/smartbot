@@ -17,7 +17,8 @@ class Plugin(smartbot.plugin.Plugin):
             if "status".startswith(action):
                 session = requests_session()
                 res = session.get(STATUS_URL).json()
-                print("{0} - {1}".format(res["created_on"], res["body"]), file=stdout)
+                print("{0} - {1}".format(res["created_on"], res["body"]),
+                      file=stdout)
             else:
                 raise StopCommandWithHelp(self)
         else:

@@ -23,7 +23,9 @@ class Plugin(smartbot.plugin.Plugin):
             else:
                 raise StopCommand("{} does not exist.".format(plugin_name))
         else:
-            plugin_names = ", ".join(sorted(itertools.chain.from_iterable(plugin.names for plugin in self.bot.plugins)))
+            names = itertools.chain.from_iterable(
+                plugin.names for plugin in self.bot.plugins)
+            plugin_names = ", ".join(sorted(names))
             print("Help about:", plugin_names, file=stdout)
 
     def on_help(self):

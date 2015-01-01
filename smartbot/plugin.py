@@ -1,5 +1,6 @@
 from .formatting import Style
 
+
 class Plugin:
     disable_plugins = []
 

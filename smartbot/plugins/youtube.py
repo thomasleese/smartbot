@@ -25,7 +25,8 @@ class Plugin(smartbot.plugin.Plugin):
         return res.get("items", [])
 
     def _format_result(self, i, result):
-        url = "https://www.youtube.com/watch?v={}".format(result["id"]["videoId"])
+        url = "https://www.youtube.com/watch?v={}" \
+              .format(result["id"]["videoId"])
         return "{}: {} {}".format(
             self.bot.format("[{}]".format(i), Style.bold),
             self.bot.format(result["snippet"]["title"], Style.underline),

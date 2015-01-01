@@ -18,12 +18,15 @@ class Plugin(smartbot.plugin.Plugin):
                 tree = lxml.html.fromstring(page.text)
                 if tree.cssselect(".dailydeal"):
                     url = tree.cssselect(".dailydeal a")[0].get("href")
-                    original_price = tree.cssselect(".dailydeal_content .discount_original_price")[0].text
-                    final_price = tree.cssselect(".dailydeal_content .discount_final_price")[0].text
+                    original_price = tree.cssselect(
+                        ".dailydeal_content .discount_original_price")[0].text
+                    final_price = tree.cssselect(
+                        ".dailydeal_content .discount_final_price")[0].text
                     print("{0} - {1} - from {2} to {3}".format(url,
                                                                get_title(url),
                                                                original_price,
-                                                               final_price), file=stdout)
+                                                               final_price),
+                          file=stdout)
                 else:
                     raise StopCommand("No daily deal.")
             else:

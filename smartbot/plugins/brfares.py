@@ -29,13 +29,14 @@ class Plugin(smartbot.plugin.Plugin):
             or fare["category"]["desc"] == category, fares))
 
     def on_command(self, msg, stdin, stdout, reply):
-        pattern = r"(?:br)?fares (?:from )?(.*) to (.*?)(?: with (?P<rlc>.*?))?(?: category (?P<category>.*))?$"
+        pattern = r"(?:br)?fares (?:from )?(.*) to (.*?)" \
+                  r"(?: with (?P<rlc>.*?))?(?: category (?P<category>.*))?$"
         match = re.match(pattern, msg["message"], re.IGNORECASE)
         if match:
             station1 = match.group(1)
             station2 = match.group(2)
-            rlc = match.group('rlc') or " " * 3 # three spaces == no railcard
-            category = match.group('category') # three spaces == no railcard
+            rlc = match.group('rlc') or " " * 3  # three spaces == no railcard
+            category = match.group('category')  # three spaces == no railcard
 
             station_url = "http://api.brfares.com/ac_loc"
             rlc_url = "http://api.brfares.com/ac_rlc"

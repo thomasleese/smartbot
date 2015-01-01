@@ -20,10 +20,13 @@ class Plugin(smartbot.plugin.Plugin):
             user = msg["args"][1]
             try:
                 info = self.bot.storage["seen." + user]
-                datetime_str = info["datetime"].strftime("%a %d %b %H:%M %Z").strip()
-                print("{0} {1} on {2}.".format(user, info["action"], datetime_str), file=stdout)
+                datetime_str = info["datetime"].strftime("%a %d %b %H:%M %Z") \
+                    .strip()
+                print("{0} {1} on {2}.".format(user, info["action"],
+                                               datetime_str), file=stdout)
             except KeyError:
-                raise StopCommand("I don't know anything about {0}.".format(user))
+                raise StopCommand("I don't know anything about {0}."
+                                  .format(user))
         else:
             raise StopCommandWithHelp(self)
 

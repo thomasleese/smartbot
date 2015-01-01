@@ -23,7 +23,7 @@ class Plugin(smartbot.plugin.Plugin):
         url = "https://www.googleapis.com/customsearch/v1"
         payload = {
             "key": self.key,
-            "cx" : self.cx,
+            "cx": self.cx,
             "q": query,
             "num": 4,
         }
@@ -34,7 +34,8 @@ class Plugin(smartbot.plugin.Plugin):
             raise StopCommand(res["error"]["message"])
         elif "items" in res:
             for i, item in enumerate(res["items"]):
-                print("[{0}]: {1} - {2}".format(i, item["title"], item["link"]), file=stdout)
+                print("[{0}]: {1} - {2}".format(i, item["title"],
+                                                item["link"]), file=stdout)
         else:
             raise StopCommand("No results!")
 

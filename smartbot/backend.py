@@ -1,5 +1,6 @@
 from .events import Event
 
+
 class Backend:
     def __init__(self):
         self.storage = None

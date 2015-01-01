@@ -22,7 +22,8 @@ class Plugin(smartbot.plugin.Plugin):
         if response.status_code == 200:
             self.i = -1
             # only process lines starting with a percent symbol
-            for line in filter(lambda l: l.startswith("%"), response.text.split("\n")):
+            for line in filter(lambda l: l.startswith("%"),
+                               response.text.split("\n")):
                 # content default is set to None
                 flag, identifier, content, *_ = line.split(" ", 2) + [None]
                 # process the line
@@ -39,7 +40,8 @@ class Plugin(smartbot.plugin.Plugin):
         # print formatted sequence
         elif flag[1] == "S":
             sequence = re.sub(",", ", ", content)
-            print("[{}] {}: {}...".format(self.i, identifier, sequence), file=stdout)
+            print("[{}] {}: {}...".format(self.i, identifier, sequence),
+                  file=stdout)
         # print sequence name
         elif flag[1] == "N":
             print(content, file=stdout)

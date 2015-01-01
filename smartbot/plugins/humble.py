@@ -19,7 +19,8 @@ class Plugin(smartbot.plugin.Plugin):
         tree = lxml.html.fromstring(page.text)
         try:
             title = tree.cssselect("title")[0].text_content().strip()
-            clock = tree.cssselect("#heading-time-remaining .mini-digit-holder")[0]
+            clock = tree \
+                .cssselect("#heading-time-remaining .mini-digit-holder")[0]
             c0 = clock.cssselect(".c0 .heading-num")[0].text_content()
             c1 = clock.cssselect(".c1 .heading-num")[0].text_content()
             c2 = clock.cssselect(".c2 .heading-num")[0].text_content()

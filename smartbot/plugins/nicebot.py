@@ -15,7 +15,8 @@ class Plugin(smartbot.plugin.Plugin):
                 self.bot.send(nicebot["target"], nicebot["password"])
 
     def on_command(self, msg, stdin, stdout, reply):
-        print(" ".join(nicebot["channel"] for nicebot in self.nicebots), file=stdout)
+        print(" ".join(nicebot["channel"] for nicebot in self.nicebots),
+              file=stdout)
 
     def on_help(self):
         return self.bot.format("nicebot", Style.bold)

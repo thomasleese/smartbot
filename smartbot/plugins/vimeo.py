@@ -7,6 +7,7 @@ from smartbot.formatting import Colour, Style
 
 REGEX = r"(https?://)?(www\.)?(vimeo\.com)([^\s]+)"
 
+
 class Plugin(smartbot.plugin.Plugin):
     """Get information about posted Vimeo videos."""
     names = ["vimeo"]

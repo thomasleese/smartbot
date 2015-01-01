@@ -213,7 +213,7 @@ class Backend(smartbot.backend.Backend):
             bg_colour = "15"
 
         if bg_colour and not fg_colour:
-            fg_colour = "01" # default to black
+            fg_colour = "01"  # default to black
 
         if fg_colour or bg_colour:
             values.append("\x03")

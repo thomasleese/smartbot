@@ -38,13 +38,15 @@ class Plugin(smartbot.plugin.Plugin):
         page = session.get(GUIDE_URL.format(game_id))
         tree = lxml.html.fromstring(page.text)
 
-        li_elements = tree.cssselect("#col_l .bl_la_main_guide .showhide ul li")
+        li_elements = tree.cssselect(
+            "#col_l .bl_la_main_guide .showhide ul li")
         if li_elements:
             return [x.text_content().strip() for x in li_elements[:5]]
         else:
             elements = tree.cssselect("#col_l .bl_la_main_guide .showhide p")
             if not elements:
-                elements = tree.cssselect("#col_l .bl_la_main_guide .showhide div div")
+                elements = tree.cssselect(
+                    "#col_l .bl_la_main_guide .showhide div div")
 
             if elements:
                 info = []
