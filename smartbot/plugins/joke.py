@@ -1,10 +1,9 @@
 import random
 import time
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.formatting import Style
 
 
 GOOD_JOKES = [
@@ -54,7 +53,7 @@ GOOD_JOKES = [
 ]
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Tell a joke."""
     names = ["joke", "'joke'"]
 
@@ -63,7 +62,7 @@ class Plugin(smartbot.Plugin):
 
     def _get_bad_joke(self):
         url = "http://jokels.com/random_joke"
-        session = utils.web.requests_session()
+        session = requests_session()
         res = session.get(url).json()
         return [res["joke"]["question"], res["joke"]["answer"]]
 

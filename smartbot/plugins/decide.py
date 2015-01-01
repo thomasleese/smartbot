@@ -1,12 +1,12 @@
 import random
 import shlex
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """
     Save your brain for more important things by letting SmartBot make
     important decisions for you.

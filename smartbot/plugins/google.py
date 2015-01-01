@@ -1,10 +1,10 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Perform a Google search and get the results."""
     names = ["google", "search"]
 
@@ -28,7 +28,7 @@ class Plugin(smartbot.Plugin):
             "num": 4,
         }
 
-        session = utils.web.requests_session()
+        session = requests_session()
         res = session.get(url, params=payload).json()
         if "error" in res:
             raise StopCommand(res["error"]["message"])

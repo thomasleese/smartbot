@@ -1,10 +1,9 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get information about posted YouTube videos."""
     names = ["youtube", "utube"]
 
@@ -21,7 +20,7 @@ class Plugin(smartbot.Plugin):
             "type": "video"
         }
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url, params=payload).json()
         return res.get("items", [])
 

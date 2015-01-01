@@ -1,12 +1,11 @@
 import re
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import get_title
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get an XKCD comic."""
     names = ["xkcd"]
 
@@ -14,7 +13,7 @@ class Plugin(smartbot.Plugin):
         match = re.findall(r"xkcd\s+(\d+)", msg["message"], re.IGNORECASE)
         for num in match:
             url = "http://xkcd.com/" + num
-            reply("{0} -> {1}".format(url, utils.web.get_title(url)))
+            reply("{0} -> {1}".format(url, get_title(url)))
 
     def on_help(self):
         return "{} {}".format(

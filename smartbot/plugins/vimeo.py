@@ -1,14 +1,13 @@
 import datetime
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.formatting import Colour, Style
 
 
 REGEX = r"(https?://)?(www\.)?(vimeo\.com)([^\s]+)"
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get information about posted Vimeo videos."""
     names = ["vimeo"]
 
@@ -30,7 +29,7 @@ class Plugin(smartbot.Plugin):
     def _get_video_info(self, video_id):
         url = "http://vimeo.com/api/v2/video/{}.json".format(video_id)
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url).json()
         try:
             return res[0]

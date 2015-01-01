@@ -1,9 +1,9 @@
 import yaml
 
-import smartbot
+import smartbot.storage
 
 
-class Storage(smartbot.Storage):
+class Storage(smartbot.storage.Storage):
     def __init__(self, filename="storage.yaml"):
         self.data = {}
         self.filename = filename

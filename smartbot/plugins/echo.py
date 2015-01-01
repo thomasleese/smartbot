@@ -1,7 +1,7 @@
-import smartbot
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.formatting import Style
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Reflect on what you say by getting SmartBot to echo it back at you."""
     names = ["echo", "print", "puts"]
 

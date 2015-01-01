@@ -3,11 +3,11 @@ import socket
 import time
 import threading
 
-import smartbot
-from ..formatting import *
+import smartbot.backend
+from ..formatting import Colour, Style
 
 
-class Backend(smartbot.Backend):
+class Backend(smartbot.backend.Backend):
     def __init__(self, hostname, port=6667, username=None, realname=None):
         super().__init__()
         self.hostname = hostname

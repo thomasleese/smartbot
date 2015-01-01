@@ -1,12 +1,12 @@
 import lxml.html
 import requests
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.exceptions import StopCommand
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get Humble Bundle information."""
     names = ["humble", "humblebundle"]
 

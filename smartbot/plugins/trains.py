@@ -1,10 +1,10 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get train times from National Rail."""
     names = ["trains"]
 
@@ -17,7 +17,7 @@ class Plugin(smartbot.Plugin):
                 "departing": "true",
             }
 
-            session = utils.web.requests_session()
+            session = requests_session()
             res = session.get(url, params=payload).json()
             if not res["trains"]:
                 raise StopCommand("No trains.")

@@ -1,13 +1,13 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
 STATUS_URL = "https://status.heroku.com/api/v3/current-status"
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get status of Heroku."""
     names = ["heroku"]
 
@@ -17,7 +17,7 @@ class Plugin(smartbot.Plugin):
 
         action = msg["args"][1]
         if "status".startswith(action):
-            session = utils.web.requests_session()
+            session = requests_session()
             res = session.get(STATUS_URL).json()
             status = res["status"]
             print("Production: {}".format(status["Production"]), file=stdout)

@@ -1,11 +1,11 @@
 import itertools
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.exceptions import StopCommand
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get help information about loaded plugins."""
     names = ["help", "what?"]
 

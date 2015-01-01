@@ -1,7 +1,7 @@
-import smartbot
+import smartbot.plugin
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """
     Argh, don't use Pastebin, please!
 

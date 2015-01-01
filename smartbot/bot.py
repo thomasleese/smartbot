@@ -5,7 +5,7 @@ import shlex
 import threading
 import traceback
 
-from .exceptions import *
+from .exceptions import StopCommand
 
 
 class Bot:

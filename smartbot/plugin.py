@@ -1,4 +1,3 @@
-from .exceptions import *
 from .formatting import Style
 
 class Plugin:

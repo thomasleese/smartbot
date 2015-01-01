@@ -1,11 +1,11 @@
 import datetime
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Check last time someone was seen."""
     names = ["seen"]
 

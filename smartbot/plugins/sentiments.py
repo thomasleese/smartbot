@@ -3,9 +3,9 @@ import math
 
 from textblob import TextBlob
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
 class Statistics:
@@ -52,7 +52,7 @@ class Statistics:
         return math.sqrt(self.variance)
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get sentiments for users on an IRC server."""
     names = ["sentiments"]
     stats_string = "{}:    Polarity: {p: f},   Subjectivity: {s: f}"

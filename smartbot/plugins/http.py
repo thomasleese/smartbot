@@ -1,10 +1,10 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Perform an HTTP GET request."""
     names = ["http", "web"]
 
@@ -16,7 +16,7 @@ class Plugin(smartbot.Plugin):
             url = stdin.read().strip()
 
         if url:
-            session = utils.web.requests_session()
+            session = requests_session()
             page = session.get(url, timeout=15)
             print(page.text, file=stdout)
         else:

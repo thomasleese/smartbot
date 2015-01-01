@@ -1,8 +1,8 @@
-import smartbot
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Authenticate with a NiceBot."""
     names = ["nicebot"]
 

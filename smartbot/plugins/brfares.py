@@ -2,11 +2,11 @@ import re
 
 import requests
 
-import smartbot
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """A plugin which provides fare information for British trains."""
     names = ["fares", "brfares"]
 

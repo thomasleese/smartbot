@@ -1,9 +1,7 @@
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Copy stdin to a reply, while also to standard output."""
     names = ["tee"]
 

@@ -1,17 +1,17 @@
 import re
 
-import smartbot
-from smartbot import utils
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Interface to OEIS."""
     names = ["oeis"]
     limit = 5
 
     def on_command(self, msg, stdin, stdout, reply):
-        session = utils.web.requests_session()
+        session = requests_session()
         url = "http://oeis.org/search"
         payload = {
             "fmt": "text",

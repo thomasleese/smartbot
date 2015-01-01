@@ -1,13 +1,13 @@
 import datetime
 import time
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.datetime import parse as parse_datetime
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Wait for an amount of time."""
     names = ["wait"]
 
@@ -16,7 +16,7 @@ class Plugin(smartbot.Plugin):
             cmd = msg["args"][1]
             if cmd == "in" or cmd == "at":
                 try:
-                    date = utils.datetime.parse(" ".join(msg["args"][1:]))
+                    date = parse_datetime(" ".join(msg["args"][1:]))
                 except ValueError:
                     raise smartbot.StopCommand("I don't understand that date.")
                 else:

@@ -1,16 +1,16 @@
 import lxml.html
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
 SEARCH_URL = "http://www.xboxachievements.com/search.php"
 GUIDE_URL = "http://www.xboxachievements.com/game/{0}/guide/"
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """A plugin which provides an interface to xboxachievements.com."""
     names = ["ach"]
 
@@ -18,7 +18,7 @@ class Plugin(smartbot.Plugin):
         self.saved_items = {}
 
     def _search(self, terms):
-        session = utils.web.requests_session()
+        session = requests_session()
         page = session.post(SEARCH_URL, data={"search": terms})
         tree = lxml.html.fromstring(page.text)
 
@@ -34,7 +34,7 @@ class Plugin(smartbot.Plugin):
     @staticmethod
     def _guide(name):
         game_id = name.lower().replace(" ", "-")
-        session = utils.web.requests_session()
+        session = requests_session()
         page = session.get(GUIDE_URL.format(game_id))
         tree = lxml.html.fromstring(page.text)
 

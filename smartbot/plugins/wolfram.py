@@ -3,13 +3,13 @@ import re
 
 import lxml.etree
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Perform a wolfram request."""
     names = ["wolfram", "?"]
 
@@ -92,7 +92,7 @@ class Plugin(smartbot.Plugin):
                 "appid": self.appid,
             }
 
-            session = utils.web.requests_session()
+            session = requests_session()
             page = session.get(url, params=payload, timeout=15)
             if page.status_code == 200:
                 tree = lxml.etree.fromstring(page.content)

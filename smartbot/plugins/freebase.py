@@ -1,12 +1,12 @@
 import requests
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session, sprunge
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """A plugin for searching Freebase."""
     names = ["define", "freebase"]
 
@@ -21,14 +21,14 @@ class Plugin(smartbot.Plugin):
             "limit": 1
         }
 
-        session = utils.web.requests_session()
+        session = requests_session()
         res = session.get(url, params=payload).json()
         if res["result"]:
             return res["result"][0]["mid"]
 
     def _topic(self, mid):
         url = "https://www.googleapis.com/freebase/v1/topic{}".format(mid)
-        session = utils.web.requests_session()
+        session = requests_session()
         return requests.get(url).json()
 
     def _look_for_text(self, topic):
@@ -50,7 +50,7 @@ class Plugin(smartbot.Plugin):
                 topic = self._topic(mid)
                 short_text, long_text = self._look_for_text(topic)
                 if short_text and long_text:
-                    url = utils.web.sprunge(long_text)
+                    url = sprunge(long_text)
                     print("{} {}".format(short_text, url), file=stdout)
                 else:
                     raise StopCommand("There isn't much information about this.")

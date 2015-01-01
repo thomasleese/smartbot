@@ -1,10 +1,10 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Unshorten a shortened URL."""
     names = ["unshorten"]
 
@@ -20,7 +20,7 @@ class Plugin(smartbot.Plugin):
             raise StopCommandWithHelp(self)
 
         url = "http://api.unshorten.it/"
-        session = utils.web.requests_session()
+        session = requests_session()
         for i, short_url in enumerate(short_urls):
             payload = {
                 "shortURL": short_url,

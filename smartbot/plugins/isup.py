@@ -1,12 +1,12 @@
 import urllib.parse
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommandWithHelp
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Check if a website is up or not."""
     names = ["isup"]
 
@@ -21,7 +21,7 @@ class Plugin(smartbot.Plugin):
             raise StopCommandWithHelp(self)
 
         url = "http://isitup.org/{0}.json".format(urllib.parse.quote(url))
-        session = utils.web.requests_session()
+        session = requests_session()
         res = session.get(url).json()
         if res["status_code"] == 1:
             print("{0} is up from here.".format(res["domain"]), file=stdout)

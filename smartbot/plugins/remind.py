@@ -2,13 +2,13 @@ import datetime
 import re
 import time
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.datetime import parse as parse_datetime
+from smartbot.exceptions import StopCommand
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Remind me to do something."""
     names = ["remind"]
 
@@ -20,7 +20,7 @@ class Plugin(smartbot.Plugin):
 
         if match:
             try:
-                date = utils.datetime.parse("{0} {1}".format(match.group(4), match.group(5)))
+                date = parse_datetime("{0} {1}".format(match.group(4), match.group(5)))
             except ValueError:
                 raise StopCommand("I don't understand that date.")
             else:

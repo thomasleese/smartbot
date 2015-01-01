@@ -1,9 +1,8 @@
+import importlib
+
 import yaml
 
-from . import Bot
-from . import backends
-from . import plugins
-from . import stores
+from .bot import Bot
 
 
 class Config:
@@ -15,19 +14,22 @@ class Config:
         name = config["name"]
         del config["name"]
 
-        return getattr(backends, name).Backend(**config)
+        backend = importlib.import_module('smartbot.backends.{}'.format(name))
+        return backend.Backend(**config)
 
     def _read_storage(self, config):
         name = config["name"]
         del config["name"]
 
-        return getattr(stores, name).Storage(**config)
+        storage = importlib.import_module('smartbot.stores.{}'.format(name))
+        return storage.Storage(**config)
 
     def _read_plugin(self, config):
         name = config["name"]
         del config["name"]
 
-        return getattr(plugins, name).Plugin(**config)
+        plugin = importlib.import_module('smartbot.plugins.{}'.format(name))
+        return plugin.Plugin(**config)
 
     def _read_plugins(self, config):
         return map(self._read_plugin, config)

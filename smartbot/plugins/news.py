@@ -1,10 +1,10 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get news stories."""
     names = ["news"]
 
@@ -23,7 +23,7 @@ class Plugin(smartbot.Plugin):
         else:
             payload["topic"] = "h"
 
-        session = utils.web.requests_session()
+        session = requests_session()
         res = session.get(url, params=payload).json()
         stories = res["responseData"]["results"][:3]
         if stories:

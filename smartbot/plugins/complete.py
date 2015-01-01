@@ -1,15 +1,15 @@
 import lxml.etree
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.exceptions import StopCommand, StopCommandWithHelp
+from smartbot.formatting import Style
 
 
 URL = "http://google.com/complete/search"
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Provide Google auto-complete suggestions."""
     names = ["complete", "autocomplete"]
 
@@ -20,7 +20,7 @@ class Plugin(smartbot.Plugin):
 
         if query:
             payload = {"q": query, "output": "toolbar"}
-            session = utils.web.requests_session()
+            session = requests_session()
             page = session.get(URL, params=payload)
             tree = lxml.etree.fromstring(page.text)
 

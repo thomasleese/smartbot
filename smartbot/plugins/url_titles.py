@@ -5,10 +5,9 @@ import urllib
 import isodate
 import twython
 
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import get_title, requests_session
+from smartbot.formatting import Colour, Style
 
 
 class YouTube:
@@ -38,7 +37,7 @@ class YouTube:
             "part": ",".join(["contentDetails", "snippet", "statistics"])
         }
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url, params=payload).json()
         if res["items"]:
             return res["items"][0]
@@ -85,7 +84,7 @@ class Vimeo:
     def _get_video_info(self, video_id):
         url = "http://vimeo.com/api/v2/video/{}.json".format(video_id)
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url).json()
         try:
             return res[0]
@@ -150,7 +149,7 @@ class Instagram:
             "client_id": self.client_id,
         }
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url, params=params).json()
         try:
             return res["data"]
@@ -204,7 +203,7 @@ class Twitch:
 
     def _get_channel_info(self, channel_id):
         url = "https://api.twitch.tv/kraken/channels/{}".format(channel_id)
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url).json()
         if res.get("error", None) is None:
             return res
@@ -229,10 +228,10 @@ class Twitch:
 
 class Website:
     def __call__(self, plugin, url):
-        return utils.web.get_title(url)
+        return get_title(url)
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get URL titles."""
     names = ["url_titles"]
 

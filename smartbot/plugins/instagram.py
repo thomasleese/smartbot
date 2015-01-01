@@ -1,10 +1,9 @@
-import smartbot
-from smartbot import utils
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.utils.web import requests_session
+from smartbot.formatting import Colour, Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Get information about posted Instagram photos."""
     names = ["instagram"]
 
@@ -28,7 +27,7 @@ class Plugin(smartbot.Plugin):
             "client_id": self.client_id,
         }
 
-        s = utils.web.requests_session()
+        s = requests_session()
         res = s.get(url, params=params).json()
         try:
             return res["data"]

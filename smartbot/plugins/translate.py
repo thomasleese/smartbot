@@ -2,12 +2,11 @@ import argparse
 
 from textblob import TextBlob
 
-import smartbot
-from smartbot.exceptions import *
-from smartbot.formatting import *
+import smartbot.plugin
+from smartbot.formatting import Style
 
 
-class Plugin(smartbot.Plugin):
+class Plugin(smartbot.plugin.Plugin):
     """Perform a Google translation."""
     names = ["translate"]
 
