@@ -74,7 +74,7 @@ class Bot:
                 plugin.on_respond(msg, reply)
             except Exception as e:
                 traceback.print_exc()
-                reply(name + ": " + str(e))
+                reply(str(e))
 
     @staticmethod
     def _parse_message_into_commands(msg):
