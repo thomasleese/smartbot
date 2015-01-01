@@ -1,5 +1,3 @@
-import requests
-
 import smartbot.plugin
 from smartbot.utils.web import requests_session, sprunge
 from smartbot.exceptions import StopCommand, StopCommandWithHelp
@@ -29,7 +27,7 @@ class Plugin(smartbot.plugin.Plugin):
     def _topic(self, mid):
         url = "https://www.googleapis.com/freebase/v1/topic{}".format(mid)
         session = requests_session()
-        return requests.get(url).json()
+        return session.get(url).json()
 
     def _look_for_text(self, topic):
         description = topic["property"].get("/common/topic/description")

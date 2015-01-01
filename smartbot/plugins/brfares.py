@@ -40,7 +40,6 @@ class Plugin(smartbot.plugin.Plugin):
             station_url = "http://api.brfares.com/ac_loc"
             rlc_url = "http://api.brfares.com/ac_rlc"
             query_url = "http://api.brfares.com/querysimple"
-            restriction_url = "http://www.brfares.com/restrictionspec"
 
             headers = {"User-Agent": "SmartBot"}
 
