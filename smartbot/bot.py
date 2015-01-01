@@ -118,8 +118,6 @@ class Bot:
     def on_message(self, msg):
         self.call_plugins_on_message(msg)
 
-        reply = functools.partial(self.send, msg["reply_to"])
-
         m = msg["message"].strip()
         if m.startswith(self.name) or m.startswith("!"):
             if m.startswith("!"):
