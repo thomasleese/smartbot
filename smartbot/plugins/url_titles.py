@@ -1,6 +1,7 @@
 import datetime
 import re
 import urllib
+import urllib.parse
 
 import isodate
 import twython
@@ -229,8 +230,15 @@ class Twitch:
 
 
 class Website:
+    @staticmethod
+    def should_ignore(url):
+        o = urllib.parse.urlparse(url)
+        if 'dailymail.co.uk' in o.netloc:
+            return True
+
     def __call__(self, plugin, url):
-        return get_title(url)
+        if not self.should_ignore(url):
+            return get_title(url)
 
 
 class Plugin(smartbot.plugin.Plugin):
