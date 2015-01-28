@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import ez_setup
-ez_setup.use_setuptools()
-
 from setuptools import find_packages, setup
 
 
