@@ -78,14 +78,11 @@ class Plugin(smartbot.plugin.Plugin):
     """Tell a joke."""
     names = ["joke", "'joke'"]
 
-    def _get_good_joke(self):
-        return [random.choice(GOOD_JOKES)]
-
-    def _get_bad_joke(self):
+    def get_bad_joke(self):
         url = "http://jokels.com/random_joke"
         session = requests_session()
         res = session.get(url).json()
-        return [res["joke"]["question"], res["joke"]["answer"]]
+        return (res["joke"]["question"], res["joke"]["answer"])
 
     def on_respond(self, msg, reply):
         if msg["message"].startswith("'joke'"):
@@ -94,14 +91,13 @@ class Plugin(smartbot.plugin.Plugin):
             self.on_respond_good(msg, reply)
 
     def on_respond_good(self, msg, reply):
-        for line in self._get_good_joke():
-            reply(line)
-            time.sleep(1)
+        reply(random.choice(GOOD_JOKES))
 
     def on_respond_bad(self, msg, reply):
-        for line in self._get_bad_joke():
-            reply(line)
-            time.sleep(1)
+        question, answer = self.get_bad_joke()
+        reply(question)
+        time.sleep(45)
+        reply(answer)
 
     def on_help(self):
         return "{}|{}".format(
