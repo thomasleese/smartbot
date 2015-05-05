@@ -9,13 +9,13 @@ class Plugin(smartbot.plugin.Plugin):
     """Check last time someone was seen."""
     names = ["seen"]
 
-    def on_message(self, msg, reply):
+    def on_message(self, msg):
         self.bot.storage["seen." + msg["sender"]] = {
             "action": "spoke",
             "datetime": datetime.datetime.now()
         }
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             user = msg["args"][1]
             try:

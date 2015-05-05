@@ -9,7 +9,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Perform a hash of a string."""
     names = ["hash"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             algorithm = msg["args"][1]
             value = " ".join(msg["args"][2:])

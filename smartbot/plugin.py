@@ -16,16 +16,16 @@ class Plugin:
     def pre_on_message(self, handler, msg):
         pass
 
-    def on_message(self, msg, reply):
+    def on_message(self, msg):
         pass
 
     def pre_on_respond(self, handler, msg):
         pass
 
-    def on_respond(self, msg, reply):
+    def on_respond(self, msg):
         pass
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         raise NotImplementedError()
 
     def on_help(self):

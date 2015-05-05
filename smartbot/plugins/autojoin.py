@@ -20,7 +20,7 @@ class Plugin(smartbot.plugin.Plugin):
         for channel in self.channels:
             self.bot.join(channel)
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         print(" ".join(self.channels), file=stdout)
 
     def on_help(self):

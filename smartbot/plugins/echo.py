@@ -6,7 +6,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Reflect on what you say by getting SmartBot to echo it back at you."""
     names = ["echo", "print", "puts"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         print(*msg["args"][1:], file=stdout)
 
     def on_help(self):

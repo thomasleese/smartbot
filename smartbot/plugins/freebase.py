@@ -37,7 +37,7 @@ class Plugin(smartbot.plugin.Plugin):
         else:
             return None, None
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

@@ -84,20 +84,20 @@ class Plugin(smartbot.plugin.Plugin):
         res = session.get(url).json()
         return (res["joke"]["question"], res["joke"]["answer"])
 
-    def on_respond(self, msg, reply):
+    def on_respond(self, msg):
         if msg["message"].startswith("'joke'"):
-            self.on_respond_bad(msg, reply)
+            self.on_respond_bad(msg)
         elif msg["message"].startswith("joke"):
-            self.on_respond_good(msg, reply)
+            self.on_respond_good(msg)
 
-    def on_respond_good(self, msg, reply):
-        reply(random.choice(GOOD_JOKES))
+    def on_respond_good(self, msg):
+        self.bot.send(msg['reply_to'], random.choice(GOOD_JOKES))
 
-    def on_respond_bad(self, msg, reply):
+    def on_respond_bad(self, msg):
         question, answer = self.get_bad_joke()
-        reply(question)
+        self.bot.send(msg['reply_to'], question)
         time.sleep(45)
-        reply(answer)
+        self.bot.send(msg['reply_to'], answer)
 
     def on_help(self):
         return "{}|{}".format(

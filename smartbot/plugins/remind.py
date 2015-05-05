@@ -12,7 +12,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Remind me to do something."""
     names = ["remind"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         pattern_str = r"remind (me|[^\s]+) (to|about|that) (.*) (in|at) (.*)$"
         match = re.match(pattern_str, msg["message"], re.IGNORECASE)
         if not match:
@@ -28,15 +28,18 @@ class Plugin(smartbot.plugin.Plugin):
             else:
                 message = None
                 if match.group(1) == "me" or match.group(1) == msg["sender"]:
-                    reply("Sure thing {0}, I'll remind you on {1}."
-                          .format(msg["sender"], date.strftime("%c").strip()))
+                    self.bot.send(msg['reply_to'],
+                                  "Sure thing {0}, I'll remind you on {1}."
+                                  .format(msg["sender"],
+                                          date.strftime("%c").strip()))
                     message = "{0}: you asked me to remind you {1} {2}" \
                               .format(msg["sender"], match.group(2),
                                       match.group(3))
                 else:
-                    reply("Sure thing {0}, I'll remind {1} on {2}."
-                          .format(msg["sender"], match.group(1),
-                                  date.strftime("%c").strip()))
+                    self.bot.send(msg['reply_to'],
+                                  "Sure thing {0}, I'll remind {1} on {2}."
+                                  .format(msg["sender"], match.group(1),
+                                          date.strftime("%c").strip()))
                     message = "{0}: {1} asked me to remind you {2} {3}" \
                               .format(match.group(1), msg["sender"],
                                       match.group(2), match.group(3))

@@ -10,7 +10,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Display the steam daily deal."""
     names = ["steam"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             action = msg["args"][1]
             if "deal".startswith(action):

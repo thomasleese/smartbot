@@ -8,7 +8,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Get news stories."""
     names = ["news"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         topic = " ".join(msg["args"][1:])
         if not topic:
             topic = stdin.read().strip()

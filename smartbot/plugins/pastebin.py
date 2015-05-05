@@ -9,7 +9,7 @@ class Plugin(smartbot.plugin.Plugin):
     """
     names = ["pastebin.com", "badpastebin"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         arg0 = msg["args"][0]
         if arg0 == "pastebin.com":
             print("Don't use it. Use some sane pastebin like bpaste.net, "

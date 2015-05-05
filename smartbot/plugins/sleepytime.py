@@ -21,7 +21,7 @@ class Plugin(smartbot.plugin.Plugin):
             yield wake_up_time
             now = wake_up_time
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         times = list(self.calculate_wake_up_times())
         msg = ' or '.join(time.strftime('%l:%M %p').strip() for time in times)
-        reply(msg)
+        print(msg, file=stdout)

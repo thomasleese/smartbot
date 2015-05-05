@@ -11,7 +11,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Get the status of GitHub."""
     names = ["github", "gh"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             action = msg["args"][1]
             if "status".startswith(action):

@@ -61,7 +61,7 @@ class Plugin(smartbot.plugin.Plugin):
                     info.append(s)
                 return info
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         game = " ".join(msg["args"][1:])
         if not game:
             game = stdin.read().strip()

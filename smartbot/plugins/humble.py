@@ -10,7 +10,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Get Humble Bundle information."""
     names = ["humble", "humblebundle"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         url = "https://www.humblebundle.com/"
         if "weekly" in msg["args"] or "weekly" in stdin.read().strip():
             url = "https://www.humblebundle.com/weekly"

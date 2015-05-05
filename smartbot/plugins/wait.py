@@ -11,7 +11,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Wait for an amount of time."""
     names = ["wait"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             cmd = msg["args"][1]
             if cmd == "in" or cmd == "at":

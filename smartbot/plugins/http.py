@@ -8,7 +8,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Perform an HTTP GET request."""
     names = ["http", "web"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         url = None
         if len(msg["args"]) >= 3:
             url = msg["args"][2]

@@ -37,7 +37,7 @@ class Plugin(smartbot.plugin.Plugin):
         except IndexError:
             return None
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         video_ids = msg["args"][1:]
         for i, video_id in enumerate(video_ids):
             video = self._get_video_info(video_id)

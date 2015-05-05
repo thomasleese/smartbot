@@ -15,7 +15,7 @@ class Plugin(smartbot.plugin.Plugin):
     parser.add_argument("-to", "--to-language", default="en", nargs="?")
     parser.add_argument("message", nargs="*")
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         # pre-process args
         # this might mess up if "from" or "to" is left out and
         # the message contains "from" or "to"

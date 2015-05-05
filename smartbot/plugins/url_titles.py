@@ -270,12 +270,12 @@ class Plugin(smartbot.plugin.Plugin):
             if title:
                 return title
 
-    def on_message(self, msg, reply):
+    def on_message(self, msg):
         match = re.findall(r"(https?://[^\s]+)", msg["message"], re.IGNORECASE)
         for i, url in enumerate(match):
             title = self._get_title(url)
             if title:
-                reply("{}: {}".format(
+                self.bot.send(msg['reply_to'], "{}: {}".format(
                     self.bot.format("[{}]".format(i), Style.bold),
                     title
                 ))

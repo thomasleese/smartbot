@@ -13,7 +13,7 @@ class Plugin(smartbot.plugin.Plugin):
     """
     names = ["decide", "choose"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         args = msg["args"][1:]
         if not args:
             args = shlex.split(stdin.read().strip())

@@ -16,7 +16,7 @@ class Plugin(smartbot.plugin.Plugin):
         self.twitter = twython.Twython(consumer_key, consumer_secret,
                                        access_token_key, access_token_secret)
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         person = None
         if len(msg["args"]) >= 2:
             person = msg["args"][1]

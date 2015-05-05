@@ -12,7 +12,7 @@ class Plugin(smartbot.plugin.Plugin):
         self.key = key
         self.cx = cx
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

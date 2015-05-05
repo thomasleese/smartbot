@@ -9,7 +9,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Get help information about loaded plugins."""
     names = ["help", "what?"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         plugin_name = None
         if len(msg["args"]) >= 2:
             plugin_name = msg["args"][1]

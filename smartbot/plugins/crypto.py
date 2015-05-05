@@ -29,7 +29,7 @@ class Plugin(smartbot.plugin.Plugin):
 
         raise StopCommand("{} is not a valid algorithm.".format(algorithm))
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 3:
             algorithm = msg["args"][1]
             action = msg["args"][2]

@@ -62,7 +62,7 @@ class Plugin(smartbot.plugin.Plugin):
         return self.bot.storage.setdefault("sentiments",
                                            collections.defaultdict(dict))
 
-    def on_message(self, msg, reply):
+    def on_message(self, msg):
         message_sentiment = TextBlob(msg["message"]).sentiment
 
         polarity = message_sentiment.polarity
@@ -77,7 +77,7 @@ class Plugin(smartbot.plugin.Plugin):
 
         self.bot.storage.commit()
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             user_list = " ".join(msg["args"][1:])
         else:

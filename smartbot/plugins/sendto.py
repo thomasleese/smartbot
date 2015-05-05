@@ -7,7 +7,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Forward a message to a user."""
     names = ["sendto"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 2:
             user = msg["args"][1]
             message = " ".join(msg["args"][2:])

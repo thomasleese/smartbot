@@ -57,24 +57,20 @@ class Bot:
                 return plugin
 
     def call_plugins_on_message(self, msg):
-        reply = functools.partial(self.send, msg["reply_to"])
-
         for plugin in self.plugins:
             try:
-                plugin.on_message(msg, reply)
+                plugin.on_message(msg)
             except Exception as e:
                 traceback.print_exc()
-                reply(str(e))
+                self.send(msg['reply_to'], str(e))
 
     def call_plugins_on_respond(self, msg):
-        reply = functools.partial(self.send, msg["reply_to"])
-
         for plugin in self.plugins:
             try:
-                plugin.on_respond(msg, reply)
+                plugin.on_respond(msg)
             except Exception as e:
                 traceback.print_exc()
-                reply(str(e))
+                self.send(msg['reply_to'], str(e))
 
     @staticmethod
     def _parse_message_into_commands(msg):
@@ -87,7 +83,6 @@ class Bot:
         return [list(group) for k, group in groups if not k]
 
     def call_plugins_on_command(self, msg):
-        reply = functools.partial(self.send, msg["reply_to"])
         commands = self._parse_message_into_commands(msg)
         pipe_buffer = ""
 
@@ -101,7 +96,7 @@ class Bot:
                 stdout = io.StringIO()
                 msg["args"] = command
                 msg["message"] = " ".join(command)
-                plugin.on_command(msg, stdin, stdout, reply)
+                plugin.on_command(msg, stdin, stdout)
                 pipe_buffer = stdout.getvalue()
             except StopCommand as e:
                 self.send(msg["reply_to"], str(e))

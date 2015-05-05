@@ -8,7 +8,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Get train times from National Rail."""
     names = ["trains"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         if len(msg["args"]) >= 3:
             url = "http://ojp.nationalrail.co.uk/service/ldb/liveTrainsJson"
             payload = {

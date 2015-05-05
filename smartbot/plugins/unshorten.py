@@ -11,7 +11,7 @@ class Plugin(smartbot.plugin.Plugin):
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         short_urls = msg["args"][1:]
         if not short_urls:
             short_urls = stdin.read().strip().split()

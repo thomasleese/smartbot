@@ -28,7 +28,7 @@ class Plugin(smartbot.plugin.Plugin):
         return list(filter(lambda fare: fare["category"]["code"] == category
             or fare["category"]["desc"] == category, fares))
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         pattern = r"(?:br)?fares (?:from )?(.*) to (.*?)" \
                   r"(?: with (?P<rlc>.*?))?(?: category (?P<category>.*))?$"
         match = re.match(pattern, msg["message"], re.IGNORECASE)

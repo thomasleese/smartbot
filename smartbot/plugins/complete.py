@@ -13,7 +13,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Provide Google auto-complete suggestions."""
     names = ["complete", "autocomplete"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

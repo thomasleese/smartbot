@@ -10,7 +10,7 @@ class Plugin(smartbot.plugin.Plugin):
     names = ["oeis"]
     limit = 5
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         session = requests_session()
         url = "http://oeis.org/search"
         payload = {

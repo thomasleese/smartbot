@@ -14,7 +14,7 @@ class Plugin(smartbot.plugin.Plugin):
             if nicebot["channel"] == msg["channel"] and msg["is_me"]:
                 self.bot.send(nicebot["target"], nicebot["password"])
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         print(" ".join(nicebot["channel"] for nicebot in self.nicebots),
               file=stdout)
 

@@ -73,15 +73,15 @@ class Plugin(smartbot.plugin.Plugin):
         else:
             return s.strip()
 
-    def on_message(self, msg, reply):
+    def on_message(self, msg):
         if msg["message"].startswith("? "):
             query = msg["message"][2:]
             stdout = io.StringIO()
             self.on_command({"args": [None, query]}, None, stdout, None)
             output = stdout.getvalue().strip()
-            reply(output)
+            self.bot.send(msg['reply_to'], output)
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         query = " ".join(msg["args"][1:])
         if not query:
             query = stdin.read().strip()

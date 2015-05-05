@@ -9,7 +9,7 @@ class Plugin(smartbot.plugin.Plugin):
     """Look for substrings or regular expressions in lines."""
     names = ["grep"]
 
-    def on_command(self, msg, stdin, stdout, reply):
+    def on_command(self, msg, stdin, stdout):
         pattern_str = " ".join(msg["args"][1:])
         if not pattern_str:
             raise StopCommandWithHelp(self)
